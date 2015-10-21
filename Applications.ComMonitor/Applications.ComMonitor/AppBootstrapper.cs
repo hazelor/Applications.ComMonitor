@@ -1,7 +1,7 @@
 ﻿using Hazelor.Infrastructure.Tools;
-using Microsoft.Practices.Prism.Modularity;
 using Prism.Logging;
 using Prism.Mef;
+using Prism.Modularity;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
@@ -47,7 +47,6 @@ namespace Applications.ComMonitor
             // 添加Modules 模块
             catalog = new DirectoryCatalog("Modules");
             this.AggregateCatalog.Catalogs.Add(catalog);
-
             // 添加Services 模块
             catalog = new DirectoryCatalog("Services");
             this.AggregateCatalog.Catalogs.Add(catalog);

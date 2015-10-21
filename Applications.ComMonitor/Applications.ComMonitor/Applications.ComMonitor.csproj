@@ -128,6 +128,16 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Hazelor.Infrastructure\Hazelor.Infrastructure.Tools\Hazelor.Infrastructure.Tools.csproj">
+      <Project>{a4b2dc73-fd2b-445b-ad31-df899349659e}</Project>
+      <Name>Hazelor.Infrastructure.Tools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Commons.Infrastructure\Commons.Infrastructure.csproj">
+      <Project>{343c92ca-cb0e-4e90-a0be-44c876b6852d}</Project>
+      <Name>Commons.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>IF NOT EXIST "$(TargetDir)\Modules" mkdir "$(TargetDir)\Modules";
