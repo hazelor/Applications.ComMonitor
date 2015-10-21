@@ -57,8 +57,8 @@ namespace Applications.ComMonitor
             base.ConfigureContainer();
 
             // Because we created the CallbackLogger and it needs to be used immediately, we compose it to satisfy any imports it has.
-
         }
+
         protected override IRegionBehaviorFactory ConfigureDefaultRegionBehaviors()
         {
             var factory = base.ConfigureDefaultRegionBehaviors();
@@ -67,6 +67,7 @@ namespace Applications.ComMonitor
 
             return factory;
         }
+
         protected override IModuleCatalog CreateModuleCatalog()
         {
             // When using MEF, the existing Prism ModuleCatalog is still the place to configure modules via configuration files.
