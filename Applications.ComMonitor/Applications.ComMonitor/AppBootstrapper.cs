@@ -50,6 +50,7 @@ namespace Applications.ComMonitor
             // 添加Services 模块
             catalog = new DirectoryCatalog("Services");
             this.AggregateCatalog.Catalogs.Add(catalog);
+
         }
 
         protected override void ConfigureContainer()
