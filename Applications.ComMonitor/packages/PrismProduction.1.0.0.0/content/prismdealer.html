@@ -1,0 +1,218 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html manifest="prism.appcache" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Pragma" content="no-cache">
+    <title>Prism Project</title>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="assets/css/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="assets/css/dataTables.tableTools.css" rel="stylesheet" />
+    <link href="assets/css/fileinput.min.css" rel="stylesheet" />
+    <link href="assets/css/bootstrapValidator.min.css" rel="stylesheet" />
+    <link href="assets/css/jquery.dataTables.css" rel="stylesheet" />
+    <link href="assets/css/jquery.dataTables_themeroller.css" rel="stylesheet" />
+    <link href="assets/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="assets/css/datepicker.css" rel="stylesheet" />
+    <link href="assets/css/AdminLTE.css" rel="stylesheet" />
+    <link href="assets/css/prism.css" rel="stylesheet" />
+    <link href="assets/css/main.css" rel="stylesheet" />
+    <link href="assets/css/normalize.css" rel="stylesheet" />
+    <link href="assets/css/jquery.treetable.theme.default.css" rel="stylesheet" />
+    <link href="assets/css/jquery.treetable.css" rel="stylesheet" />
+    
+    <!--Map Css-->
+    <link href="map/leaflet.css" rel="stylesheet" type="text/css" />
+    <link href="map/leaflet.label.css" rel="stylesheet" type="text/css" />
+    <!--Map CSS ends-->
+
+    <!--library files-->
+    <script src="assets/lib/jquery.min.js"></script>
+    <script src="assets/lib/fileinput.min.js"></script>
+    <script src="assets/lib/bootstrap.min.js"></script>
+    <script src="assets/lib/bootstrapValidator.min.js"></script>
+    <script src="assets/lib/bootstrap-typeahead.min.js"></script>
+    <script src="assets/lib/jquery.dataTables.min.js"></script>   
+    <script src="assets/lib/dataTables.bootstrap.js"></script>
+    <script src="assets/lib/dataTables.tableTools.js"></script> 
+    <script src="assets/lib/bootstrap-multiselect.js"></script>
+    <script src="assets/lib/moment.min.js"></script>
+    <script src="assets/lib/bootstrap-datetimepicker.min.js"></script>
+    <script src="assets/lib/bootstrap-datepicker.js"></script>
+    <script src="assets/lib/app.js"></script>
+    <script src="assets/lib/chart.js"></script>
+    <script src="assets/lib/cookies.js"></script>
+    <script src="assets/lib/jquery.treetable.js"></script>
+    
+    <script type="text/javascript">
+
+        $(document).ready(initializeDocument);
+
+        function initializeDocument()
+        {            
+            initURLLocationtoCall();
+        }
+    </script>
+</head>
+<body class="skin-blue body-overflow">
+    <div id="header_toggle" class="header_toggle">
+        <header class="header" id="header_das">
+            <nav class="navbar navbar-static-top" role="navigation">
+                <div class="margin-top-10 pull-left">
+                    <a href="#" class="logo">
+                        <!-- Add the class icon to your logo image or logo icon to add the margining -->
+                        <img src="assets/images/MPower-Logo.png" class="wd80 logo-marg" alt="Prism" />
+                    </a>
+                </div>
+                <a href="#" class="hidediv hidden-lg hidden-md hidden-sm visible-xs  pull-right sidebar-toggle option">
+                    <span class="resize_view"></span>
+                </a>
+
+                <!--<a href="#" class=" hidden-lg hidden-md hidden-sm visible-xs pull-right btn-toggle sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="icon-0"></span>
+                </a>-->
+                <div class="navbar-right">
+                    <!-- ul class add here-->
+                    <ul class="nav navbar-nav navbar-right pull-left margin-top12">
+                        <!-- Admin: style can be found in dropdown.less-->
+                        <li><a id="backtomap" title="Back to map" href="javascript:BackToMap()"><img src="assets/images/back.png" alt="back to map" /> </a></li>
+                        <li><a id="refresh" title="Refresh Page" href="javascript:RefreshPage()"><img src="assets/images/icon-refesh.png" alt="Refresh Page" /> </a></li>
+                        <li><a id="network" title="Network Performance Track" href="javascript:NetworkPerformanceCheck()"><img src="assets/images/network-performance-checking.png" alt="Network Performance Checking" /> </a></li>
+                        <li><a id="home" style="display:none" title="Home" href="javascript:fsoHome()"><img src="assets/images/home.png" alt="Home" /></a> </li>
+                        <li><a href="#" id="sync" title="Sync"><img src="assets/images/refresh.png" alt="Refresh" /></a> </li>
+                        <li class="dropdown messages-menu">
+                            <a href="#" class="dropdown-toggle white" data-toggle="dropdown" title="Menu">
+                                <img src="assets/images/icn-menu.png" alt="menu" />
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <!-- inner menu: contains the actual data -->
+                                    <ul class="menu">
+                                        <li>
+                                            <!-- start message -->
+                                            <a href="http://www.prismcement.com/"
+                                               target="_blank">Prism Reachout</a>
+                                            <a href="http://cement.prismcement.com/"
+                                               target="_blank">Prism Industries</a>
+                                        </li><!-- end message -->
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a href="#" id="logout" onclick="LogOut()" title="Logout"><img src="assets/images/log-out.png" alt="Logout" /></a> </li>
+
+                    </ul>
+
+
+
+
+
+                    <div class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <div class="pull-left profile">
+                            <div class="pull-left margin-right-10 margin-top12"><img src="assets/images/user-img.png" alt="Profile" /></div>
+                            <div class="pull-right user-name marg-tp-10">
+                                <span id="username"></span>
+                                <span id="loginTime"></span>
+                            </div>
+                            <br /><br />
+
+                            <br class="clear" />
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    </div>
+
+        <div id="fsoActionBtnDiv" class="main_row2">
+        </div>
+
+        <div id="main" style="display:none">
+        </div>
+
+        <div id="parform" class="modal fade" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                </div>
+            </div>
+        </div>
+        <div id="myform" class="modal fade" role="dialog" aria-hidden="true" style="display:none">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                </div>
+            </div>
+        </div>
+        <!-- Form for Search -->
+        <div id="sform" class="modal fade" role="dialog" aria-hidden="true" style="display:none">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>
+                        <h4 class='modal-title' id='myModalLabel'> Search Form </h4>
+                    </div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Search Form -->
+        <div id="dialog-message" class="modal fade center_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        </div>
+        <div id="dialog-message1" class="modal fade center_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        </div>
+        <div id="dialog-message2" class="modal fade center_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        </div>
+        <div id="del" class="modal fade center_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        </div>
+
+        <div id="LoginDiv">
+        </div>
+        <div class="loader" id="iframeloading">
+            <img style="top: 41%; position: relative; margin:0 auto; height:50px; width:50px; " alt="loading" src="assets/images/loading.gif">
+        </div>
+        <div id="custDetail" class="modal fade center_popup height250" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        </div>
+        <div id="changeforgotpwd" class="modal fade in" role="dialog" aria-hidden="true" style="display:none">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                </div>
+            </div>
+        </div>
+
+        <!--Map & Signature JS-->
+        <script src="map/leaflet-src.js" type="text/javascript"></script>
+        <script src="map/BaseMarkerMethods.js" type="text/javascript"></script>
+        <script src="map/Label.js" type="text/javascript"></script>
+        <script src="map/Map.Label.js" type="text/javascript"></script>
+        <script src="map/Marker.Label.js" type="text/javascript"></script>
+        <script src="map/jquery.signaturepad.js" type="text/javascript"></script>
+        <script src="map/Map.js"></script>
+        <!--Map & Signature JS ends-->
+
+        <script src="assets/js/Headers.js"></script>
+        <script src="assets/js/Default.js"></script>
+        <script src="assets/LangHeaders/LangHeaders-en-us.js"></script>
+        <script src="assets/LangHeaders/error_codes-en-us.js"></script>
+        <script src="assets/js/Menu.js"></script>
+        <script src="assets/js/Prism.js"></script>
+        <script src="assets/js/GeneralFunction.js"></script>
+        <script src="assets/js/Form.js"></script>
+        <script src="assets/js/validations.js"></script>
+        <script src="assets/js/Main.js"></script>
+        <script src="assets/js/dataTables.scroller.js"></script>
+        <script src="assets/js/Lookup.js"></script>
+        <script src="assets/js/CustomerDetails.js"></script>
+        <script src="assets/js/Search.js"></script>
+        <script src="assets/js/Planner.js"></script>
+        <script src="assets/js/CustomFunction.js"></script>
+        <script src="assets/js/SpecChart.js"></script>
+        <script src="assets/js/VehicleTracking.js"></script>
+
+</body>
+<head>
+    <meta http-equiv="Pragma" content="no-cache">
+</head>
+</html>

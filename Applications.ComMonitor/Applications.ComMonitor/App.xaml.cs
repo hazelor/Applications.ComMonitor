@@ -12,5 +12,13 @@ namespace Applications.ComMonitor
     /// </summary>
     public partial class App : Application
     {
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            // The boostrapper will create the Shell instance, so the App.xaml does not have a StartupUri.
+            AppBootstrapper bootstrapper = new AppBootstrapper();
+            bootstrapper.Run();
+        }
     }
 }

@@ -1,0 +1,46 @@
+.MPower-Logo, .home, .icn-menu, .log-out, .network-performance-checking, .refresh, .user-img{
+	background: url(sprites.png) no-repeat;
+}
+
+.MPower-Logo{
+	background-position: 0 0;
+	width: 278px;
+	height: 114px;
+}
+
+.home{
+	background-position: -300px -49px ;
+	width: 25px;
+	height: 25px;
+}
+
+.icn-menu{
+	background-position: -350px -49px ;
+	width: 25px;
+	height: 25px;
+}
+
+.log-out{
+	background-position: -400px -49px ;
+	width: 25px;
+	height: 25px;
+}
+
+.network-performance-checking{
+	background-position: -451px -49px ;
+	width: 30px;
+	height: 30px;
+}
+
+.refresh{
+	background-position: -502px -49px ;
+	width: 24px;
+	height: 24px;
+}
+
+.user-img{
+	background-position: -552px -49px ;
+	width: 44px;
+	height: 44px;
+}
+

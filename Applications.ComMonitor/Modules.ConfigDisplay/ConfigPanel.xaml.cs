@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -14,6 +15,7 @@ using System.Windows.Shapes;
 
 namespace Modules.ConfigDisplay
 {
+    [Export("ConfigPanel")]
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>

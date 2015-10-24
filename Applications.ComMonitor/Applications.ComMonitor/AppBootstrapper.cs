@@ -1,8 +1,6 @@
-﻿using Hazelor.Infrastructure.Tools;
-using Prism.Logging;
-using Prism.Mef;
-using Prism.Modularity;
-using Prism.Regions;
+﻿using Microsoft.Practices.Prism.Logging;
+using Microsoft.Practices.Prism.MefExtensions;
+using Microsoft.Practices.Prism.Modularity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
@@ -60,7 +58,7 @@ namespace Applications.ComMonitor
             // Because we created the CallbackLogger and it needs to be used immediately, we compose it to satisfy any imports it has.
         }
 
-        protected override IRegionBehaviorFactory ConfigureDefaultRegionBehaviors()
+        protected override Microsoft.Practices.Prism.Regions.IRegionBehaviorFactory ConfigureDefaultRegionBehaviors()
         {
             var factory = base.ConfigureDefaultRegionBehaviors();
 
