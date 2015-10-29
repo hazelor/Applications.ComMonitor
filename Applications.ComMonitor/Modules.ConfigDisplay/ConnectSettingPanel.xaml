@@ -1,0 +1,126 @@
+﻿<UserControl x:Class="Modules.ConfigDisplay.ConnectSettingPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>    
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Label Style="{StaticResource MLabelStyle}"
+               Grid.Row="0" Grid.Column="0"
+               VerticalAlignment="Center"
+               Height="30"
+               HorizontalAlignment="Right">下位机IP</Label>
+        <Label Style="{StaticResource MLabelStyle}"
+               Grid.Row="1" Grid.Column="0"
+               VerticalAlignment="Center"
+               Height="30"
+               HorizontalAlignment="Right">终端软件IP</Label>
+        <Label Style="{StaticResource MLabelStyle}"
+               Grid.Row="2" Grid.Column="0"
+               VerticalAlignment="Center"
+               Height="30"
+               HorizontalAlignment="Right">通讯协议</Label>
+        <Label Style="{StaticResource MLabelStyle}"
+               Grid.Row="3" Grid.Column="0"
+               VerticalAlignment="Center"
+               Height="30"
+               HorizontalAlignment="Right">C/S类型</Label>
+        <Label Style="{StaticResource MLabelStyle}"
+               Grid.Row="4" Grid.Column="0"
+               VerticalAlignment="Center"
+               Height="30"
+               HorizontalAlignment="Right">CPU大小端</Label>
+
+        <TextBox Style="{StaticResource MTextBoxStyle}"
+                 Grid.Row="0" Grid.Column="1"
+                 VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 Margin="5"
+                 />
+        <TextBox Style="{StaticResource MTextBoxStyle}"
+                 Grid.Row="1" Grid.Column="1"
+                 VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 Margin="5"/>
+        
+        <Grid x:Name="ProtocolTypeGroup"
+                    Grid.Row="2" Grid.Column="1"
+                    VerticalAlignment="Center"
+              Margin="5"
+              >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <RadioButton Grid.Column="0" 
+                         GroupName="ProtocolType"
+                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         FontSize="12"
+                         Height="10">TCP</RadioButton>
+            <RadioButton Grid.Column="1"
+                         GroupName="ProtocolType"
+                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         FontSize="12"
+                         Height="10">UDP</RadioButton>
+        </Grid>
+        
+        <Grid x:Name="ServiceTypeGroup"
+                    Grid.Row="3" Grid.Column="1"
+                    VerticalAlignment="Center"
+              Margin="5"
+              >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <RadioButton Grid.Column="0"
+                         GroupName="ServiceType"
+                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         FontSize="12"
+                         Height="10">客户端</RadioButton>
+            <RadioButton Grid.Column="1"
+                         GroupName="ServiceType"
+                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         FontSize="12"
+                         Height="10">服务端</RadioButton>
+        </Grid>
+        <Grid x:Name="CPUTypeGroup"
+                    Grid.Row="4" Grid.Column="1"
+                    VerticalAlignment="Center"
+              Margin="5"
+              >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <RadioButton Grid.Column="0"
+                         GroupName="CPUType"
+                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         FontSize="12"
+                         Height="10">大端</RadioButton>
+            <RadioButton Grid.Column="1"
+                         GroupName="CPUType" 
+                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         FontSize="12"
+                         Height="10">小端</RadioButton>
+        </Grid>
+        <Button Style="{StaticResource MButtonStyle}"
+                Grid.Row="5"
+                Grid.Column="1"
+                Height="30"
+                Command="{Binding ApplyCommand}"
+                HorizontalAlignment="Right">应用</Button>
+    </Grid>
+</UserControl>

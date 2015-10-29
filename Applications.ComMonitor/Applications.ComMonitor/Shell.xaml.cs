@@ -17,7 +17,8 @@ using System.Windows.Shapes;
 
 namespace Applications.ComMonitor
 {
-    [Export]
+    [Export(typeof(Shell))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -35,6 +36,14 @@ namespace Applications.ComMonitor
             InitializeComponent();
         }
 
+        [Import]
+        private ShellViewModel ViewModel
+        {
+            set
+            {
+                this.DataContext = value;
+            }
+        }
         void IPartImportsSatisfiedNotification.OnImportsSatisfied()
         {
             //IRegion mainContentRegion = this.regionManager.Regions[RegionNames.BottomRegion];

@@ -43,6 +43,7 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
@@ -107,7 +108,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViewExportAttribute.cs" />
+    <Compile Include="AdminLoginPanel.xaml.cs">
+      <DependentUpon>AdminLoginPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigPanel.xaml.cs">
+      <DependentUpon>ConfigPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interactions\AdminLoginInterationAction.cs" />
+    <Compile Include="Interactions\AdminLoginInterationDialog.cs" />
+    <Compile Include="Interactions\ConfigAdapter.cs" />
+    <Compile Include="Interactions\ConfigInterationAction.cs" />
+    <Compile Include="Interactions\ConfigInterationDialog.cs" />
+    <Compile Include="Interactions\ConfigInterationViewModel.cs" />
+    <Compile Include="Notification\AdminLoginNotification.cs" />
+    <Compile Include="Notification\ConfigNotification.cs" />
+    <Compile Include="ShellViewModel.cs" />
+    <Page Include="AdminLoginPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ConfigPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Shell.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -117,9 +140,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
-    <Compile Include="AutoPopulateExportedViewsBehavior.cs" />
     <Compile Include="EnterpriseLibraryLoggerAdapter.cs" />
-    <Compile Include="IViewRegionRegistration.cs" />
     <Compile Include="Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -186,11 +207,29 @@
     <Resource Include="theme\images\RadioButton.png" />
     <Resource Include="theme\images\RadioButtonBack.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="theme\images\ButtonBackGround.png" />
+    <Resource Include="theme\images\CheckBox.png" />
+    <Resource Include="theme\images\LabelBackGround.png" />
+    <Resource Include="theme\images\TextBoxBackGround.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="theme\images\Check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="theme\images\ConfigBox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="theme\images\RadioButtonBackground.png" />
+    <Resource Include="theme\images\RadioButtonForeground.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>IF NOT EXIST "$(TargetDir)\Modules" mkdir "$(TargetDir)\Modules";
 IF NOT EXIST "$(TargetDir)\Services" mkdir "$(TargetDir)\Services";
-IF NOT EXIST "$(TargetDir)\Commons" mkdir "$(TargetDir)\Commons";</PreBuildEvent>
+IF NOT EXIST "$(TargetDir)\Commons" mkdir "$(TargetDir)\Commons";
+
+IF NOT EXIST "$(TargetDir)\conf" mkdir "$(TargetDir)\conf";</PreBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.98.1\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.98.1\build\net45\System.Data.SQLite.Core.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

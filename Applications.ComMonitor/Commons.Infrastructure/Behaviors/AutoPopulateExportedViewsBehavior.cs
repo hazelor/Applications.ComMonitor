@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Applications.ComMonitor
+namespace Commons.Infrastructure.Behaviros
 {
     [Export(typeof(AutoPopulateExportedViewsBehavior))]
     [PartCreationPolicy(CreationPolicy.NonShared)]

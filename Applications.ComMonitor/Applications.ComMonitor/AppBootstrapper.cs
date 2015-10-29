@@ -1,4 +1,7 @@
-﻿using Microsoft.Practices.Prism.Logging;
+﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Behaviros;
+using Hazelor.Infrastructure.Tools;
+using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.MefExtensions;
 using Microsoft.Practices.Prism.Modularity;
 using System;

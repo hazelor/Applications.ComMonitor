@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.ConfigService
+namespace Commons.Infrastructure.Interactions
 {
-    class ConfigInfo
+    public interface IGenericAdapter<T>
     {
-
-
+        IGenericViewModel<T> ViewModel { get; }
     }
 }

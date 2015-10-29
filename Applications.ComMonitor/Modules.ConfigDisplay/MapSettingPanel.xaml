@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="Modules.ConfigDisplay.MapSettingPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+            
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <!--距离显示-->
+        <CheckBox Style="{StaticResource MCheckBoxStyle}"
+               Grid.Row="0" Grid.Column="0"
+               VerticalAlignment="Center"
+                  Height="10"
+               HorizontalAlignment="Right">距离显示</CheckBox>
+        <!--起始经纬度-->
+        <Label Style="{StaticResource MLabelStyle}"
+               Grid.Row="1" Grid.Column="0"
+               VerticalAlignment="Center"
+               Height="30"
+               HorizontalAlignment="Right">初始经度</Label>
+        <Label Style="{StaticResource MLabelStyle}"
+               Grid.Row="2" Grid.Column="0"
+               VerticalAlignment="Center"
+               Height="30"
+               HorizontalAlignment="Right">初始纬度</Label>
+        <TextBox Style="{StaticResource MTextBoxStyle}"
+                 Grid.Row="1" Grid.Column="1"
+                 VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 Margin="5"
+                 />
+        <TextBox Style="{StaticResource MTextBoxStyle}"
+                 Grid.Row="2" Grid.Column="1"
+                 VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 Margin="5"/>
+
+
+        <!--背景-->
+        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+                <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
+                     GroupName="BGSelection"
+                             Height="10"
+                     >通用</RadioButton>
+                <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
+                     GroupName="BGSelection"
+                             Height="10"
+                     >海洋</RadioButton>
+                <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
+                     GroupName="BGSelection"
+                             Height="10"
+                     >山地</RadioButton>
+            </StackPanel>
+            <Border BorderBrush="Gray"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Grid.Row="1">
+                <Image x:Name="PreView"
+                       Height="256" Width="256"
+                   Source="{Binding Path=BackgroundFilePath}"></Image>
+            </Border>
+          
+            
+        </Grid>
+       
+        
+        <Button Style="{StaticResource MButtonStyle}"
+                Grid.Row="4"
+                Grid.Column="1"
+                Height="30"
+                Command="{Binding ApplyCommand}">应用</Button>
+    </Grid>
+</UserControl>

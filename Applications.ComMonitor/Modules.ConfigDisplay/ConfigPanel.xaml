@@ -1,11 +1,76 @@
 ﻿<UserControl x:Class="Modules.ConfigDisplay.ConfigPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://www.codeplex.com/prism" 
+             xmlns:inf="clr-namespace:Commons.Infrastructure;assembly=Commons.Infrastructure"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:Inf="clr-namespace:Commons.Infrastructure.Layout;assembly=Commons.Infrastructure"
-             mc:Ignorable="d">
-    <Grid>
-        <Label>conf</Label>
+             xmlns:commands="clr-namespace:Modules.ConfigDisplay.Command"
+             mc:Ignorable="d" Height="500"
+             Loaded="OnLoaded">
+    <Grid x:Name="Layout">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        
+        
+        <Border BorderBrush="LightBlue"
+                BorderThickness="2"
+                Grid.Column="0" MinWidth="120"
+                 VerticalAlignment="Stretch"
+                Margin="20,0,0,0"
+                CornerRadius="4">
+            <ListBox x:Name="ConfNavi" BorderThickness="0" IsSynchronizedWithCurrentItem="True" 
+                     prism:RegionManager.RegionName="{x:Static inf:RegionNames.ConfNavigatorRegion}"
+                     Background="{x:Null}"
+                     HorizontalContentAlignment="Center">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <RadioButton  Style="{StaticResource MRadioButtonNonFStyle}"
+                                      GroupName="ConfNavi"
+                                      Command="{Binding NavigatorCommand}"
+                                      Content="{Binding Name}"
+                                      HorizontalAlignment="Center"
+                                      Height="30"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <!--<StackPanel Orientation="Vertical" Margin="5,10,5,0">
+                <RadioButton x:Name="ConnectSettingButton" Style="{StaticResource MRadioButtonStyle}" Click="OnConnectSettingClicked">连接设置</RadioButton>
+                <RadioButton x:Name="MapSettingButton" Style="{StaticResource MRadioButtonStyle}" Click="OnMapSettingClicked">地图设置</RadioButton>
+                <RadioButton x:Name="LinkStateSettingButton" Style="{StaticResource MRadioButtonStyle}" Click="LinkStateSettingClicked">链路设置</RadioButton>
+            </StackPanel>-->
+        </Border>
+        
+        <Border Grid.Column="1"
+                Style="{StaticResource MBorderStyle}"
+                Margin="5,0,10,0">
+           
+            
+        </Border>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ContentControl prism:RegionManager.RegionName="{x:Static inf:RegionNames.ConfContentRegion}" 
+                                    Grid.Row="0" Margin="10,0,5,5" 
+                                    HorizontalContentAlignment="Stretch" 
+                                    VerticalContentAlignment="Stretch"
+                                Background="White"
+                            Width="300"
+                                />
+            <StackPanel Grid.Row="1" Orientation="Horizontal"
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Right"
+                            Margin="0,0,20,5">
+
+                <Button Style="{StaticResource MButtonStyle}" Command="{Binding ComfirmCommand}" Height="30">确定</Button>
+                <Button Style="{StaticResource MButtonStyle}" Command="{Binding CancelCommand}" Height="30">取消</Button>
+                <Button Style="{StaticResource MButtonStyle}" IsEnabled="{Binding IsAvailableApply}" Height="30">应用</Button>
+            </StackPanel>
+        </Grid>
+
     </Grid>
 </UserControl>

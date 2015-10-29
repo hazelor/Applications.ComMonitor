@@ -130,6 +130,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Hazelor.Infrastructure\Hazelor.Infrastructure.Tools\Hazelor.Infrastructure.Tools.csproj">
+      <Project>{a4b2dc73-fd2b-445b-ad31-df899349659e}</Project>
+      <Name>Hazelor.Infrastructure.Tools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\MapCtrl\Hazelor.MapCtrl\Hazelor.MapCtrl\Hazelor.MapCtrl.csproj">
       <Project>{9ff25c1a-a075-4070-be25-5c35b5bccf2a}</Project>
       <Name>Hazelor.MapCtrl</Name>

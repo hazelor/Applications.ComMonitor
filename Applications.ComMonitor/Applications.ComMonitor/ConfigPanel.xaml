@@ -1,0 +1,26 @@
+﻿<interactions:ConfigInterationDialog x:Class="Applications.ComMonitor.ConfigPanel"
+             xmlns:interactions="clr-namespace:Applications.ComMonitor.Interactions"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"  
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+             xmlns:prism="http://www.codeplex.com/prism" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:Inf="clr-namespace:Commons.Infrastructure;assembly=Commons.Infrastructure"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="1080" d:DesignWidth="1920">
+
+    <Grid x:Name="Layout" Background="#A9CECECE">
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="600" MaxWidth="800" MinHeight="600" MinWidth="800">
+            <Grid.Background>
+                <ImageBrush ImageSource=".\theme\images\ConfigBox.png"  Stretch="UniformToFill"/>
+            </Grid.Background>
+            <ContentControl HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"
+                    prism:RegionManager.RegionName="{x:Static Inf:RegionNames.ConfigRegion}"
+                    RenderTransformOrigin="0.5,0.5"
+                        Margin="10"
+                    />
+        </Grid>
+    </Grid>
+</interactions:ConfigInterationDialog>

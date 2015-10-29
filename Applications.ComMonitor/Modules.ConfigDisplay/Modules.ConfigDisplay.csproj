@@ -77,16 +77,56 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SubConfViewModelBase.cs" />
+    <Compile Include="test.xaml.cs">
+      <DependentUpon>test.xaml</DependentUpon>
+    </Compile>
     <Page Include="ConfigPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Command\ConfCommands.cs" />
     <Compile Include="ConfigPanel.xaml.cs">
       <DependentUpon>ConfigPanel.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ConnectSettingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LinkStateSettingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MapSettingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="test.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigPanelViewModel.cs" />
+    <Compile Include="ConfNaviViewModel.cs" />
+    <Compile Include="ConnectSettingPanel.xaml.cs">
+      <DependentUpon>ConnectSettingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConnectSettingViewModel.cs" />
+    <Compile Include="Controller\ConfController.cs" />
+    <Compile Include="Controller\IConfController.cs" />
+    <Compile Include="Interface\IConfNaviViewModel.cs" />
+    <Compile Include="Interface\IConfViewModel.cs" />
+    <Compile Include="LinkStateSettingPanel.xaml.cs">
+      <DependentUpon>LinkStateSettingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LinkStateSettingViewModel.cs" />
+    <Compile Include="MapSettingPanel.xaml.cs">
+      <DependentUpon>MapSettingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MapSettingViewModel.cs" />
+    <Compile Include="PanelNames.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -113,10 +153,21 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Hazelor.Infrastructure\Hazelor.Infrastructure.Tools\Hazelor.Infrastructure.Tools.csproj">
+      <Project>{a4b2dc73-fd2b-445b-ad31-df899349659e}</Project>
+      <Name>Hazelor.Infrastructure.Tools</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Commons.Infrastructure\Commons.Infrastructure.csproj">
       <Project>{343c92ca-cb0e-4e90-a0be-44c876b6852d}</Project>
       <Name>Commons.Infrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\RadioButton.png" />
+    <Resource Include="images\RadioButtonBack.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Conf\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
