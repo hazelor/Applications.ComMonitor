@@ -147,7 +147,7 @@ namespace Services.ProtocolService
 
             //nodeNum
             CommunicationNet.NodeNum =  BitConverter.ToUInt16(srcBuffer, index);
-            index += 4;
+            index += 2;
             if (IsLittle != (_configService.ConfigInfos.CPUType == "Little"))
             {
                 CommunicationNet.NodeNum = Endian.SwapUInt16(CommunicationNet.NodeNum);
@@ -161,16 +161,14 @@ namespace Services.ProtocolService
                 Buffer.BlockCopy(srcBuffer, index, tmpbuffer, 0, MacAddr.MACADDRLEN);
                 MacAddr ma = new MacAddr(tmpbuffer);
                 CommNode cn = FindMac(ma);
-                if (cn == null)
+                bool isNull= (cn == null);
+                if (isNull)
                 {
                     cn = new CommNode { MacAddr = ma, Index = i, IsUpdate = true };
                     CommunicationNet.CommNodes.Add(cn);
-                    NodeChangeEvent(this, new NodeChangeEventArg { oper = Operations.ADD, Node = cn });
+                    
                 }
-                else
-                {
-                    cn.Index = i;
-                }
+                cn.Index = i;
 
 
                 index+=MacAddr.MACADDRLEN;
@@ -181,7 +179,10 @@ namespace Services.ProtocolService
                 cn.Altitude = BitConverter.ToInt32(srcBuffer, index);
                 index += 4;
                 cn.NodeType = srcBuffer[index++];
-
+                if (isNull)
+                {
+                    NodeChangeEvent(this, new NodeChangeEventArg { oper = Operations.ADD, Node = cn });
+                }
             }
             
             BeginUpdateLine();
@@ -195,7 +196,8 @@ namespace Services.ProtocolService
                     if (i>j)
 	                {
                         CommLine cl = FindLine(i, j);
-                        if (cl == null)
+                        bool IsNull= (cl == null);
+                        if (IsNull && ((CommStatues)TopInfo[i, j] != CommStatues.NON || (CommStatues)TopInfo[j,i]!= CommStatues.NON))
                         {
                             cl = new CommLine { StartNode = FindNode(i), EndNode = FindNode(j), CommStatuPre = (CommStatues)TopInfo[i, j], CommStatuBac = (CommStatues)TopInfo[j, i] };
                             CommunicationNet.CommLines.Add(cl);
@@ -205,7 +207,15 @@ namespace Services.ProtocolService
                         {
                             cl.CommStatuPre = (CommStatues)TopInfo[i, j];
                             cl.CommStatuBac = (CommStatues)TopInfo[j, i];
+
+                            if (cl.CommStatuBac == CommStatues.NON && cl.CommStatuPre == CommStatues.NON)
+                            {
+                                LineChangeEvent(this, new LineChangeEventArg { oper = Operations.DEL, Line = cl });
+                                CommunicationNet.CommLines.Remove(cl);
+                            }
                         }
+
+                        
 	                }
                     
                 }
@@ -317,7 +327,6 @@ namespace Services.ProtocolService
             int index = 0;
 
             MsgID = BitConverter.ToUInt16(srcBuffer, index);
-            
             index+=2;
 
             //保留
