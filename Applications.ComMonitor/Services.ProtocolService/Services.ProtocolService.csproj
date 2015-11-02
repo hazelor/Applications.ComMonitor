@@ -70,7 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LogicService.cs" />
     <Compile Include="ParserAttribute.cs" />
     <Compile Include="ParserIDs.cs" />
     <Compile Include="ProtocolService.cs" />
