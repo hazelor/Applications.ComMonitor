@@ -12,27 +12,59 @@ namespace Commons.Infrastructure.Models
         public string FilePath { get; set; }
 
         #region CommSetting
-        public string DownTerminalIP { get; set; } //下位机IP
-        public string TermialIP { get; set; }//上位机IP
+        /// <summary>
+        /// 下位机IP
+        /// </summary>
+        public string DownTerminalIP { get; set; }
 
-        public string CommProtocol { get; set; }//通讯协议
+        public int DownTerminalPort { get; set; }
+        /// <summary>
+        /// 上位机IP
+        /// </summary>
+        public string TermialIP { get; set; }
+        public int TerminalPort { get; set; }
 
-        public string CommType { get; set; }//通信类型
-        public string CPUType { get; set; }//CPU大小端
+        /// <summary>
+        /// 通讯协议,tcp,udp
+        /// </summary>
+        public string CommProtocol { get; set; }
+
+        /// <summary>
+        /// 通信类型 server,clinet
+        /// </summary>
+        public string CommType { get; set; }
+        /// <summary>
+        /// CPU大小端, big,little
+        /// </summary>
+        public string CPUType { get; set; }
 
         
         #endregion
 
         #region MapSetting
-        public string MapBackFilePath { get; set; }//地图默认背景
-        public double CenteredLatitude { get; set; }//初始纬度
-        public double CenteredLongtitude { get;set;}//初始经度
+        /// <summary>
+        /// 地图默认背景
+        /// </summary>
+        public string MapBackFilePath { get; set; }
+        /// <summary>
+        /// 初始纬度
+        /// </summary>
+        public double CenteredLatitude { get; set; }
+        /// <summary>
+        /// 初始经度
+        /// </summary>
+        public double CenteredLongitude { get;set;}
+
+        public bool IsDistanceShow { get; set; }
 
         #endregion
 
         #region TopologySetting
 
-        public int UpdateRate { get; set; }//刷新频率
+        /// <summary>
+        /// 刷新频率20~100ms
+        /// </summary>
+        public int UpdateRate { get; set; }
 
         #endregion
 

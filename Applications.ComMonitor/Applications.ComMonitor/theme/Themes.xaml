@@ -93,9 +93,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Grid>
-                        <Image Source="./images/ButtonBackGround.png"/>
-                        <Image Name="SelectedBack" Source="./images/RadioButtonBack.png" Visibility="Hidden"/>
-                        <TextBlock Text="{TemplateBinding Content}" FontSize="{TemplateBinding FontSize}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        
+                        <Image Source="./images/ButtonBackGround.png" />
+                        <Image  Name="SelectedBack" Source="./images/RadioButtonBack.png" Visibility="Hidden"/>
+                        <TextBlock Grid.Column="1" Text="{TemplateBinding Content}" FontSize="{TemplateBinding FontSize}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Rectangle Name="Mask" Fill="#55FFFFFF"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -103,6 +105,12 @@
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Visibility" Value="Hidden" TargetName="SelectedBack"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Visibility" Value="Visible" TargetName="Mask"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="True">
+                            <Setter Property="Visibility" Value="Hidden" TargetName="Mask"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

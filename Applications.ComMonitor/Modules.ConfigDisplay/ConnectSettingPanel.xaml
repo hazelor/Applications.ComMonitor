@@ -49,11 +49,13 @@
                  Grid.Row="0" Grid.Column="1"
                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
                  Margin="5"
+                 Text="{Binding DownTerminalIP}"
                  />
         <TextBox Style="{StaticResource MTextBoxStyle}"
                  Grid.Row="1" Grid.Column="1"
                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
-                 Margin="5"/>
+                 Margin="5"
+                 Text="{Binding TerminalIP}"/>
         
         <Grid x:Name="ProtocolTypeGroup"
                     Grid.Row="2" Grid.Column="1"
@@ -68,12 +70,12 @@
                          GroupName="ProtocolType"
                          Style="{StaticResource MRadioButtonGroupStyle}"
                          FontSize="12"
-                         Height="10">TCP</RadioButton>
+                         Height="10" IsChecked="{Binding IsTcp}">TCP</RadioButton>
             <RadioButton Grid.Column="1"
                          GroupName="ProtocolType"
                          Style="{StaticResource MRadioButtonGroupStyle}"
                          FontSize="12"
-                         Height="10">UDP</RadioButton>
+                         Height="10" IsChecked="{Binding IsUdp}">UDP</RadioButton>
         </Grid>
         
         <Grid x:Name="ServiceTypeGroup"
@@ -89,12 +91,12 @@
                          GroupName="ServiceType"
                          Style="{StaticResource MRadioButtonGroupStyle}"
                          FontSize="12"
-                         Height="10">客户端</RadioButton>
+                         Height="10" IsChecked="{Binding IsClient}">客户端</RadioButton>
             <RadioButton Grid.Column="1"
                          GroupName="ServiceType"
                          Style="{StaticResource MRadioButtonGroupStyle}"
                          FontSize="12"
-                         Height="10">服务端</RadioButton>
+                         Height="10" IsChecked="{Binding IsServer}">服务端</RadioButton>
         </Grid>
         <Grid x:Name="CPUTypeGroup"
                     Grid.Row="4" Grid.Column="1"
@@ -109,12 +111,12 @@
                          GroupName="CPUType"
                          Style="{StaticResource MRadioButtonGroupStyle}"
                          FontSize="12"
-                         Height="10">大端</RadioButton>
+                         Height="10" IsChecked="{Binding IsBigType}">大端</RadioButton>
             <RadioButton Grid.Column="1"
                          GroupName="CPUType" 
                          Style="{StaticResource MRadioButtonGroupStyle}"
                          FontSize="12"
-                         Height="10">小端</RadioButton>
+                         Height="10" IsChecked="{Binding IsLittleType}">小端</RadioButton>
         </Grid>
         <Button Style="{StaticResource MButtonStyle}"
                 Grid.Row="5"

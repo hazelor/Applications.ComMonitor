@@ -18,11 +18,12 @@
                Grid.Row="0" Grid.Column="0"
                VerticalAlignment="Center"
                Height="30"
-               HorizontalAlignment="Right">刷新频率</Label>
+               HorizontalAlignment="Right">刷新频率(ms)</Label>
         <TextBox Style="{StaticResource MTextBoxStyle}"
                  Grid.Row="0" Grid.Column="1"
                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
                  Margin="5"
+                 Text="{Binding UpdateRate}"
                  />
         <Button Style="{StaticResource MButtonStyle}"
                 Grid.Row="1"

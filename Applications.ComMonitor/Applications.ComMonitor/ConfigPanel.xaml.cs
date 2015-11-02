@@ -1,9 +1,13 @@
 ﻿using Applications.ComMonitor.Interactions;
 using Applications.ComMonitor.Notification;
+using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interactions;
 using Hazelor.Infrastructure.Tools;
+using Microsoft.Practices.Prism.PubSubEvents;
+using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +35,9 @@ namespace Applications.ComMonitor
             this.DataContext = this.ViewModel;
             InitializeComponent();
         }
+
+        //[Import]
+        private IEventAggregator _eventAggregator;
         public void SetEntity(ConfigNotification entity)
         {
             this.ViewModel.SetEntity(entity);
@@ -50,6 +57,19 @@ namespace Applications.ComMonitor
         {
             ConfigNotification an = this.ViewModel.GetEntity();
 
+        }
+
+        private void OnConfirmedUpdate(bool isConfirmed)
+        {
+            if (isConfirmed)
+            {
+                this.Ok();
+            }
+            else
+            {
+                this.Cancel();
+            }
+            
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Commons.Infrastructure.Interface;
+﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Interface;
 using Commons.Infrastructure.Models;
 using Hazelor.Infrastructure.Tools;
 using Microsoft.Practices.Prism.Commands;
@@ -20,6 +21,7 @@ namespace Services.ConfigService
         public ConfigService()
         {       
             LoadAdminInfo();
+            LoadConfig();
             SaveAdminInfoCommand = new DelegateCommand(SaveAdminInfo);
             SaveConfigCommand = new DelegateCommand(SaveConfig);
         }
@@ -55,26 +57,27 @@ namespace Services.ConfigService
 
         #region Config
 
-        private ConfigInfo _configInfo;
+        private ConfigInfo _configInfos;
 
-        public ConfigInfo ConfigInfo
+        public ConfigInfo ConfigInfos
         {
             get
             {
-                return this._configInfo;
+                return this._configInfos;
             }
         }
 
         public void LoadConfig()
         {
-            if (!System.IO.File.Exists(Properties.Resource.AdminInfoFilePath))
+            if (!System.IO.File.Exists(Properties.Resource.ConfigFilePath))
             {
-                _configInfo = new ConfigInfo { FilePath = Properties.Resource.ConfigFilePath };
+                _configInfos = new ConfigInfo { FilePath = Properties.Resource.ConfigFilePath };
+                InitConfigDefault();
             }
             else
             {
-                _configInfo.FilePath = Properties.Resource.ConfigFilePath;
-                _configInfo = (ConfigInfo)_serializer.DeSerialize(Properties.Resource.ConfigFilePath, typeof(ConfigInfo));
+                _configInfos.FilePath = Properties.Resource.ConfigFilePath;
+                _configInfos = (ConfigInfo)_serializer.DeSerialize(Properties.Resource.ConfigFilePath, typeof(ConfigInfo));
             }
 
             SaveConfig();
@@ -83,10 +86,26 @@ namespace Services.ConfigService
 
         private void SaveConfig()
         {
-            _serializer.Serialize(_configInfo, typeof(ConfigInfo));
+            _serializer.Serialize(_configInfos, typeof(ConfigInfo));
         }
 
+        private void InitConfigDefault()
+        {
+            //about map
+            _configInfos.CenteredLatitude = 44.2829;
+            _configInfos.CenteredLatitude = 115.8901;
+            
+            //about link
+            _configInfos.UpdateRate = 100;
+            //about connectsetting
+            _configInfos.CommProtocol = ConfigItems.UDP;
+            _configInfos.CommType = ConfigItems.LITTLE;
+            _configInfos.DownTerminalIP = "192.168.1.2";
+            _configInfos.TermialIP = "192.168.1.3";
+            _configInfos.MapBackFilePath = ConfigItems.NORMAL_BACK;
 
+
+        }
         #endregion
 
         #region public

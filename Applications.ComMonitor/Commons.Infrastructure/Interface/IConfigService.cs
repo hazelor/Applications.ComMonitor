@@ -15,6 +15,8 @@ namespace Commons.Infrastructure.Interface
         ICommand SaveConfigCommand { get; }
         AdminInfo AdminInfos { get; }
 
+        ConfigInfo ConfigInfos { get; }
+
         void LoadConfig();
 
     }

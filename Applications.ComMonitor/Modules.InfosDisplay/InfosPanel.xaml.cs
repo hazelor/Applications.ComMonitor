@@ -49,5 +49,24 @@ namespace Modules.InfosDisplay
             TileGenerator.DestructMap();
         }
 
+        private void SatelliteClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void NormalClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+        [Import]
+        InfosPanelViewModel ViewModel
+        {
+            set
+            {
+                this.DataContext = value;
+            }
+        }
     }
 }

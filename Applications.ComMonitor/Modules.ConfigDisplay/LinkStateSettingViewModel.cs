@@ -27,7 +27,28 @@ namespace Modules.ConfigDisplay
 
         private void ApplyExecuted()
         {
+            _configService.ConfigInfos.UpdateRate = this.UpdateRate;
 
+            _configService.SaveConfigCommand.Execute(null);
+            IsAvaibleApply = false;
+            BaseApplyAvailableUpdate(IsAvaibleApply);
         }
+
+        #region Perperties
+
+        private int _UpdateRate;
+        public int UpdateRate
+        {
+            get
+            {
+                return this._UpdateRate;
+            }
+            set
+            {
+                SetProperty(ref this._UpdateRate, value);
+                SetApplySign();
+            }
+        }
+        #endregion
     }
 }

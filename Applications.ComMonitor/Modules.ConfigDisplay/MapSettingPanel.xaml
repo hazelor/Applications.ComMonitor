@@ -23,7 +23,8 @@
                Grid.Row="0" Grid.Column="0"
                VerticalAlignment="Center"
                   Height="10"
-               HorizontalAlignment="Right">距离显示</CheckBox>
+               HorizontalAlignment="Right"
+                  IsChecked="{Binding IsDistanceShow}">距离显示</CheckBox>
         <!--起始经纬度-->
         <Label Style="{StaticResource MLabelStyle}"
                Grid.Row="1" Grid.Column="0"
@@ -39,10 +40,12 @@
                  Grid.Row="1" Grid.Column="1"
                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
                  Margin="5"
+                 Text="{Binding CenterLongitude}"
                  />
         <TextBox Style="{StaticResource MTextBoxStyle}"
                  Grid.Row="2" Grid.Column="1"
                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 Text="{Binding CenterLatitude}"
                  Margin="5"/>
 
 
@@ -56,14 +59,17 @@
                 <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
                      GroupName="BGSelection"
                              Height="10"
+                             Command="{Binding ChangeBackCommand}" CommandParameter="normal"
                      >通用</RadioButton>
                 <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
                      GroupName="BGSelection"
                              Height="10"
+                             Command="{Binding ChangeBackCommand}" CommandParameter="sea"
                      >海洋</RadioButton>
                 <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
                      GroupName="BGSelection"
                              Height="10"
+                             Command="{Binding ChangeBackCommand}" CommandParameter="mountain"
                      >山地</RadioButton>
             </StackPanel>
             <Border BorderBrush="Gray"

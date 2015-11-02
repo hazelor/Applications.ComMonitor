@@ -23,5 +23,18 @@ namespace Modules.ConfigDisplay
         public bool IsAvaibleApply { get; set; }
 
         protected IConfigService _configService;
+
+        protected void BaseApplyAvailableUpdate(bool s)
+        {
+            UpdateAviableApplyHandler(this, s);
+        }
+
+        protected void SetApplySign()
+        {
+
+
+            IsAvaibleApply = true;
+            BaseApplyAvailableUpdate(IsAvaibleApply);
+        }
     }
 }

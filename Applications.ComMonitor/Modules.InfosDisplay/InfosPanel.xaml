@@ -7,8 +7,83 @@
              xmlns:Map="clr-namespace:Hazelor.MapCtrl;assembly=Hazelor.MapCtrl"
              Loaded="OnLoadMap"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style TargetType="RadioButton" 
+               x:Key="SatelliteStyle"
+               >
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid>   
+                            <Image x:Name="signback" Source="./images/satellite.png"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                            </Trigger>
+                            
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="RadioButton" 
+               x:Key="NormalStyle"
+               >
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid>
+
+                            <Image x:Name="signback"  Source="./images/normal.png" />
+                            
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                            </Trigger>
+                            
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid>
-        <Map:MapCanvas x:Name="tileCanvas"/>
-        <Map:NavigationControls  Map="{Binding ElementName=tileCanvas}"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Map:MapCanvas x:Name="tileCanvas" Grid.Column="0"/>
+        <Map:NavigationControls  Map="{Binding ElementName=tileCanvas}" Grid.Column="0"/>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Width="80" Grid.Column="0">
+            <RadioButton Style="{StaticResource SatelliteStyle}" Height="80" Click="SatelliteClick"/>
+            <RadioButton Style="{StaticResource NormalStyle}" Height="80" Click="NormalClick"/>
+        </StackPanel>
+        
+        <!--数据信息显示-->
+        <Grid Grid.Column="1" Width="100">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.4*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <GroupBox Grid.Row="0">
+                <GroupBox.Header>
+                    <Label Foreground="White" FontSize="10">下位机信息</Label>
+                </GroupBox.Header>
+            </GroupBox>
+            <GroupBox Grid.Row="1">
+                <GroupBox.Header>
+                    <Label Foreground="White" FontSize="10">节点信息</Label>
+                </GroupBox.Header>
+            </GroupBox>
+        </Grid>
     </Grid>
 </UserControl>

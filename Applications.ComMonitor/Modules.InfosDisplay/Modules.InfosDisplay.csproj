@@ -98,12 +98,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="controller\INodeController.cs" />
+    <Compile Include="controller\NodeController.cs" />
     <Compile Include="InfosPanel.xaml.cs">
       <DependentUpon>InfosPanel.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InfosPanelViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -142,6 +145,13 @@
       <Project>{343c92ca-cb0e-4e90-a0be-44c876b6852d}</Project>
       <Name>Commons.Infrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\normal.png" />
+    <Resource Include="images\satellite.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\SignBack.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
