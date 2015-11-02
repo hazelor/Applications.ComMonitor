@@ -33,6 +33,13 @@ namespace Commons.Infrastructure.Models
 
         public double Altitude { get { return this._Altitude; } set { SetProperty(ref this._Altitude, value); } }
 
-        public int NodeType { get { return this._NodeType; } set { SetProperty(ref this._NodeType, value;} }
+        public int NodeType { get { return this._NodeType; } set { SetProperty(ref this._NodeType, value);} }
+
+        public bool IsUpdate { get; set; }
+
+        public override string ToString()
+        {
+            return MacAddr.Addr;
+        }
     }
 }

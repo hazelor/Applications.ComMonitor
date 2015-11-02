@@ -1,4 +1,5 @@
-﻿using Commons.Infrastructure.Interface;
+﻿using Commons.Infrastructure.Events;
+using Commons.Infrastructure.Interface;
 using Commons.Infrastructure.Models;
 using Hazelor.Infrastructure.Tools;
 using System;
@@ -36,6 +37,9 @@ namespace Services.ProtocolService
 
         private const int COLCOUNT = 19;
         private const int LATLONCOUNT = 4;
+
+        public event EventHandler<NodeChangeEventArg> NodeChangeEvent;
+        public event EventHandler<LineChangeEventArg> LineChangeEvent;
         [ImportingConstructor]
         public ProtocolService(IConfigService configService)
         {
@@ -137,7 +141,7 @@ namespace Services.ProtocolService
         }
 
         [Parser(ParseID = ConstIDs.O_TDMOM_TOP_INFO_RSP, Description = "接收拓扑信息")]
-        private void ParseROUTEINFORSP(byte[] srcBuffer)
+        private void ParseTOPINFORSP(byte[] srcBuffer)
         {
             int index = ParseMsgHeader(srcBuffer);
 
@@ -148,6 +152,8 @@ namespace Services.ProtocolService
             {
                 CommunicationNet.NodeNum = Endian.SwapUInt16(CommunicationNet.NodeNum);
             }
+            //set the update sign to false
+            BeginUpdateNode();
             //mac info for nodes
             for (int i = 0; i < CommunicationNet.NodeNum; i++)
             {
@@ -157,15 +163,18 @@ namespace Services.ProtocolService
                 CommNode cn = FindMac(ma);
                 if (cn == null)
                 {
-                    cn = new CommNode { MacAddr = ma, Index = i };
+                    cn = new CommNode { MacAddr = ma, Index = i, IsUpdate = true };
                     CommunicationNet.CommNodes.Add(cn);
+                    NodeChangeEvent(this, new NodeChangeEventArg { oper = Operations.ADD, Node = cn });
                 }
                 else
                 {
                     cn.Index = i;
                 }
+
+
                 index+=MacAddr.MACADDRLEN;
-                cn.Longitude = BitConverter.ToInt32(srcBuffer, index)/1E7;
+                cn.Longitude = BitConverter.ToInt32(srcBuffer, index)/ 1e7;
                 index += 4;
                 cn.Latitude = BitConverter.ToInt32(srcBuffer, index) / 1e7;
                 index += 4;
@@ -174,7 +183,8 @@ namespace Services.ProtocolService
                 cn.NodeType = srcBuffer[index++];
 
             }
-
+            
+            BeginUpdateLine();
             //modify the net
             byte[,] TopInfo = new byte[CommunicationNet.NodeNum, CommunicationNet.NodeNum];
             Buffer.BlockCopy(srcBuffer, index, TopInfo, 0, CommunicationNet.NodeNum * CommunicationNet.NodeNum);
@@ -188,6 +198,8 @@ namespace Services.ProtocolService
                         if (cl == null)
                         {
                             cl = new CommLine { StartNode = FindNode(i), EndNode = FindNode(j), CommStatuPre = (CommStatues)TopInfo[i, j], CommStatuBac = (CommStatues)TopInfo[j, i] };
+                            CommunicationNet.CommLines.Add(cl);
+                            LineChangeEvent(this, new LineChangeEventArg  { oper = Operations.ADD, Line = cl });
                         }
                         else
                         {
@@ -198,6 +210,8 @@ namespace Services.ProtocolService
                     
                 }
             }
+            ENdUpdateLine();
+            EndUpdateNode();
 
 
         }
@@ -229,10 +243,49 @@ namespace Services.ProtocolService
             {
                 if (item.MacAddr==ma)
                 {
+                    item.IsUpdate = true;
                     return item;
                 }
             }
             return res;
+        }
+        private void BeginUpdateNode()
+        {
+            foreach (var item in CommunicationNet.CommNodes)
+            {
+                item.IsUpdate = false;
+            }
+        }
+        private void EndUpdateNode()
+        {
+            for (int i = 0; i < CommunicationNet.CommNodes.Count; i++)
+            {
+                if (!CommunicationNet.CommNodes[i].IsUpdate)
+                {
+                    NodeChangeEvent(this, new NodeChangeEventArg { Node = CommunicationNet.CommNodes[i], oper = Operations.DEL });
+                    CommunicationNet.CommNodes[i] = null;
+                    CommunicationNet.CommNodes.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        private void BeginUpdateLine()
+        {
+            for (int i = 0; i < CommunicationNet.CommLines.Count;i++ )
+            {
+                if (CommunicationNet.CommLines[i].StartNode.IsUpdate == false || CommunicationNet.CommLines[i].EndNode.IsUpdate == false)
+                {
+                    LineChangeEvent(this, new LineChangeEventArg { Line = CommunicationNet.CommLines[i], oper = Operations.DEL });
+                    CommunicationNet.CommLines.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        private void ENdUpdateLine()
+        {
+            //do nothing
         }
         private CommNode FindNode(int index)
         {

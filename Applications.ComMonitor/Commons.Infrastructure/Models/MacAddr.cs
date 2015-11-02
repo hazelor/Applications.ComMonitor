@@ -44,5 +44,14 @@ namespace Commons.Infrastructure.Models
 
         }
 
+        public override bool Equals(object obj)
+        {
+            MacAddr ma = obj as MacAddr;
+            if (ma == null)
+	        {
+		        return false;
+	        }
+            return ma.Addr == this.Addr;
+        }
     }
 }

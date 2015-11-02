@@ -76,7 +76,7 @@ namespace Services.ConfigService
             }
             else
             {
-                _configInfos.FilePath = Properties.Resource.ConfigFilePath;
+                _configInfos = new ConfigInfo{ FilePath =  Properties.Resource.ConfigFilePath};
                 _configInfos = (ConfigInfo)_serializer.DeSerialize(Properties.Resource.ConfigFilePath, typeof(ConfigInfo));
             }
 

@@ -100,13 +100,50 @@
     </Page>
     <Compile Include="controller\INodeController.cs" />
     <Compile Include="controller\NodeController.cs" />
+    <Compile Include="Event\SelNodeEvent.cs" />
     <Compile Include="InfosPanel.xaml.cs">
       <DependentUpon>InfosPanel.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Lines\CLine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Nodes\Aerocraft.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Nodes\Boat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Nodes\NodeInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Nodes\Vehicle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InfosPanelViewModel.cs" />
+    <Compile Include="Lines\CLine.xaml.cs">
+      <DependentUpon>CLine.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Nodes\Aerocraft.xaml.cs">
+      <DependentUpon>Aerocraft.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Nodes\Boat.xaml.cs">
+      <DependentUpon>Boat.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Nodes\NodeBase.cs" />
+    <Compile Include="Nodes\NodeInfo.xaml.cs">
+      <DependentUpon>NodeInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Nodes\Vehicle.xaml.cs">
+      <DependentUpon>Vehicle.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -152,6 +189,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\SignBack.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\Airplane.png" />
+    <Resource Include="images\Boat.png" />
+    <Resource Include="images\Vehicle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

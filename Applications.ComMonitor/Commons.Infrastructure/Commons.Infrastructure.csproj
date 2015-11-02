@@ -80,6 +80,7 @@
     <Compile Include="ConfigItems.cs" />
     <Compile Include="Converters\VisibleConverter.cs" />
     <Compile Include="Events\ConfirmEvent.cs" />
+    <Compile Include="Events\NodeChangeEventArg.cs" />
     <Compile Include="Interactions\GenericAdapter.cs" />
     <Compile Include="Interactions\GenericInteractionAction.cs" />
     <Compile Include="Interactions\GenericInteractionDialogBase.cs" />

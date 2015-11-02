@@ -124,8 +124,9 @@ namespace Services.ProtocolService
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         struct IpPortCFCStruct
         {
-            public byte[] IpAddr = new byte[16];
+            public byte[] IpAddr;
             public UInt32 PortNum;
+
         }
 
 

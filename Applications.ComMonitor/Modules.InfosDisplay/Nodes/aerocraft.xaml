@@ -1,0 +1,12 @@
+﻿<Node:NodeBase x:Class="Modules.InfosDisplay.Nodes.Aerocraft"
+             xmlns:Node="clr-namespace:Modules.InfosDisplay.Nodes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             >
+    <Grid>
+        <Image Source="../images/Airplane.png" Width="30" Height="30"/>
+    </Grid>
+</Node:NodeBase>

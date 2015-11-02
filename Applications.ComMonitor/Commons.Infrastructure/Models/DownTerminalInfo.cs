@@ -20,5 +20,7 @@ namespace Commons.Infrastructure.Models
         public int Dist { get; set; }
 
         public int Weight { get; set; }
+
+
     }
 }

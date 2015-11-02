@@ -1,4 +1,7 @@
-﻿using Hazelor.MapCtrl;
+﻿using Commons.Infrastructure.Events;
+using Hazelor.MapCtrl;
+using Modules.InfosDisplay.Lines;
+using Modules.InfosDisplay.Nodes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -66,6 +69,58 @@ namespace Modules.InfosDisplay
             set
             {
                 this.DataContext = value;
+                ((InfosPanelViewModel)DataContext).NodeChangedEvent += OperationNode;
+                ((InfosPanelViewModel)DataContext).LineChangedEvent += OperationLine;
+
+            }
+        }
+
+        private void OperationNode(object sender, NodeChangeEventArg e)
+        {
+            if (e.oper == Operations.ADD)
+            {
+                FrameworkElement obj;
+                switch(e.Node.NodeType)
+                {
+                    case 0:
+                        {
+                            obj = new Aerocraft();
+                            break;
+                        }
+                    case 1:{
+                        obj = new Boat();
+                        break;
+                    }
+                    case 2:{
+                        obj = new Vehicle();
+                        break;
+                    }
+                    default:
+                        {
+                            obj = new Vehicle();
+                            break;
+                        }
+
+                }
+                this.tileCanvas.AddSingleObject(e.Node.ToString(), obj, e.Node);
+            }
+            else if (e.oper == Operations.DEL)
+            {
+                this.tileCanvas.DelSubObject(e.Node.ToString());
+            }
+        }
+
+        private void OperationLine(object sender, LineChangeEventArg e)
+        {
+            if (e.oper==Operations.ADD)
+            {
+                FrameworkElement obj = new CLine();
+                this.tileCanvas.AddLineObject(e.Line.ToString(), obj, e.Line);
+                
+            }
+            else if (e.oper == Operations.DEL)
+            {
+                this.tileCanvas.DelSubObject(e.Line.ToString());
             }
         }
     }

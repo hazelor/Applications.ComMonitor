@@ -34,6 +34,9 @@ namespace Commons.Infrastructure.Models
 
         public bool IsVisible { get { return (int)CommStatuPre + (int)CommStatuBac > 0; } }
 
-
+        public override string ToString()
+        {
+            return StartNode.ToString() + EndNode.ToString();
+        }
     }
 }
