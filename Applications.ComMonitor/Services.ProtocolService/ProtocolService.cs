@@ -1,6 +1,11 @@
-﻿using Commons.Infrastructure.Events;
+﻿using System.Runtime.InteropServices;
+using Commons.Infrastructure;
+using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Commons.Infrastructure.Models;
+using Hazelor.Infrastructure.Communications;
+using Hazelor.Infrastructure.Communications.Events;
+using Hazelor.Infrastructure.Communications.Interface;
 using Hazelor.Infrastructure.Tools;
 using System;
 using System.Collections.Generic;
@@ -24,15 +29,48 @@ namespace Services.ProtocolService
         private DownTerminalInfo _downTerminalInfo = new DownTerminalInfo();
         public DownTerminalInfo DTerminalInfo { get { return this._downTerminalInfo; } }
 
+        PreciseTimer _queryTimer = new PreciseTimer();
+
         private ushort MsgID;
         private ushort SrcID;
         private ushort DstID;
         private uint DataLen;
         private uint MsgLen;
-
+        #region Service
         private IConfigService _configService;
+        private IUdpClientService _udpClientService;
+        private ITcpListenerService _tcpListenerService;
+        private ITcpClientService _tcpClientService;
+
+        #endregion
+
+        #region Message Header Struct
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        struct MsgHeader
+        {
+            public ushort MsgID;
+            public ushort serv;
+            public ushort SrcID;
+            public ushort DstID;
+            public UInt32 puData;
+            public UInt32 DataLen;
+            public UInt32 MsgLen;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        struct IpPortCFCStruct
+        {
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 16)]
+            public byte[] IpAddr;
+            public UInt32 PortNum;
+
+        }
+        #endregion
 
         private bool IsLittle = BitConverter.IsLittleEndian;
+        private bool CanStartTimer = false;
+        private bool CanQueryRouteAndTopInfo = false;
+        private string ChannelServiceType = "";
 
 
         private const int COLCOUNT = 19;
@@ -44,10 +82,16 @@ namespace Services.ProtocolService
         public ProtocolService(IConfigService configService)
         {
             _configService = configService;
+            //_queryTimer.Elapsed = OnQueryTimmer;
             //初始化net
             _CommNet.NodeNum = 0;
             _CommNet.CommLines = new ObservableCollection<CommLine>();
             _CommNet.CommNodes = new ObservableCollection<CommNode>();
+            //获取基础数据收发服务的实例
+            _tcpClientService = new TcpClientService(_configService.ConfigInfos.TerminalPort);
+            _udpClientService = new UdpClientService(_configService.ConfigInfos.DownTerminalIP,
+                _configService.ConfigInfos.DownTerminalPort, _configService.ConfigInfos.TerminalPort);
+            _tcpListenerService = new TcpListenerService(_configService.ConfigInfos.TerminalPort);
             //获取该类下面对应的处理方法的反射，用以与ID对应并方便扩展调用，如需新的处理方法可定义一个method并辅以ParserAttribute
             var info  = typeof(ProtocolService);
             foreach(var item in info.GetMethods())
@@ -75,6 +119,270 @@ namespace Services.ProtocolService
                 
             }
 
+        }
+        /// <summary>
+        /// 开始定时数据发送
+        /// </summary>
+        public void StartChannel()
+        {
+            //设置定时器的时间间隔
+            _queryTimer.Interval = _configService.ConfigInfos.UpdateRate;
+            InitializeChannel();
+            if (CanStartTimer)
+            {
+                _queryTimer.Start();
+                
+            }
+        }
+        /// <summary>
+        /// 结束数据定时发送
+        /// </summary>
+        public void StopChannel()
+        {
+            _queryTimer.Stop();
+            ResetChannel();
+        }
+
+        /// <summary>
+        /// 通过TcpClient向下位机发送数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QueryByTcpClient(object sender, EventArgs e)
+        {
+            if (CanQueryRouteAndTopInfo)
+            {
+                _tcpClientService.SendData(QueryRouteInfo());
+                _tcpClientService.SendData(QueryTopInfo());
+            }
+            else
+            {
+                _tcpClientService.SendData(SendIpInfo());
+            }
+        }
+
+        /// <summary>
+        /// 通过TcpListener向下位机发送数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QueryByTcpListener(object sender, EventArgs e)
+        {
+            if (CanQueryRouteAndTopInfo)
+            {
+                _tcpListenerService.SendDataToALL(QueryRouteInfo());
+                _tcpListenerService.SendDataToALL(QueryTopInfo());
+            }
+            else
+            {
+                _tcpListenerService.SendDataToALL(SendIpInfo());
+            }
+        }
+
+        /// <summary>
+        /// 通过UdpClient向下位机发送数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QueryByUdpClient(object sender, EventArgs e)
+        {
+            if (CanQueryRouteAndTopInfo)
+            {
+                _udpClientService.SendData(QueryRouteInfo());
+                _udpClientService.SendData(QueryTopInfo());
+            }
+            else
+            {
+                _udpClientService.SendData(SendIpInfo());
+            }
+        }
+
+        //private void OnQueryTimmer(object sender, EventArgs e)
+        //{
+        //    //_queryTimmer.Stop();
+        //    //send some package for querying
+        //    QueryRouteInfo();
+        //    QueryRouteInfo();
+        //    //_queryTimmer.Start();
+        //}
+
+        /// <summary>
+        /// 初始化基础数据收发服务
+        /// </summary>
+        private void InitializeChannel()
+        {
+            if (_configService.ConfigInfos.CommProtocol == ConfigItems.TCP)
+            {
+                if (_configService.ConfigInfos.CommType == ConfigItems.CLINET)
+                {
+                    ChannelServiceType = "TcpClient";
+                    _tcpClientService.InitializeConfiguration(_configService.ConfigInfos.TerminalPort);
+                    _tcpClientService.Register(OnTcpDiagramReceived);
+                    _queryTimer.Elapsed+= QueryByTcpClient;
+                    CanStartTimer = _tcpClientService.Connect(_configService.ConfigInfos.DownTerminalIP, _configService.ConfigInfos.DownTerminalPort);
+                }
+                if (_configService.ConfigInfos.CommType == ConfigItems.SERVER)
+                {
+                    ChannelServiceType = "TcpListener";
+                    _tcpListenerService.InitializeConfiguration(_configService.ConfigInfos.TerminalPort);
+                    _tcpListenerService.Register(OnTcpDiagramReceived);
+                    _queryTimer.Elapsed+= QueryByTcpListener;
+                    _tcpListenerService.StartService();
+                    CanStartTimer = true;
+                }
+            }
+            if (_configService.ConfigInfos.CommProtocol == ConfigItems.UDP)
+            {
+                if (_configService.ConfigInfos.CommType == ConfigItems.CLINET)
+                {
+                    ChannelServiceType = "UdpClient";
+                    _udpClientService.InitializeConfiguration(_configService.ConfigInfos.DownTerminalIP,
+                _configService.ConfigInfos.DownTerminalPort, _configService.ConfigInfos.TerminalPort);
+                    _udpClientService.Register(OnUdpDiagramReceived);
+                    _queryTimer.Elapsed += QueryByUdpClient;
+                    _udpClientService.StartService();
+                    CanStartTimer = true;
+                }
+                if (_configService.ConfigInfos.CommType == ConfigItems.SERVER)
+                {
+                }
+            }
+        }
+
+        /// <summary>
+        /// 重置基础数据收发服务
+        /// </summary>
+        private void ResetChannel()
+        {
+            if (ChannelServiceType == "TcpClient")
+            {
+                CanStartTimer = false;
+                CanQueryRouteAndTopInfo = false;
+                _tcpClientService.Unregister(OnTcpDiagramReceived);
+                _tcpClientService.Disconnect();
+                return;
+            }
+            if (ChannelServiceType == "UdpClient")
+            {
+                CanStartTimer = false;
+                CanQueryRouteAndTopInfo = false;
+                _udpClientService.Unregister(OnUdpDiagramReceived);
+                _udpClientService.StopService();
+                return;
+            }
+            if (ChannelServiceType == "TcpListener")
+            {
+                CanStartTimer = false;
+                CanQueryRouteAndTopInfo = false;
+                _tcpListenerService.Unregister(OnTcpDiagramReceived);
+                _tcpListenerService.StopService();
+                return;
+            }
+            if (ChannelServiceType == "UdpListener")
+            {
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Tcp类型下接收到报文之后的处理函数
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">e中包含收到的数据通过e.datagram来获取数据类型为byte[]的报文</param>
+        private void OnTcpDiagramReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
+        {
+            byte[] srcBuffer = e.datagram;
+            //string str = System.Text.Encoding.Default.GetString(content);
+            ParserDatas(srcBuffer);
+            //Encoding encoding = Encoding.UTF8;
+            //string contentstring = encoding.GetString(content, 0, content.Length);
+            //this.receivetext = str;
+            //byte[] sendbackdata = new byte[] { 0xeb, 0x90 };
+        }
+
+        /// <summary>
+        /// Udp类型下接收到报文之后的处理函数
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">e中包含收到的数据通过e.Content来获取数据类型为byte[]的报文</param>
+        private void OnUdpDiagramReceived(object sender, DataReceivedEventArgs e)
+        {
+            byte[] srcBuffer = e.Content;
+            //string str = System.Text.Encoding.Default.GetString(content);
+            ParserDatas(srcBuffer);
+            //Encoding encoding = Encoding.UTF8;
+            //string contentstring = encoding.GetString(content, 0, content.Length);
+            //this.receivetext = str;
+            //byte[] sendbackdata = new byte[] { 0xeb, 0x90 };
+        }
+
+        /// <summary>
+        /// 发送IP信息
+        /// </summary>
+        private byte[] SendIpInfo()
+        {
+            MsgHeader mh = new MsgHeader();
+            //参数赋值
+            mh.MsgID = ConstIDs.O_TDMOM_IP_PORT_CFG;
+
+            mh.puData = 0;
+            mh.DataLen = 0;
+            mh.MsgLen = (uint)Marshal.SizeOf(mh);
+
+            byte[] res_mh = StructConverter.StructToBytes(mh);
+
+            IpPortCFCStruct ips = new IpPortCFCStruct();
+            byte[] strbytes = System.Text.Encoding.Unicode.GetBytes(_configService.ConfigInfos.TermialIP);
+            Buffer.BlockCopy(strbytes, 0, ips.IpAddr, 0, ips.IpAddr.Length > strbytes.Length ? strbytes.Length : ips.IpAddr.Length);
+            ips.PortNum = (uint)_configService.ConfigInfos.TerminalPort;
+            byte[] res_IpPort = StructConverter.StructToBytes(ips);
+
+            //合并两个byte[]
+            byte[] sendBytes = new byte[res_mh.Length + res_IpPort.Length];
+            System.Buffer.BlockCopy(res_mh, 0, sendBytes, 0, res_mh.Length);
+            System.Buffer.BlockCopy(res_IpPort, 0, sendBytes, res_mh.Length, res_IpPort.Length);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(sendBytes);
+
+            return sendBytes;
+            //发送
+
+        }
+
+        /// <summary>
+        /// 查询路由信息
+        /// </summary>
+        private byte[] QueryRouteInfo()
+        {
+            MsgHeader mh = new MsgHeader();
+            //参数赋值
+            mh.MsgID = ConstIDs.O_TDMOM_ROUTE_INFO_REQ;
+
+            mh.puData = 0;
+            mh.DataLen = 0;
+            mh.MsgLen = (uint)Marshal.SizeOf(mh);
+
+            byte[] res_mh = StructConverter.StructToBytes(mh);
+            return res_mh;
+            //发送
+
+        }
+
+        /// <summary>
+        /// 查询拓扑信息
+        /// </summary>
+        public byte[] QueryTopInfo()
+        {
+            MsgHeader mh = new MsgHeader();
+            //参数赋值
+            mh.MsgID = ConstIDs.O_TDMOM_TOP_INFO_REQ;
+
+            mh.puData = 0;
+            mh.DataLen = 0;
+            mh.MsgLen = (uint)Marshal.SizeOf(mh);
+
+            byte[] res_mh = StructConverter.StructToBytes(mh);
+            return res_mh;
         }
 
         /// <summary>

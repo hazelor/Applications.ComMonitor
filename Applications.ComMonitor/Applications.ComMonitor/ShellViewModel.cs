@@ -72,12 +72,15 @@ namespace Applications.ComMonitor
         #endregion
         private IEventAggregator _eventAggregator;
         private IConfigService _configService;
+        private IProtocolService _protocolService;
         private AdminInfo _adminInfo;
         [ImportingConstructor]
-        public ShellViewModel(IEventAggregator eventAggregator, IConfigService configService)
+        public ShellViewModel(IEventAggregator eventAggregator, IConfigService configService, IProtocolService protocolService)
         {
             _eventAggregator = eventAggregator;
             _configService = configService;
+            _protocolService = protocolService;
+            _protocolService.StartChannel();
             _adminInfo = _configService.AdminInfos;
             ConfigDisplayCommand = new DelegateCommand(ConfigDisplayExecuted);
             AdminLoginRequest = new GenericInteractionRequest<AdminLoginNotification>();
