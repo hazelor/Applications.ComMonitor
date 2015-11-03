@@ -77,8 +77,11 @@
     <Compile Include="Behaviors\AutoPopulateExportedViewsBehavior.cs" />
     <Compile Include="Behaviors\IViewRegionRegistration.cs" />
     <Compile Include="Behaviors\ViewExportAttribute.cs" />
+    <Compile Include="Command\ConfCommands.cs" />
     <Compile Include="ConfigItems.cs" />
+    <Compile Include="Converters\LatLonConverter.cs" />
     <Compile Include="Converters\VisibleConverter.cs" />
+    <Compile Include="Events\ConfigUpdateEvent.cs" />
     <Compile Include="Events\ConfirmEvent.cs" />
     <Compile Include="Events\NodeChangeEventArg.cs" />
     <Compile Include="Interactions\GenericAdapter.cs" />

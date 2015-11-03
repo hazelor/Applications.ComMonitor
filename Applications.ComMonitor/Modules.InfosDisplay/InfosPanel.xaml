@@ -9,6 +9,32 @@
              Loaded="OnLoadMap"
              mc:Ignorable="d">
     <UserControl.Resources>
+        <Style TargetType="{x:Type Label}" x:Key="MLabel2Style">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Label}">
+                        <Grid Height="30">
+                            <Image Source="./images/LabelBackGround2.png"/>
+                            <TextBlock Text="{TemplateBinding Content}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--TextBox Style-->
+        <Style TargetType="{x:Type TextBlock}" x:Key="MTextBox2Style">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource=".\images\TextBoxBackGround2.png"  Stretch="UniformToFill"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
         <Style TargetType="RadioButton" 
                x:Key="SatelliteStyle"
                >
@@ -72,7 +98,7 @@
         <!--数据信息显示-->
         <Grid Grid.Column="1" Width="200">
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.4*"/>
+                <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <GroupBox Grid.Row="0">
@@ -90,11 +116,17 @@
                             <ColumnDefinition Width="0.5*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0">路由跳数</Label>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding TerminalInfo.Dist}"/>
-                        <Label Grid.Row="1" Grid.Column="0">Weight</Label>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TerminalInfo.Weight}"/>
-                        <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource MLabel2Style}">路由跳数</Label>
+                        <TextBlock Grid.Row="0" Grid.Column="1" 
+                                   Text="{Binding TerminalInfo.Dist}"
+                                   Style="{StaticResource MTextBox2Style}"/>
+                        <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource MLabel2Style}">Weight</Label>
+                        <TextBlock Grid.Row="1" Grid.Column="1" 
+                                   Text="{Binding TerminalInfo.Weight}"
+                                   Style="{StaticResource MTextBox2Style}"/>
+                        <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                      Margin="5">
                             <ListBox ItemsSource="{Binding TerminalInfo.RouteInfo}"
                                      Height="200"
                                      ScrollViewer.VerticalScrollBarVisibility="Auto">

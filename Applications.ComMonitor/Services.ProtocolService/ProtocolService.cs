@@ -14,6 +14,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Microsoft.Practices.Prism.PubSubEvents;
 
 namespace Services.ProtocolService
 {
@@ -41,6 +42,7 @@ namespace Services.ProtocolService
         private IUdpClientService _udpClientService;
         private ITcpListenerService _tcpListenerService;
         private ITcpClientService _tcpClientService;
+        private IEventAggregator _eventAggregator;
 
         #endregion
 
@@ -79,8 +81,9 @@ namespace Services.ProtocolService
         public event EventHandler<NodeChangeEventArg> NodeChangeEvent;
         public event EventHandler<LineChangeEventArg> LineChangeEvent;
         [ImportingConstructor]
-        public ProtocolService(IConfigService configService)
+        public ProtocolService(IConfigService configService, IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             _configService = configService;
             //_queryTimer.Elapsed = OnQueryTimmer;
             //初始化net
@@ -114,11 +117,20 @@ namespace Services.ProtocolService
                         ParserDict.Add(ma.ParseID, item);
                     }
                     
-                }
-                
+                } 
                 
             }
 
+            //register event
+            _eventAggregator.GetEvent<ConfigUpdateEvent>().Subscribe(OnConfigUpdated);
+
+        }
+        private void OnConfigUpdated(bool sign)
+        {
+            StopChannel();
+            //SLEEP FOR DISCONNECT
+            //System.Threading.Thread.Sleep(30000);
+            StartChannel();
         }
         /// <summary>
         /// 开始定时数据发送
@@ -213,7 +225,7 @@ namespace Services.ProtocolService
         {
             if (_configService.ConfigInfos.CommProtocol == ConfigItems.TCP)
             {
-                if (_configService.ConfigInfos.CommType == ConfigItems.CLINET)
+                if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
                 {
                     ChannelServiceType = "TcpClient";
                     _tcpClientService.InitializeConfiguration(_configService.ConfigInfos.TerminalPort);
@@ -233,7 +245,7 @@ namespace Services.ProtocolService
             }
             if (_configService.ConfigInfos.CommProtocol == ConfigItems.UDP)
             {
-                if (_configService.ConfigInfos.CommType == ConfigItems.CLINET)
+                if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
                 {
                     ChannelServiceType = "UdpClient";
                     _udpClientService.InitializeConfiguration(_configService.ConfigInfos.DownTerminalIP,
@@ -324,7 +336,8 @@ namespace Services.ProtocolService
             MsgHeader mh = new MsgHeader();
             //参数赋值
             mh.MsgID = ConstIDs.O_TDMOM_IP_PORT_CFG;
-
+            mh.SrcID = ConstIDs.SRC_ID;
+            mh.DstID = ConstIDs.DST_ID;
             mh.puData = 0;
             mh.DataLen = 0;
             mh.MsgLen = (uint)Marshal.SizeOf(mh);
@@ -332,7 +345,8 @@ namespace Services.ProtocolService
             byte[] res_mh = StructConverter.StructToBytes(mh);
 
             IpPortCFCStruct ips = new IpPortCFCStruct();
-            byte[] strbytes = System.Text.Encoding.Unicode.GetBytes(_configService.ConfigInfos.TermialIP);
+            ips.IpAddr = new byte[16];
+            byte[] strbytes = System.Text.Encoding.ASCII.GetBytes(_configService.ConfigInfos.TermialIP);
             Buffer.BlockCopy(strbytes, 0, ips.IpAddr, 0, ips.IpAddr.Length > strbytes.Length ? strbytes.Length : ips.IpAddr.Length);
             ips.PortNum = (uint)_configService.ConfigInfos.TerminalPort;
             byte[] res_IpPort = StructConverter.StructToBytes(ips);
@@ -341,8 +355,8 @@ namespace Services.ProtocolService
             byte[] sendBytes = new byte[res_mh.Length + res_IpPort.Length];
             System.Buffer.BlockCopy(res_mh, 0, sendBytes, 0, res_mh.Length);
             System.Buffer.BlockCopy(res_IpPort, 0, sendBytes, res_mh.Length, res_IpPort.Length);
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(sendBytes);
+            //if (BitConverter.IsLittleEndian)
+            //    Array.Reverse(sendBytes);
 
             return sendBytes;
             //发送
@@ -357,7 +371,8 @@ namespace Services.ProtocolService
             MsgHeader mh = new MsgHeader();
             //参数赋值
             mh.MsgID = ConstIDs.O_TDMOM_ROUTE_INFO_REQ;
-
+            mh.SrcID = ConstIDs.SRC_ID;
+            mh.DstID = ConstIDs.DST_ID;
             mh.puData = 0;
             mh.DataLen = 0;
             mh.MsgLen = (uint)Marshal.SizeOf(mh);
@@ -376,7 +391,8 @@ namespace Services.ProtocolService
             MsgHeader mh = new MsgHeader();
             //参数赋值
             mh.MsgID = ConstIDs.O_TDMOM_TOP_INFO_REQ;
-
+            mh.SrcID = ConstIDs.SRC_ID;
+            mh.DstID = ConstIDs.DST_ID;
             mh.puData = 0;
             mh.DataLen = 0;
             mh.MsgLen = (uint)Marshal.SizeOf(mh);
@@ -423,6 +439,7 @@ namespace Services.ProtocolService
         private void ParseIPPORTCNF(byte[] srcBuffer)
         {
             //通知界面下位机准备好，可以开始发送数据
+            CanQueryRouteAndTopInfo = true;
         }
 
         [Parser(ParseID = ConstIDs.O_TDMOM_ROUTE_INFO_RSP, Description = "接收路由信息")]

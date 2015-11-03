@@ -1,8 +1,10 @@
 ﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Command;
+using Commons.Infrastructure.Events;
 using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.ServiceLocation;
-using Modules.ConfigDisplay.Command;
 using Modules.ConfigDisplay.Interface;
 using System;
 using System.Collections.Generic;
@@ -19,12 +21,16 @@ namespace Modules.ConfigDisplay.Controller
     {
         private IRegionManager _regionManager;
         private readonly ConfCommandProxy _commandProxy;
-
+        private IEventAggregator _eventAggregator;
         [ImportingConstructor]
-        public ConfController(IRegionManager regionManager, ConfCommandProxy commandProxy)
+        public ConfController(IRegionManager regionManager,
+            ConfCommandProxy commandProxy,
+            IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             _regionManager = regionManager;
             _commandProxy = commandProxy;
+            UpdateConfigCommand = new DelegateCommand(UpdateConfigExecuted);
            
         }
 
@@ -39,6 +45,12 @@ namespace Modules.ConfigDisplay.Controller
             {
                 _IsAviableApply = value;
             }
+        }
+
+        private DelegateCommand UpdateConfigCommand { get; set; }
+        private void UpdateConfigExecuted()
+        {
+            _eventAggregator.GetEvent<ConfigUpdateEvent>().Publish(true);
         }
 
         public event EventHandler<EventArgs> IsAvailableApplyHandler;
@@ -69,6 +81,11 @@ namespace Modules.ConfigDisplay.Controller
 
             IsAvailableApplyHandler(this,null);
             
+        }
+
+        public void AddNotificationCommand()
+        {
+            _commandProxy.ApplyConfCommand.RegisterCommand(this.UpdateConfigCommand);
         }
     }
 }

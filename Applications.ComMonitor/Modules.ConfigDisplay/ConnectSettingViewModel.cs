@@ -49,7 +49,7 @@ namespace Modules.ConfigDisplay
 
             if (_IsClient)
             {
-                _configService.ConfigInfos.CommType = ConfigItems.CLINET;
+                _configService.ConfigInfos.CommType = ConfigItems.CLIENT;
             }
             else
             {
@@ -58,6 +58,9 @@ namespace Modules.ConfigDisplay
 
             _configService.ConfigInfos.DownTerminalIP = this.DownTerminalIP;
             _configService.ConfigInfos.TermialIP = this.TerminalIP;
+
+            _configService.ConfigInfos.DownTerminalPort = this.DownTerminalPort;
+            _configService.ConfigInfos.TerminalPort = this.TerminalPort;
 
             _configService.SaveConfigCommand.Execute(null);
 
@@ -71,10 +74,13 @@ namespace Modules.ConfigDisplay
         {
             _DownTerminalIP = _configService.ConfigInfos.DownTerminalIP;
             _TerminalIP = _configService.ConfigInfos.TermialIP;
+            _DownTerminalPort = _configService.ConfigInfos.DownTerminalPort;
+            _TerminalPort = _configService.ConfigInfos.TerminalPort;
+
             _IsBig = _configService.ConfigInfos.CPUType == ConfigItems.BIG;
             _IsLittle = !_IsBig;
 
-            _IsClient = _configService.ConfigInfos.CommType == ConfigItems.CLINET;
+            _IsClient = _configService.ConfigInfos.CommType == ConfigItems.CLIENT;
             _IsServer = !_IsClient;
 
             _IsUdp = _configService.ConfigInfos.CommProtocol == ConfigItems.UDP;
@@ -181,6 +187,19 @@ namespace Modules.ConfigDisplay
                 SetApplySign();
             }
         }
+        private int _DownTerminalPort;
+        public int DownTerminalPort
+        {
+            get
+            {
+                return this._DownTerminalPort;
+            }
+            set
+            {
+                SetProperty(ref _DownTerminalPort, value);
+                SetApplySign();
+            }
+        }
 
         private string _TerminalIP;
         public string TerminalIP
@@ -192,6 +211,20 @@ namespace Modules.ConfigDisplay
             set
             {
                 SetProperty(ref _TerminalIP, value);
+                SetApplySign();
+            }
+        }
+
+        private int _TerminalPort;
+        public int TerminalPort
+        {
+            get
+            {
+                return this._TerminalPort;
+            }
+            set
+            {
+                SetProperty(ref _TerminalPort, value);
                 SetApplySign();
             }
         }

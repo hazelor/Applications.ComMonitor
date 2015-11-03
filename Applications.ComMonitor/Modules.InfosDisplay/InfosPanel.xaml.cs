@@ -1,10 +1,13 @@
 ﻿using Commons.Infrastructure.Events;
+using Commons.Infrastructure.Interface;
 using Hazelor.MapCtrl;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Modules.InfosDisplay.Lines;
 using Modules.InfosDisplay.Nodes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -25,13 +28,20 @@ namespace Modules.InfosDisplay
     /// </summary>
     public partial class InfosPanel : UserControl
     {
-        public InfosPanel()
+        private IEventAggregator _eventAggregator;
+        private IConfigService _configService;
+        [ImportingConstructor]
+        public InfosPanel(IEventAggregator eventAggregator, IConfigService configService)
         {
+            _eventAggregator = eventAggregator;
+            _configService = configService;
             TileGenerator.CacheFolder = "Maps.db";
             TileGenerator.IsDBCaches = true;
             TileGenerator.DownloadCountChanged += this.OnDownloadCountChanged;
             TileGenerator.DownloadError += this.OnDownloadError;
             InitializeComponent();
+
+            _eventAggregator.GetEvent<ConfigUpdateEvent>().Subscribe(OnConfigUpdated);
         }
 
 
@@ -73,6 +83,28 @@ namespace Modules.InfosDisplay
                 ((InfosPanelViewModel)DataContext).LineChangedEvent += OperationLine;
 
             }
+        }
+        
+
+        private void OnConfigUpdated(bool sign)
+        {
+            if (System.IO.File.Exists(_configService.ConfigInfos.MapBackFilePath))
+            {
+                FileStream file = File.OpenRead(_configService.ConfigInfos.MapBackFilePath);
+
+                var bitmap = new BitmapImage();
+
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = file;
+                bitmap.EndInit();
+
+                bitmap.Freeze(); // Very important - lets us download in one thread and pass it back to the UI
+
+                TileGenerator.IBackGround = bitmap;
+                this.tileCanvas.SetBackGround();
+            }
+
         }
 
         private void OperationNode(object sender, NodeChangeEventArg e)

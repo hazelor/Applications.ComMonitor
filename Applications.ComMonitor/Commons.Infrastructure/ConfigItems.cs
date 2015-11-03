@@ -19,7 +19,7 @@ namespace Commons.Infrastructure
         public const string MOUNTAIN_BACK = @"mountain.png";
 
         public const string SERVER = "SERVER";
-        public const string CLINET = "CLINET";
+        public const string CLIENT = "CLIENT";
 
     }
 }

@@ -15,5 +15,7 @@ namespace Modules.ConfigDisplay.Controller
         bool IsAviableApply { get; set; }
 
         event EventHandler<EventArgs> IsAvailableApplyHandler;
+
+        void AddNotificationCommand();
     }
 }

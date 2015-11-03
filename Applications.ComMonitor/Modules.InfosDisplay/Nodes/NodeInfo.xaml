@@ -3,8 +3,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converter="clr-namespace:Commons.Infrastructure.Converters;assembly=Commons.Infrastructure"
              mc:Ignorable="d" 
              >
+    <UserControl.Resources>
+        <converter:LatLonConverter x:Key="LatLonConverter"/>
+        <converter:AltConverter x:Key="AltConverter"/>
+        <!--Label Style-->
+        <Style TargetType="{x:Type Label}" x:Key="MLabel2Style">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Label}">
+                        <Grid Height="30">
+                            <Image Source="../images/LabelBackGround2.png"/>
+                            <TextBlock Text="{TemplateBinding Content}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--TextBox Style-->
+        <Style TargetType="{x:Type TextBlock}" x:Key="MTextBox2Style">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <ImageBrush ImageSource="..\images\TextBoxBackGround2.png"  Stretch="UniformToFill"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -16,17 +48,24 @@
             <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <Label Grid.Column="0" Grid.Row="0">纬度</Label>
-        <TextBlock Grid.Column="1" Grid.Row="0" MinWidth="100" Text="{Binding Latitude}"/>
+        <Label Grid.Column="0" Grid.Row="0" Style="{StaticResource MLabel2Style}">纬度</Label>
+        <TextBlock Grid.Column="1" Grid.Row="0" MinWidth="150"
+                   Text="{Binding Latitude, Converter={StaticResource LatLonConverter}}"
+                   Style="{StaticResource MTextBox2Style}"/>
 
-        <Label Grid.Column="0" Grid.Row="1">经度</Label>
-        <TextBlock Grid.Column="1" Grid.Row="1" MinWidth="100" Text="{Binding Longitude}"/>
+        <Label Grid.Column="0" Grid.Row="1" Style="{StaticResource MLabel2Style}" >经度</Label>
+        <TextBlock Grid.Column="1" Grid.Row="1" MinWidth="150"
+                   Text="{Binding Longitude,Converter={StaticResource LatLonConverter}}"
+                   Style="{StaticResource MTextBox2Style}"/>
 
-        <Label Grid.Column="0" Grid.Row="2">高度</Label>
-        <TextBlock Grid.Column="1" Grid.Row="2" MinWidth="100" Text="{Binding Altitude}"/>
+        <Label Grid.Column="0" Grid.Row="2" Style="{StaticResource MLabel2Style}">高度</Label>
+        <TextBlock Grid.Column="1" Grid.Row="2" MinWidth="150" 
+                   Text="{Binding Altitude,Converter={StaticResource AltConverter}}"
+                   Style="{StaticResource MTextBox2Style}"/>
 
-        <Label Grid.Column="0" Grid.Row="3">类型</Label>
-        <TextBlock Grid.Column="1" Grid.Row="3" MinWidth="100" Text="{Binding NodeType}"/>
+        <Label Grid.Column="0" Grid.Row="3" Style="{StaticResource MLabel2Style}">类型</Label>
+        <TextBlock Grid.Column="1" Grid.Row="3" MinWidth="150" Text="{Binding NodeType}"
+                   Style="{StaticResource MTextBox2Style}"/>
 
     </Grid>
 </UserControl>

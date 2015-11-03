@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Modules.ConfigDisplay.Command
+namespace Commons.Infrastructure.Command
 {
     public static class ConfCommands
     {

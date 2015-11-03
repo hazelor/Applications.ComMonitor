@@ -1,10 +1,10 @@
-﻿using Commons.Infrastructure.Events;
+﻿using Commons.Infrastructure.Command;
+using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.ServiceLocation;
-using Modules.ConfigDisplay.Command;
 using Modules.ConfigDisplay.Controller;
 using Modules.ConfigDisplay.Interface;
 using System;
@@ -21,22 +21,7 @@ namespace Modules.ConfigDisplay
     {
 
         #region Command
-        public DelegateCommand ComfirmCommand { get; set; }
-        public DelegateCommand CancelCommand { get; set; }
-
-        private void ConfirmExecuted()
-        {
-            //保存config
-            ConfCommands.ApplyConfCommand.Execute(null);
-            _eventAggregator.GetEvent<ConfirmEvent>().Publish(true);
-
-        }
-
-        private void CancelExecuted()
-        {
-            //并不保存
-            _eventAggregator.GetEvent<ConfirmEvent>().Publish(false);
-        }
+        
 
         
         #endregion
@@ -65,8 +50,6 @@ namespace Modules.ConfigDisplay
             _configService = configService;
             _confController = confController;
             _eventAggregator = eventAggregator;
-            ComfirmCommand = new DelegateCommand(ConfirmExecuted);
-            CancelCommand = new DelegateCommand(CancelExecuted);
 
             _confController.IsAvailableApplyHandler += OnIsAvailableApplyChanged;
            
@@ -84,6 +67,8 @@ namespace Modules.ConfigDisplay
             vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MapSetting);
             _confController.AddSubConfPanel(vm);
 
+            //添加通知操作
+            _confController.AddNotificationCommand();
             //读取config从文件
         }
         private void OnIsAvailableApplyChanged(object sender, EventArgs e)

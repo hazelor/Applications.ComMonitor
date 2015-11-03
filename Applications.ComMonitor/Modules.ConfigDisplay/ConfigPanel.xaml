@@ -5,8 +5,8 @@
              xmlns:inf="clr-namespace:Commons.Infrastructure;assembly=Commons.Infrastructure"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:commands="clr-namespace:Modules.ConfigDisplay.Command"
-             mc:Ignorable="d" Height="500"
+             
+             mc:Ignorable="d" Height="400"
              Loaded="OnLoaded">
     <Grid x:Name="Layout">
         <Grid.ColumnDefinitions>
@@ -62,15 +62,6 @@
                             Width="300"
                                 />
             
-            <StackPanel Grid.Row="1" Orientation="Horizontal"
-                            VerticalAlignment="Center" 
-                            HorizontalAlignment="Right"
-                            Margin="0,0,20,5">
-
-                <Button Style="{StaticResource MButtonStyle}" Command="{Binding ComfirmCommand}" Height="30">确定</Button>
-                <Button Style="{StaticResource MButtonStyle}" Command="{Binding CancelCommand}" Height="30">取消</Button>
-                <Button Style="{StaticResource MButtonStyle}" IsEnabled="{Binding IsAvailableApply}" Command="{Binding commands:ConfCommands.ApplyConfCommand}"  Height="30">应用</Button>
-            </StackPanel>
         </Grid>
 
     </Grid>

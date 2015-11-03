@@ -1,5 +1,6 @@
 ﻿using Applications.ComMonitor.Interactions;
 using Applications.ComMonitor.Notification;
+using Commons.Infrastructure.Command;
 using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interactions;
 using Hazelor.Infrastructure.Tools;
@@ -56,9 +57,11 @@ namespace Applications.ComMonitor
         public override void Ok()
         {
             ConfigNotification an = this.ViewModel.GetEntity();
+            ConfCommands.ApplyConfCommand.Execute(null);
 
         }
 
+        
         private void OnConfirmedUpdate(bool isConfirmed)
         {
             if (isConfirmed)

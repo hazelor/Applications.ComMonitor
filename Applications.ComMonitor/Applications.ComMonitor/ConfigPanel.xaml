@@ -8,11 +8,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:Inf="clr-namespace:Commons.Infrastructure;assembly=Commons.Infrastructure"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:commands="clr-namespace:Commons.Infrastructure.Command"
              mc:Ignorable="d" 
              d:DesignHeight="1080" d:DesignWidth="1920">
 
     <Grid x:Name="Layout" Background="#A9CECECE">
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="600" MaxWidth="800" MinHeight="600" MinWidth="800">
+        
+        <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="600" MaxWidth="800" MinHeight="600" MinWidth="800">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
             <Grid.Background>
                 <ImageBrush ImageSource=".\theme\images\ConfigBox.png"  Stretch="UniformToFill"/>
             </Grid.Background>
@@ -21,6 +27,28 @@
                     RenderTransformOrigin="0.5,0.5"
                         Margin="10"
                     />
+            <StackPanel Grid.Row="1" Orientation="Horizontal"
+                            VerticalAlignment="Bottom" 
+                            HorizontalAlignment="Right"
+                            Margin="0,0,50,30">
+
+                <Button Style="{StaticResource MButtonStyle}"  Height="30" Content="确定">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <ei:CallMethodAction TargetObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=interactions:ConfigInterationDialog, AncestorLevel=1}}" MethodName="Ok"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button Style="{StaticResource MButtonStyle}"  Height="30" Content="取消">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <ei:CallMethodAction TargetObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=interactions:ConfigInterationDialog, AncestorLevel=1}}" MethodName="Cancel"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button Style="{StaticResource MButtonStyle}" IsEnabled="{Binding IsAvailableApply}" Command="{Binding commands:ConfCommands.ApplyConfCommand}"  Height="30">应用</Button>
+            </StackPanel>
         </Grid>
+        
     </Grid>
 </interactions:ConfigInterationDialog>

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -45,18 +45,38 @@
                Height="30"
                HorizontalAlignment="Right">CPU大小端</Label>
 
-        <TextBox Style="{StaticResource MTextBoxStyle}"
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal"
+                     VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+            <TextBox Style="{StaticResource MTextBoxStyle}"
                  Grid.Row="0" Grid.Column="1"
-                 VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
                  Margin="5"
                  Text="{Binding DownTerminalIP}"
                  />
-        <TextBox Style="{StaticResource MTextBoxStyle}"
-                 Grid.Row="1" Grid.Column="1"
+            <TextBox Style="{StaticResource MTextBoxStyle}"
+                 Grid.Row="0" Grid.Column="1"
                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
                  Margin="5"
-                 Text="{Binding TerminalIP}"/>
+                 Text="{Binding DownTerminalPort}"
+                 />
+        </StackPanel>
+       
         
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"
+                     VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+            <TextBox Style="{StaticResource MTextBoxStyle}"
+                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 Margin="5"
+                 Text="{Binding TerminalIP}"
+                 />
+            <TextBox Style="{StaticResource MTextBoxStyle}"
+                 VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 Margin="5"
+                 Text="{Binding TerminalPort}"
+                 />
+        </StackPanel>
         <Grid x:Name="ProtocolTypeGroup"
                     Grid.Row="2" Grid.Column="1"
                     VerticalAlignment="Center"
@@ -111,12 +131,12 @@
                          GroupName="CPUType"
                          Style="{StaticResource MRadioButtonGroupStyle}"
                          FontSize="12"
-                         Height="10" IsChecked="{Binding IsBigType}">大端</RadioButton>
+                         Height="10" IsChecked="{Binding IsBig}">大端</RadioButton>
             <RadioButton Grid.Column="1"
                          GroupName="CPUType" 
                          Style="{StaticResource MRadioButtonGroupStyle}"
                          FontSize="12"
-                         Height="10" IsChecked="{Binding IsLittleType}">小端</RadioButton>
+                         Height="10" IsChecked="{Binding IsLittle}">小端</RadioButton>
         </Grid>
         <Button Style="{StaticResource MButtonStyle}"
                 Grid.Row="5"

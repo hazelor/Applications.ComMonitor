@@ -78,14 +78,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SubConfViewModelBase.cs" />
-    <Compile Include="test.xaml.cs">
-      <DependentUpon>test.xaml</DependentUpon>
-    </Compile>
     <Page Include="ConfigPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Command\ConfCommands.cs" />
     <Compile Include="ConfigPanel.xaml.cs">
       <DependentUpon>ConfigPanel.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -99,10 +95,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MapSettingPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="test.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
