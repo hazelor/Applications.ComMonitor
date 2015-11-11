@@ -51,8 +51,14 @@ namespace Modules.ConfigDisplay
             _confController = confController;
             _eventAggregator = eventAggregator;
 
+            _eventAggregator.GetEvent<ConfirmEvent>().Subscribe(ClearViewModel);
             _confController.IsAvailableApplyHandler += OnIsAvailableApplyChanged;
            
+        }
+
+        private void ClearViewModel(bool sign)
+        {
+            _confController.RemoveAllViewModel();
         }
         public void Init()
         { 
@@ -67,8 +73,11 @@ namespace Modules.ConfigDisplay
             vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MapSetting);
             _confController.AddSubConfPanel(vm);
 
+            vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.ConfigurationSetting);
+            _confController.AddSubConfPanel(vm);
             //添加通知操作
             _confController.AddNotificationCommand();
+
             //读取config从文件
         }
         private void OnIsAvailableApplyChanged(object sender, EventArgs e)

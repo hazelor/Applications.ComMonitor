@@ -77,7 +77,19 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationSettingViewModel.cs" />
+    <Compile Include="ConfigurationSettingPanel.xaml.cs">
+      <DependentUpon>ConfigurationSettingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OLSESettingPanel.xaml.cs">
+      <DependentUpon>OLSESettingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OLSESettingViewModel.cs" />
     <Compile Include="SubConfViewModelBase.cs" />
+    <Compile Include="WIFISettingPanel.xaml.cs">
+      <DependentUpon>WIFISettingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WIFISettingViewModel.cs" />
     <Page Include="ConfigPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -86,6 +98,10 @@
       <DependentUpon>ConfigPanel.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ConfigurationSettingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ConnectSettingPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -95,6 +111,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MapSettingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OLSESettingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WIFISettingPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -160,6 +184,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Conf\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\TextBoxBackGround.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

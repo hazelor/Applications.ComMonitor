@@ -1,6 +1,7 @@
 ﻿<interactions:AdminLoginInterationDialog x:Class="Applications.ComMonitor.AdminLoginPanel"
              xmlns:interactions="clr-namespace:Applications.ComMonitor.Interactions"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:local="clr-namespace:Applications.ComMonitor"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"  
              xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -35,12 +36,14 @@
                Grid.Row="1" Grid.Column="0"
                Height="45"
                VerticalAlignment="Center" FontSize="20" HorizontalAlignment="Right">管理员密码</Label>
-            <TextBox Style="{StaticResource MTextBoxStyle}"
+            <!--<TextBox Style="{StaticResource MTextBoxStyle}"
                  Grid.Row="1" Grid.Column="1"
                  VerticalAlignment="Center" FontSize="20" Margin="20,0,20,0"
                  Text="{Binding Path=Entity.AdminPasswordInput}"
                  Height="30"
-                 />
+                 />-->
+            <PasswordBox Grid.Row="1" Grid.Column="1" Height="30" Margin="20,0,20,0" local:PasswordBoxHelper.Attach="True" FontSize="20" Style="{StaticResource MPasswordBoxStyle}"
+                     local:PasswordBoxHelper.Password="{Binding Path=Entity.AdminPasswordInput,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
             <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
                     Orientation="Horizontal" HorizontalAlignment="Right"
                     >

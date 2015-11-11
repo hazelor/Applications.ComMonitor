@@ -1,4 +1,5 @@
-﻿using Commons.Infrastructure.Interface;
+﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Interface;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
 using Modules.ConfigDisplay.Interface;
@@ -24,14 +25,30 @@ namespace Modules.ConfigDisplay
             Name = "地图设置";
             ApplyCommand = new DelegateCommand(ApplyExecuted);
             ChangeBackCommand = new DelegateCommand<string>(ChangeBackExecuted);
+            InitConfig();
         }
+        private void InitConfig()
+        {
+            _BackgroundFilePath = _configService.ConfigInfos.MapBackFilePath;
+            _IsDistanceShow = _configService.ConfigInfos.IsDistanceShow;
+            _CenterLatitude = _configService.ConfigInfos.CenteredLatitude;
+            _CenterLongitude = _configService.ConfigInfos.CenteredLongitude;
+            _IsGPSShow = _configService.ConfigInfos.IsGPSShow;
 
+            _IsNormal = _configService.ConfigInfos.MapBackFilePath == ConfigItems.NORMAL_BACK;
+
+            _IsSea = _configService.ConfigInfos.CommType == ConfigItems.SEA_BACK;
+
+            _IsMoutain = _configService.ConfigInfos.CommProtocol == ConfigItems.MOUNTAIN_BACK;
+
+        }
         private void ApplyExecuted()
         {
             _configService.ConfigInfos.CenteredLatitude = this.CenterLatitude;
             _configService.ConfigInfos.CenteredLongitude = this.CenterLongitude;
             _configService.ConfigInfos.MapBackFilePath = BackgroundFilePath;
             _configService.ConfigInfos.IsDistanceShow = IsDistanceShow;
+            _configService.ConfigInfos.IsGPSShow = IsGPSShow;
 
             _configService.SaveConfigCommand.Execute(null);
             IsAvaibleApply = false;
@@ -72,7 +89,20 @@ namespace Modules.ConfigDisplay
                 SetApplySign();
             }
         }
+        private bool _IsGPSShow;
 
+        public bool IsGPSShow
+        {
+            get
+            {
+                return this._IsGPSShow;
+            }
+            set
+            {
+                SetProperty(ref this._IsGPSShow, value);
+                SetApplySign();
+            }
+        }
         private double _CenterLatitude;
 
         public double CenterLatitude
@@ -99,6 +129,60 @@ namespace Modules.ConfigDisplay
             set
             {
                 SetProperty(ref this._CenterLongitude, value);
+                SetApplySign();
+            }
+        }
+
+        private bool _IsNormal;
+        public bool IsNormal
+        {
+            get
+            {
+                return this._IsNormal;
+            }
+            set
+            {
+                SetProperty(ref this._IsNormal, value);
+                if (value)
+                {
+                    this.BackgroundFilePath = ConfigItems.NORMAL_BACK;
+                }
+                SetApplySign();
+            }
+        }
+
+        private bool _IsSea;
+        public bool IsSea
+        {
+            get
+            {
+                return this._IsSea;
+            }
+            set
+            {
+                SetProperty(ref this._IsSea, value);
+                if (value)
+                {
+                    this.BackgroundFilePath = ConfigItems.SEA_BACK;
+                }
+                SetApplySign();
+            }
+        }
+
+        private bool _IsMoutain;
+        public bool IsMoutain
+        {
+            get
+            {
+                return this._IsMoutain;
+            }
+            set
+            {
+                SetProperty(ref this._IsMoutain, value);
+                if (value)
+                {
+                    this.BackgroundFilePath = ConfigItems.MOUNTAIN_BACK;
+                }
                 SetApplySign();
             }
         }

@@ -9,7 +9,7 @@ namespace Modules.ConfigDisplay.Controller
 {
     interface IConfController
     {
-
+        void RemoveAllViewModel();
         void AddSubConfPanel(IConfViewModel subPanelViewModel);
 
         bool IsAviableApply { get; set; }

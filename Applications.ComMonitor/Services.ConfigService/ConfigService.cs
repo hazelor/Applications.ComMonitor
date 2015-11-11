@@ -92,19 +92,21 @@ namespace Services.ConfigService
         private void InitConfigDefault()
         {
             //about map
-            _configInfos.CenteredLatitude = 44.2829;
-            _configInfos.CenteredLongitude = 115.8901;
+            _configInfos.CenteredLatitude = 39.8029;
+            _configInfos.CenteredLongitude = 116.301;
             
             //about link
             _configInfos.UpdateRate = 100;
             //about connectsetting
-            _configInfos.CommProtocol = ConfigItems.TCP;
+            _configInfos.CommProtocol = ConfigItems.UDP;
             _configInfos.CommType = ConfigItems.CLIENT;
             _configInfos.CPUType = ConfigItems.LITTLE;
-            _configInfos.DownTerminalIP = "127.0.0.1";
-            _configInfos.TermialIP = "127.0.0.1";
-            _configInfos.DownTerminalPort = 60000;
-            _configInfos.TerminalPort = 60001;
+            _configInfos.DownTerminalIP = "192.168.1.123";
+            _configInfos.TermialIP = "192.168.1.123";
+            _configInfos.DownTerminalPort = 40001;
+            _configInfos.TerminalPort = 60000;
+            _configInfos.IsDistanceShow = false;
+            _configInfos.IsGPSShow = false;
             _configInfos.MapBackFilePath = ConfigItems.NORMAL_BACK;
 
 

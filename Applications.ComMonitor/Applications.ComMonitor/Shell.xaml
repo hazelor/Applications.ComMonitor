@@ -51,9 +51,12 @@
                 <RadioButton x:Name="TopoloyDisplayButton" Style="{StaticResource MRadioButtonStyle}" Click="OnTopoloyDisplayClick">
                     拓扑显示
                 </RadioButton>
-                <RadioButton x:Name="ConfigDisplayButton" Style="{StaticResource MRadioButtonStyle}" Command="{Binding ConfigDisplayCommand}">
+                <Button x:Name="ConfigDisplayButton" Style="{StaticResource MRButtonStyle}" Command="{Binding ConfigDisplayCommand}">
                     系统配置
-                </RadioButton>
+                </Button>
+                <Button x:Name="StartButton" Style="{StaticResource MRButtonStyle}" Command="{Binding StartCommand}" Content="{Binding StartName}">
+                    
+                </Button>
             </StackPanel>
             <Border Grid.Row="1" Margin="10" BorderBrush="Gray" CornerRadius="5" BorderThickness="2">
                 <ContentControl HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"

@@ -94,6 +94,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tool\Converters.cs" />
+    <Compile Include="Tool\TreeValueTypeTemplateSelector.cs" />
     <Page Include="InfosPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

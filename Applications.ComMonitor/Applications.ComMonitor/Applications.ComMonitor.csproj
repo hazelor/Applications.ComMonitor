@@ -122,6 +122,7 @@
     <Compile Include="Interactions\ConfigInterationViewModel.cs" />
     <Compile Include="Notification\AdminLoginNotification.cs" />
     <Compile Include="Notification\ConfigNotification.cs" />
+    <Compile Include="PasswordBoxHelper.cs" />
     <Compile Include="ShellViewModel.cs" />
     <Page Include="AdminLoginPanel.xaml">
       <Generator>MSBuild:Compile</Generator>

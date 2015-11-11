@@ -33,7 +33,7 @@ namespace Applications.ComMonitor
             base.InitializeShell();
 
             Application.Current.MainWindow = (Shell)this.Shell;
-            Application.Current.MainWindow.Show();
+            Application.Current.MainWindow.Show(); 
 
 
         }

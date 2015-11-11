@@ -1,10 +1,12 @@
 ﻿using Applications.ComMonitor.Interactions;
 using Applications.ComMonitor.Notification;
+using Commons.Infrastructure;
 using Commons.Infrastructure.Command;
 using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interactions;
 using Hazelor.Infrastructure.Tools;
 using Microsoft.Practices.Prism.PubSubEvents;
+using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
@@ -35,9 +37,9 @@ namespace Applications.ComMonitor
             this.adapter = new ConfigAdapter();
             this.DataContext = this.ViewModel;
             InitializeComponent();
+            _eventAggregator = ServiceLocator.Current.GetInstance<IEventAggregator>();
         }
 
-        //[Import]
         private IEventAggregator _eventAggregator;
         public void SetEntity(ConfigNotification entity)
         {
@@ -53,12 +55,31 @@ namespace Applications.ComMonitor
         {
             get { return this.adapter.ViewModel; }
         }
-
+        //[Import]
+        //IRegionManager _regionManager;
         public override void Ok()
         {
             ConfigNotification an = this.ViewModel.GetEntity();
             ConfCommands.ApplyConfCommand.Execute(null);
+            for (int i = 0; i < ConfCommands.ApplyConfCommand.RegisteredCommands.Count; i++)
+			{
+                ConfCommands.ApplyConfCommand.UnregisterCommand(ConfCommands.ApplyConfCommand.RegisteredCommands[i]);
+                i--;
+			}
+            _eventAggregator.GetEvent<ConfirmEvent>().Publish(true);
+            base.Ok();
 
+        }
+
+        public override void Cancel()
+        {
+            for (int i = 0; i < ConfCommands.ApplyConfCommand.RegisteredCommands.Count; i++)
+            {
+                ConfCommands.ApplyConfCommand.UnregisterCommand(ConfCommands.ApplyConfCommand.RegisteredCommands[i]);
+                i--;
+            }
+            _eventAggregator.GetEvent<ConfirmEvent>().Publish(true);
+            base.Cancel();
         }
 
         

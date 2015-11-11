@@ -55,7 +55,7 @@ namespace Modules.InfosDisplay
 
         private void OnLoadMap(object sender, RoutedEventArgs e)
         {
-            this.tileCanvas.Center(44.2829, 115.8901, 11);
+            this.tileCanvas.Center(_configService.ConfigInfos.CenteredLatitude, _configService.ConfigInfos.CenteredLongitude, 13);
         }
         private void OnCloseMap(object sender, EventArgs e)
         {
@@ -64,12 +64,12 @@ namespace Modules.InfosDisplay
 
         private void SatelliteClick(object sender, RoutedEventArgs e)
         {
-
+            this.tileCanvas.ShowRoad(this.SatShowButton.IsChecked == false);
         }
 
         private void NormalClick(object sender, RoutedEventArgs e)
         {
-
+            this.tileCanvas.ShowRoad(this.SatShowButton.IsChecked == true);
         }
 
 

@@ -20,7 +20,7 @@ namespace Services.ProtocolService
 {
     [Export(typeof(IProtocolService))]
     [PartCreationPolicy(CreationPolicy.Shared)]
-    public class ProtocolService : IProtocolService
+    public  partial class ProtocolService : IProtocolService
     {
         private Dictionary<ushort, MethodInfo> ParserDict = new Dictionary<ushort, MethodInfo>();
 
@@ -29,6 +29,23 @@ namespace Services.ProtocolService
 
         private DownTerminalInfo _downTerminalInfo = new DownTerminalInfo();
         public DownTerminalInfo DTerminalInfo { get { return this._downTerminalInfo; } }
+
+        public event EventHandler<bool> IsStartChannelChangeEvent;
+
+        private bool _IsStartChannel = false;
+
+        public bool IsStartChannel
+        {
+            get
+            {
+                return this._IsStartChannel;
+            }
+            set
+            {
+                this._IsStartChannel = value;
+                IsStartChannelChangeEvent(this, _IsStartChannel);
+            }
+        }
 
         PreciseTimer _queryTimer = new PreciseTimer();
 
@@ -43,33 +60,11 @@ namespace Services.ProtocolService
         private ITcpListenerService _tcpListenerService;
         private ITcpClientService _tcpClientService;
         private IEventAggregator _eventAggregator;
+        //private DataProcessService _dataProcessService;
 
         #endregion
 
-        #region Message Header Struct
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        struct MsgHeader
-        {
-            public ushort MsgID;
-            public ushort serv;
-            public ushort SrcID;
-            public ushort DstID;
-            public UInt32 puData;
-            public UInt32 DataLen;
-            public UInt32 MsgLen;
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        struct IpPortCFCStruct
-        {
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 16)]
-            public byte[] IpAddr;
-            public UInt32 PortNum;
-
-        }
-        #endregion
-
-        private bool IsLittle = BitConverter.IsLittleEndian;
+        //private bool IsLittle = BitConverter.IsLittleEndian;
         private bool CanStartTimer = false;
         private bool CanQueryRouteAndTopInfo = false;
         private string ChannelServiceType = "";
@@ -85,11 +80,14 @@ namespace Services.ProtocolService
         {
             _eventAggregator = eventAggregator;
             _configService = configService;
+            //_dataProcessService = dataProcessService;
             //_queryTimer.Elapsed = OnQueryTimmer;
             //初始化net
             _CommNet.NodeNum = 0;
             _CommNet.CommLines = new ObservableCollection<CommLine>();
             _CommNet.CommNodes = new ObservableCollection<CommNode>();
+            _CommNet.UserDevs = new ObservableCollection<UserDev>();
+            DTerminalInfo.RouteInfo = new ObservableCollection<RouteInfo>();
             //获取基础数据收发服务的实例
             _tcpClientService = new TcpClientService(_configService.ConfigInfos.TerminalPort);
             _udpClientService = new UdpClientService(_configService.ConfigInfos.DownTerminalIP,
@@ -97,7 +95,7 @@ namespace Services.ProtocolService
             _tcpListenerService = new TcpListenerService(_configService.ConfigInfos.TerminalPort);
             //获取该类下面对应的处理方法的反射，用以与ID对应并方便扩展调用，如需新的处理方法可定义一个method并辅以ParserAttribute
             var info  = typeof(ProtocolService);
-            foreach(var item in info.GetMethods())
+            foreach (var item in info.GetMethods(BindingFlags.NonPublic|BindingFlags.Instance))
             {
                 ParserAttribute ma= null;
                 try
@@ -123,14 +121,21 @@ namespace Services.ProtocolService
 
             //register event
             _eventAggregator.GetEvent<ConfigUpdateEvent>().Subscribe(OnConfigUpdated);
+            _eventAggregator.GetEvent<RecievedEvent>().Subscribe(ParserDatas, ThreadOption.UIThread);
 
         }
+
+       
         private void OnConfigUpdated(bool sign)
         {
-            StopChannel();
-            //SLEEP FOR DISCONNECT
-            //System.Threading.Thread.Sleep(30000);
-            StartChannel();
+            if (IsStartChannel)
+            {
+                StopChannel();
+                //SLEEP FOR DISCONNECT
+                //System.Threading.Thread.Sleep(30000);
+                StartChannel();
+            }
+            
         }
         /// <summary>
         /// 开始定时数据发送
@@ -145,6 +150,7 @@ namespace Services.ProtocolService
                 _queryTimer.Start();
                 
             }
+            IsStartChannel = true;
         }
         /// <summary>
         /// 结束数据定时发送
@@ -153,6 +159,7 @@ namespace Services.ProtocolService
         {
             _queryTimer.Stop();
             ResetChannel();
+            IsStartChannel = false;
         }
 
         /// <summary>
@@ -230,6 +237,7 @@ namespace Services.ProtocolService
                     ChannelServiceType = "TcpClient";
                     _tcpClientService.InitializeConfiguration(_configService.ConfigInfos.TerminalPort);
                     _tcpClientService.Register(OnTcpDiagramReceived);
+                    _tcpClientService.ErrorHappenedEvent += OnChannelErrorHappened;
                     _queryTimer.Elapsed+= QueryByTcpClient;
                     CanStartTimer = _tcpClientService.Connect(_configService.ConfigInfos.DownTerminalIP, _configService.ConfigInfos.DownTerminalPort);
                 }
@@ -239,6 +247,7 @@ namespace Services.ProtocolService
                     _tcpListenerService.InitializeConfiguration(_configService.ConfigInfos.TerminalPort);
                     _tcpListenerService.Register(OnTcpDiagramReceived);
                     _queryTimer.Elapsed+= QueryByTcpListener;
+                    _tcpListenerService.ErrorHappenedEvent += OnChannelErrorHappened;
                     _tcpListenerService.StartService();
                     CanStartTimer = true;
                 }
@@ -251,6 +260,7 @@ namespace Services.ProtocolService
                     _udpClientService.InitializeConfiguration(_configService.ConfigInfos.DownTerminalIP,
                 _configService.ConfigInfos.DownTerminalPort, _configService.ConfigInfos.TerminalPort);
                     _udpClientService.Register(OnUdpDiagramReceived);
+                    _udpClientService.ErrorHappenedEvent += OnChannelErrorHappened;
                     _queryTimer.Elapsed += QueryByUdpClient;
                     _udpClientService.StartService();
                     CanStartTimer = true;
@@ -271,6 +281,7 @@ namespace Services.ProtocolService
                 CanStartTimer = false;
                 CanQueryRouteAndTopInfo = false;
                 _tcpClientService.Unregister(OnTcpDiagramReceived);
+                _tcpClientService.ErrorHappenedEvent -= OnChannelErrorHappened;
                 _tcpClientService.Disconnect();
                 return;
             }
@@ -279,6 +290,7 @@ namespace Services.ProtocolService
                 CanStartTimer = false;
                 CanQueryRouteAndTopInfo = false;
                 _udpClientService.Unregister(OnUdpDiagramReceived);
+                _udpClientService.ErrorHappenedEvent -= OnChannelErrorHappened;
                 _udpClientService.StopService();
                 return;
             }
@@ -287,6 +299,7 @@ namespace Services.ProtocolService
                 CanStartTimer = false;
                 CanQueryRouteAndTopInfo = false;
                 _tcpListenerService.Unregister(OnTcpDiagramReceived);
+                _tcpListenerService.ErrorHappenedEvent -= OnChannelErrorHappened;
                 _tcpListenerService.StopService();
                 return;
             }
@@ -294,6 +307,12 @@ namespace Services.ProtocolService
             {
                 return;
             }
+        }
+
+        private void OnChannelErrorHappened(object sender, EventArgs e)
+        {
+            
+            StopChannel();
         }
 
         /// <summary>
@@ -321,370 +340,12 @@ namespace Services.ProtocolService
         {
             byte[] srcBuffer = e.Content;
             //string str = System.Text.Encoding.Default.GetString(content);
-            ParserDatas(srcBuffer);
+            _eventAggregator.GetEvent<RecievedEvent>().Publish(srcBuffer);
+            //ParserDatas(srcBuffer);
             //Encoding encoding = Encoding.UTF8;
             //string contentstring = encoding.GetString(content, 0, content.Length);
             //this.receivetext = str;
             //byte[] sendbackdata = new byte[] { 0xeb, 0x90 };
         }
-
-        /// <summary>
-        /// 发送IP信息
-        /// </summary>
-        private byte[] SendIpInfo()
-        {
-            MsgHeader mh = new MsgHeader();
-            //参数赋值
-            mh.MsgID = ConstIDs.O_TDMOM_IP_PORT_CFG;
-            mh.SrcID = ConstIDs.SRC_ID;
-            mh.DstID = ConstIDs.DST_ID;
-            mh.puData = 0;
-            mh.DataLen = 0;
-            mh.MsgLen = (uint)Marshal.SizeOf(mh);
-
-            byte[] res_mh = StructConverter.StructToBytes(mh);
-
-            IpPortCFCStruct ips = new IpPortCFCStruct();
-            ips.IpAddr = new byte[16];
-            byte[] strbytes = System.Text.Encoding.ASCII.GetBytes(_configService.ConfigInfos.TermialIP);
-            Buffer.BlockCopy(strbytes, 0, ips.IpAddr, 0, ips.IpAddr.Length > strbytes.Length ? strbytes.Length : ips.IpAddr.Length);
-            ips.PortNum = (uint)_configService.ConfigInfos.TerminalPort;
-            byte[] res_IpPort = StructConverter.StructToBytes(ips);
-
-            //合并两个byte[]
-            byte[] sendBytes = new byte[res_mh.Length + res_IpPort.Length];
-            System.Buffer.BlockCopy(res_mh, 0, sendBytes, 0, res_mh.Length);
-            System.Buffer.BlockCopy(res_IpPort, 0, sendBytes, res_mh.Length, res_IpPort.Length);
-            //if (BitConverter.IsLittleEndian)
-            //    Array.Reverse(sendBytes);
-
-            return sendBytes;
-            //发送
-
-        }
-
-        /// <summary>
-        /// 查询路由信息
-        /// </summary>
-        private byte[] QueryRouteInfo()
-        {
-            MsgHeader mh = new MsgHeader();
-            //参数赋值
-            mh.MsgID = ConstIDs.O_TDMOM_ROUTE_INFO_REQ;
-            mh.SrcID = ConstIDs.SRC_ID;
-            mh.DstID = ConstIDs.DST_ID;
-            mh.puData = 0;
-            mh.DataLen = 0;
-            mh.MsgLen = (uint)Marshal.SizeOf(mh);
-
-            byte[] res_mh = StructConverter.StructToBytes(mh);
-            return res_mh;
-            //发送
-
-        }
-
-        /// <summary>
-        /// 查询拓扑信息
-        /// </summary>
-        public byte[] QueryTopInfo()
-        {
-            MsgHeader mh = new MsgHeader();
-            //参数赋值
-            mh.MsgID = ConstIDs.O_TDMOM_TOP_INFO_REQ;
-            mh.SrcID = ConstIDs.SRC_ID;
-            mh.DstID = ConstIDs.DST_ID;
-            mh.puData = 0;
-            mh.DataLen = 0;
-            mh.MsgLen = (uint)Marshal.SizeOf(mh);
-
-            byte[] res_mh = StructConverter.StructToBytes(mh);
-            return res_mh;
-        }
-
-        /// <summary>
-        /// 处理接收数据，通过反射方法调用对应的方法，
-        /// </summary>
-        /// <param name="srcBuffer"></param>
-        private void ParserDatas(byte[] srcBuffer)
-        {
-            ushort ID = GetParserID(srcBuffer);
-            object[] Params = new object[1];
-            Params[0] = srcBuffer;
-            if(ParserDict.ContainsKey(ID))
-            {
-                ParserDict[ID].Invoke(this,Params);
-            }
-            else
-            {
-                //接收到错误消息
-            }
-        }
-
-        private ushort GetParserID(byte[] srcBuffer)
-        {
-            ushort res = 0;
-            if (srcBuffer.Length<2)
-            {
-                res = 0;
-            }
-            else
-            {
-                res = BitConverter.ToUInt16(srcBuffer, 0);
-            }
-            return res;
-        }
-        #region Parsers
-
-        [Parser(ParseID = ConstIDs.O_TDMOM_IP_PORT_CNF, Description="接收下位机接收上位机IP确认信息")]
-        private void ParseIPPORTCNF(byte[] srcBuffer)
-        {
-            //通知界面下位机准备好，可以开始发送数据
-            CanQueryRouteAndTopInfo = true;
-        }
-
-        [Parser(ParseID = ConstIDs.O_TDMOM_ROUTE_INFO_RSP, Description = "接收路由信息")]
-        private void ParseROUTEINFORSP(byte[] srcBuffer)
-        {
-            DTerminalInfo.RouteInfo.Clear();
-            int index = ParseMsgHeader(srcBuffer);
-            if ((MsgLen-4 - index)%8 == 0)
-	        {
-                int numRouteInfo = (int)((MsgLen - index) / 8);
-                byte[] tmpbuffer = new byte[8];
-                for (int i = 0; i < numRouteInfo; i++)
-                {
-                    Buffer.BlockCopy(srcBuffer, index, tmpbuffer, 0, 8);
-                    index += 8;
-                    DTerminalInfo.RouteInfo.Add(new MacAddr(tmpbuffer));
-                }
-                DTerminalInfo.Dist = (int)srcBuffer[index++];//路由跳数
-                DTerminalInfo.Weight = (int)srcBuffer[index++];
-
-	        }
-            
-            
-        }
-
-        [Parser(ParseID = ConstIDs.O_TDMOM_TOP_INFO_RSP, Description = "接收拓扑信息")]
-        private void ParseTOPINFORSP(byte[] srcBuffer)
-        {
-            int index = ParseMsgHeader(srcBuffer);
-
-            //nodeNum
-            CommunicationNet.NodeNum =  BitConverter.ToUInt16(srcBuffer, index);
-            index += 2;
-            if (IsLittle != (_configService.ConfigInfos.CPUType == "Little"))
-            {
-                CommunicationNet.NodeNum = Endian.SwapUInt16(CommunicationNet.NodeNum);
-            }
-            //set the update sign to false
-            BeginUpdateNode();
-            //mac info for nodes
-            for (int i = 0; i < CommunicationNet.NodeNum; i++)
-            {
-                byte[] tmpbuffer = new byte[MacAddr.MACADDRLEN];
-                Buffer.BlockCopy(srcBuffer, index, tmpbuffer, 0, MacAddr.MACADDRLEN);
-                MacAddr ma = new MacAddr(tmpbuffer);
-                CommNode cn = FindMac(ma);
-                bool isNull= (cn == null);
-                if (isNull)
-                {
-                    cn = new CommNode { MacAddr = ma, Index = i, IsUpdate = true };
-                    CommunicationNet.CommNodes.Add(cn);
-                    
-                }
-                cn.Index = i;
-
-
-                index+=MacAddr.MACADDRLEN;
-                cn.Longitude = BitConverter.ToInt32(srcBuffer, index)/ 1e7;
-                index += 4;
-                cn.Latitude = BitConverter.ToInt32(srcBuffer, index) / 1e7;
-                index += 4;
-                cn.Altitude = BitConverter.ToInt32(srcBuffer, index);
-                index += 4;
-                cn.NodeType = srcBuffer[index++];
-                if (isNull)
-                {
-                    NodeChangeEvent(this, new NodeChangeEventArg { oper = Operations.ADD, Node = cn });
-                }
-            }
-            
-            BeginUpdateLine();
-            //modify the net
-            byte[,] TopInfo = new byte[CommunicationNet.NodeNum, CommunicationNet.NodeNum];
-            Buffer.BlockCopy(srcBuffer, index, TopInfo, 0, CommunicationNet.NodeNum * CommunicationNet.NodeNum);
-            for (int i = 0; i < CommunicationNet.NodeNum; i++)
-            {
-                for (int j = 0; j < CommunicationNet.NodeNum; j++)
-                {
-                    if (i>j)
-	                {
-                        CommLine cl = FindLine(i, j);
-                        bool IsNull= (cl == null);
-                        if (IsNull && ((CommStatues)TopInfo[i, j] != CommStatues.NON || (CommStatues)TopInfo[j,i]!= CommStatues.NON))
-                        {
-                            cl = new CommLine { StartNode = FindNode(i), EndNode = FindNode(j), CommStatuPre = (CommStatues)TopInfo[i, j], CommStatuBac = (CommStatues)TopInfo[j, i] };
-                            CommunicationNet.CommLines.Add(cl);
-                            LineChangeEvent(this, new LineChangeEventArg  { oper = Operations.ADD, Line = cl });
-                        }
-                        else
-                        {
-                            cl.CommStatuPre = (CommStatues)TopInfo[i, j];
-                            cl.CommStatuBac = (CommStatues)TopInfo[j, i];
-
-                            if (cl.CommStatuBac == CommStatues.NON && cl.CommStatuPre == CommStatues.NON)
-                            {
-                                LineChangeEvent(this, new LineChangeEventArg { oper = Operations.DEL, Line = cl });
-                                CommunicationNet.CommLines.Remove(cl);
-                            }
-                        }
-
-                        
-	                }
-                    
-                }
-            }
-            ENdUpdateLine();
-            EndUpdateNode();
-
-
-        }
-
-
-        [Parser(ParseID = ConstIDs.O_OMTDM_ALL_USER_IND, Description = "下位机通过本条消息将本节点的用户关联信息上报给终端软件")]
-        private void ParseALLUSERIND(byte[] srcBuffer)
-        {
-            int index = ParseMsgHeader(srcBuffer);
-            int userDevNum = (int)DataLen / 10;
-            CommunicationNet.UserDevs.Clear();
-            for (int i = 0; i < userDevNum; i++)
-            {   
-                UserDev ud = new UserDev();
-                Buffer.BlockCopy(srcBuffer,index,ud.IPAddr,0,4);
-                index += 4;
-                byte[] tmpBuffer = new byte[MacAddr.MACADDRLEN];
-                index += MacAddr.MACADDRLEN;
-                ud.MacAddr = new MacAddr(tmpBuffer);
-                CommunicationNet.UserDevs.Add(ud);
-            }
-
-
-        }
-        private CommNode FindMac(MacAddr ma)
-        {
-            CommNode res = null;
-            foreach (var item in CommunicationNet.CommNodes)
-            {
-                if (item.MacAddr==ma)
-                {
-                    item.IsUpdate = true;
-                    return item;
-                }
-            }
-            return res;
-        }
-        private void BeginUpdateNode()
-        {
-            foreach (var item in CommunicationNet.CommNodes)
-            {
-                item.IsUpdate = false;
-            }
-        }
-        private void EndUpdateNode()
-        {
-            for (int i = 0; i < CommunicationNet.CommNodes.Count; i++)
-            {
-                if (!CommunicationNet.CommNodes[i].IsUpdate)
-                {
-                    NodeChangeEvent(this, new NodeChangeEventArg { Node = CommunicationNet.CommNodes[i], oper = Operations.DEL });
-                    CommunicationNet.CommNodes[i] = null;
-                    CommunicationNet.CommNodes.RemoveAt(i);
-                    i--;
-                }
-            }
-        }
-
-        private void BeginUpdateLine()
-        {
-            for (int i = 0; i < CommunicationNet.CommLines.Count;i++ )
-            {
-                if (CommunicationNet.CommLines[i].StartNode.IsUpdate == false || CommunicationNet.CommLines[i].EndNode.IsUpdate == false)
-                {
-                    LineChangeEvent(this, new LineChangeEventArg { Line = CommunicationNet.CommLines[i], oper = Operations.DEL });
-                    CommunicationNet.CommLines.RemoveAt(i);
-                    i--;
-                }
-            }
-        }
-
-        private void ENdUpdateLine()
-        {
-            //do nothing
-        }
-        private CommNode FindNode(int index)
-        {
-            CommNode res = null;
-            foreach (var item in CommunicationNet.CommNodes)
-            {
-                if (item.Index == index)
-                {
-                    return item;
-                }
-            }
-            return res;
-        }
-        private CommLine FindLine(int startIndex, int endIndex)
-        {
-            CommLine res = null;
-            foreach (var item in CommunicationNet.CommLines)
-            {
-                if (string.Format("{0},{1}",startIndex, endIndex) == item.Key)
-                {
-                    return item;
-                }
-            }
-            return res;
-        }
-        private int ParseMsgHeader(byte[] srcBuffer)
-        {
-            //消息ID
-            int index = 0;
-
-            MsgID = BitConverter.ToUInt16(srcBuffer, index);
-            index+=2;
-
-            //保留
-            index += 2;
-            //srcid
-            SrcID = BitConverter.ToUInt16(srcBuffer, index);
-            
-            index += 2;
-            //dstID
-            DstID = BitConverter.ToUInt16(srcBuffer, index);
-            
-            index += 2;
-            //puData
-            index += 4;
-            //DataLen
-            DataLen = BitConverter.ToUInt32(srcBuffer, index);
-            index += 4;
-            //MsgLen
-            MsgLen = BitConverter.ToUInt32(srcBuffer, index);
-            index += 4;
-
-            if (IsLittle != (_configService.ConfigInfos.CPUType == "Little"))
-            {
-                MsgID = Endian.SwapUInt16(MsgID);
-                SrcID = Endian.SwapUInt16(SrcID);
-                MsgID = Endian.SwapUInt16(MsgID);
-                DataLen = Endian.SwapUInt32(DataLen);
-                MsgLen = Endian.SwapUInt32(MsgLen);
-            }
-
-            return index;
-
-        }
-        #endregion
     }
 }

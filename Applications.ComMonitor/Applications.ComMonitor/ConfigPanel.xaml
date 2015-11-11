@@ -25,7 +25,7 @@
             <ContentControl HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"
                     prism:RegionManager.RegionName="{x:Static Inf:RegionNames.ConfigRegion}"
                     RenderTransformOrigin="0.5,0.5"
-                        Margin="10"
+                        Margin="20,40,20,10"
                     />
             <StackPanel Grid.Row="1" Orientation="Horizontal"
                             VerticalAlignment="Bottom" 

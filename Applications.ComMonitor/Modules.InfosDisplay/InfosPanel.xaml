@@ -3,12 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:tree ="clr-namespace:Hazelor.Infrastructure.Tools.TreeDisplay;assembly=Hazelor.Infrastructure.Tools"
              xmlns:Inf="clr-namespace:Commons.Infrastructure.Layout;assembly=Commons.Infrastructure"
+             xmlns:tool="clr-namespace:Modules.InfosDisplay.Tool"
              xmlns:Map="clr-namespace:Hazelor.MapCtrl;assembly=Hazelor.MapCtrl"
              xmlns:Nodes="clr-namespace:Modules.InfosDisplay.Nodes"
              Loaded="OnLoadMap"
              mc:Ignorable="d">
     <UserControl.Resources>
+        <tool:AddrConverter x:Key="AddrConverter"/>
+        <tool:AddrListConverter x:Key="AddrListConverter"/>
+        <DataTemplate x:Key="AddrT">
+            <TextBlock x:Name="AddrDisplay"
+                       Text="{Binding Path=DataContext, ElementName=AddrDisplay, Converter={StaticResource AddrConverter}}"/>
+        </DataTemplate>
+        <DataTemplate x:Key="AddrListT">
+            <TextBlock x:Name="AddrListDisplay"
+                       Text="{Binding Path=DataContext, ElementName=AddrListDisplay, Converter={StaticResource AddrListConverter}}"/>
+        </DataTemplate>
+        <DataTemplate x:Key="NumberT">
+            <TextBlock x:Name="NumberDisplay"
+                       Text="{Binding Path=DataContext, ElementName=AddrDisplay}"/>
+        </DataTemplate>
         <Style TargetType="{x:Type Label}" x:Key="MLabel2Style">
             <Setter Property="Template">
                 <Setter.Value>
@@ -91,66 +107,47 @@
         <Map:MapCanvas x:Name="tileCanvas" Grid.Column="0"/>
         <Map:NavigationControls  Map="{Binding ElementName=tileCanvas}" Grid.Column="0"/>
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Width="80" Grid.Column="0">
-            <RadioButton Style="{StaticResource SatelliteStyle}" Height="80" Click="SatelliteClick"/>
-            <RadioButton Style="{StaticResource NormalStyle}" Height="80" Click="NormalClick"/>
+            <RadioButton Style="{StaticResource SatelliteStyle}" x:Name="SatShowButton" Height="80" Click="SatelliteClick" IsChecked="True"/>
+            <RadioButton Style="{StaticResource NormalStyle}" x:Name="NormalShowButton" Height="80" Click="NormalClick" IsChecked="False"/>
         </StackPanel>
         
         <!--数据信息显示-->
         <Grid Grid.Column="1" Width="200">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
-            <GroupBox Grid.Row="0">
-                <GroupBox.Header>
-                    <Label Foreground="White" FontSize="10">下位机信息</Label>
-                </GroupBox.Header>
-                <GroupBox.Content>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.5*"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource MLabel2Style}">路由跳数</Label>
-                        <TextBlock Grid.Row="0" Grid.Column="1" 
-                                   Text="{Binding TerminalInfo.Dist}"
-                                   Style="{StaticResource MTextBox2Style}"/>
-                        <Label Grid.Row="1" Grid.Column="0" Style="{StaticResource MLabel2Style}">Weight</Label>
-                        <TextBlock Grid.Row="1" Grid.Column="1" 
-                                   Text="{Binding TerminalInfo.Weight}"
-                                   Style="{StaticResource MTextBox2Style}"/>
-                        <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
+            <TabControl>
+                <TabItem Header="下位机信息">
+                    <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                                       Margin="5">
-                            <ListBox ItemsSource="{Binding TerminalInfo.RouteInfo}"
-                                     Height="200"
-                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Addr}"/>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </ScrollViewer>
-                        
-                    </Grid>
-                    <!--<TextBlock Text="{Binding TerminalInfo}"></TextBlock>-->
-                    
-                </GroupBox.Content>
-            </GroupBox>
-            <GroupBox Grid.Row="1">
-                <GroupBox.Header>
-                    <Label Foreground="White" FontSize="10">节点信息</Label>
-                </GroupBox.Header>
-                <GroupBox.Content>
+
+                        <tree:TreeList
+                            VerticalAlignment="Stretch"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <tree:TreeList.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        
+                                        <GridViewColumn Header="内容">
+                                            <GridViewColumn.CellTemplateSelector>
+                                                <tool:TreeValueTypeTemplateSelector AddrTemplate="{StaticResource AddrT}"
+                                                                                    AddrListTemplate="{StaticResource AddrListT}"
+                                                                                    NumberTemplate="{StaticResource NumberT}"/>
+                                            </GridViewColumn.CellTemplateSelector>
+
+                                        </GridViewColumn>
+                                    </GridView.Columns>
+                                </GridView>
+                            </tree:TreeList.View>
+
+                        </tree:TreeList>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="节点信息">
                     <Nodes:NodeInfo DataContext="{Binding SelectedNode}"/>
-                </GroupBox.Content>
-            </GroupBox>
+                </TabItem>
+            </TabControl>
+            
+            
+            
         </Grid>
     </Grid>
 </UserControl>

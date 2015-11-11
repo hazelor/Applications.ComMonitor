@@ -10,7 +10,7 @@ namespace Commons.Infrastructure.Models
 
     public class MacAddr
     {
-        public static int MACADDRLEN = 6;
+        public static int MACADDRLEN = 8;
 
         public byte[] Src { get; set; }
 
@@ -30,9 +30,9 @@ namespace Commons.Infrastructure.Models
 
         public MacAddr(byte[] src)
         {
-            System.Diagnostics.Debug.Assert(src.Length == MACADDRLEN, "the macaddr length must be " + MACADDRLEN.ToString());
+            System.Diagnostics.Debug.Assert(src.Length <= MACADDRLEN, "the macaddr length"+src.Length+" must small than " + MACADDRLEN.ToString());
 
-            Src = new byte[MACADDRLEN];
+            Src = new byte[src.Length];
             src.CopyTo(Src, 0);
             Addr = "";
             foreach (var b in Src)

@@ -23,6 +23,7 @@ namespace Modules.ConfigDisplay
             Uri = PanelNames.LinkStateSettingPanel;
             Name = "拓扑设置";
             ApplyCommand = new DelegateCommand(ApplyExecuted);
+            _UpdateRate = _configService.ConfigInfos.UpdateRate;
         }
 
         private void ApplyExecuted()

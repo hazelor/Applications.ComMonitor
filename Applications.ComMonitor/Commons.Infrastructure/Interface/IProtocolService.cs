@@ -14,6 +14,7 @@ namespace Commons.Infrastructure.Interface
 
         event EventHandler<NodeChangeEventArg> NodeChangeEvent;
         event EventHandler<LineChangeEventArg> LineChangeEvent;
+        event EventHandler<bool> IsStartChannelChangeEvent;
 
         void StartChannel();
         void StopChannel();

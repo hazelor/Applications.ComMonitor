@@ -22,6 +22,7 @@ namespace Modules.ConfigDisplay.Controller
         private IRegionManager _regionManager;
         private readonly ConfCommandProxy _commandProxy;
         private IEventAggregator _eventAggregator;
+        
         [ImportingConstructor]
         public ConfController(IRegionManager regionManager,
             ConfCommandProxy commandProxy,
@@ -56,11 +57,13 @@ namespace Modules.ConfigDisplay.Controller
         public event EventHandler<EventArgs> IsAvailableApplyHandler;
 
         private List<IConfViewModel> subConfViewModelList = new List<IConfViewModel>();
+        private List<IConfNaviViewModel> naviViewModelList = new List<IConfNaviViewModel>();
         public void AddSubConfPanel(IConfViewModel subPanelViewModel)
         {
             subConfViewModelList.Add(subPanelViewModel);
             IRegion naviRegion = _regionManager.Regions[RegionNames.ConfNavigatorRegion];
             IConfNaviViewModel vm = ServiceLocator.Current.GetInstance<IConfNaviViewModel>();
+            naviViewModelList.Add(vm);
             vm.Uri = subPanelViewModel.Uri;
             vm.Name = subPanelViewModel.Name;
             naviRegion.Add(vm);
@@ -69,7 +72,16 @@ namespace Modules.ConfigDisplay.Controller
             subPanelViewModel.UpdateAviableApplyHandler += OnIsAviableApplyChanged;
         }
 
-        
+        public void RemoveAllViewModel()
+        {
+            IRegion naviRegion = _regionManager.Regions[RegionNames.ConfNavigatorRegion];
+            for (int i = 0; i < naviViewModelList.Count; i++)
+			{
+                naviRegion.Remove(naviViewModelList[i]);
+			}
+            naviViewModelList.Clear();
+            
+        }
         private void OnIsAviableApplyChanged(object sender, bool e)
         {
             bool res = false;

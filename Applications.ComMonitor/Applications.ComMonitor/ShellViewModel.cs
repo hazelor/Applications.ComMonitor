@@ -80,13 +80,57 @@ namespace Applications.ComMonitor
             _eventAggregator = eventAggregator;
             _configService = configService;
             _protocolService = protocolService;
-            _protocolService.StartChannel();
+            _protocolService.IsStartChannelChangeEvent += OnIsStartChannelUpdate;
+            //_protocolService.StartChannel();
             _adminInfo = _configService.AdminInfos;
             ConfigDisplayCommand = new DelegateCommand(ConfigDisplayExecuted);
             AdminLoginRequest = new GenericInteractionRequest<AdminLoginNotification>();
             ConfigRequest = new GenericInteractionRequest<ConfigNotification>();
             //注册消息
 
+            StartCommand = new DelegateCommand(StartExecuted);
+
         }
+
+        private void OnIsStartChannelUpdate(object sender, bool IsStartChannel)
+        {
+            if (IsStartChannel)
+            {
+                StartName = "结束";
+            }
+            else
+            {
+                StartName = "开始";
+            }
+        }
+        public DelegateCommand StartCommand { get; set; }
+
+        private void StartExecuted()
+        {
+            if (_StartName == "开始")
+            {
+                StartName = "结束";
+                _protocolService.StartChannel();
+            }
+            else
+            {
+                StartName = "开始";
+                _protocolService.StopChannel();
+            }
+        }
+
+        private string _StartName = "开始";
+        public string StartName
+        {
+            get
+            {
+                return this._StartName;
+            }
+            set
+            {
+                SetProperty(ref this._StartName, value);
+            }
+        }
+
     }
 }

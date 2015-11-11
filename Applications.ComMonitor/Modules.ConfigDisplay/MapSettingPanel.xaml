@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500">
+             d:DesignHeight="400" d:DesignWidth="420">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -22,29 +22,37 @@
         <CheckBox Style="{StaticResource MCheckBoxStyle}"
                Grid.Row="0" Grid.Column="0"
                VerticalAlignment="Center"
-                  Height="10"
-               HorizontalAlignment="Right"
+                  Height="24"
+                 HorizontalAlignment="Center"
                   IsChecked="{Binding IsDistanceShow}">距离显示</CheckBox>
+        <CheckBox Style="{StaticResource MCheckBoxStyle}"
+               Grid.Row="0" Grid.Column="1"
+               VerticalAlignment="Center"
+                  Height="24"
+                 HorizontalAlignment="Center"
+                  IsChecked="{Binding IsGPSShow}">GPS显示</CheckBox>
         <!--起始经纬度-->
         <Label Style="{StaticResource MLabelStyle}"
                Grid.Row="1" Grid.Column="0"
                VerticalAlignment="Center"
                Height="30"
-               HorizontalAlignment="Right">初始经度</Label>
+               HorizontalAlignment="Center">初始经度</Label>
         <Label Style="{StaticResource MLabelStyle}"
                Grid.Row="2" Grid.Column="0"
                VerticalAlignment="Center"
                Height="30"
-               HorizontalAlignment="Right">初始纬度</Label>
+               HorizontalAlignment="Center">初始纬度</Label>
         <TextBox Style="{StaticResource MTextBoxStyle}"
                  Grid.Row="1" Grid.Column="1"
                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 HorizontalAlignment="Left"
                  Margin="5"
                  Text="{Binding CenterLongitude}"
                  />
         <TextBox Style="{StaticResource MTextBoxStyle}"
                  Grid.Row="2" Grid.Column="1"
                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 HorizontalAlignment="Left"
                  Text="{Binding CenterLatitude}"
                  Margin="5"/>
 
@@ -55,29 +63,33 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="40,5,0,5">
                 <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
                      GroupName="BGSelection"
                              Height="10"
+                             IsChecked="{Binding IsNormal}"
                              Command="{Binding ChangeBackCommand}" CommandParameter="normal"
                      >通用</RadioButton>
                 <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
                      GroupName="BGSelection"
                              Height="10"
+                             IsChecked="{Binding IsSea}"
                              Command="{Binding ChangeBackCommand}" CommandParameter="sea"
                      >海洋</RadioButton>
                 <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
                      GroupName="BGSelection"
                              Height="10"
+                             IsChecked="{Binding IsMountain}"
                              Command="{Binding ChangeBackCommand}" CommandParameter="mountain"
                      >山地</RadioButton>
             </StackPanel>
             <Border BorderBrush="Gray"
                     BorderThickness="1"
                     CornerRadius="4"
-                    Grid.Row="1">
+                    Margin="40,5,0,5"
+                    Grid.Row="1" Height="256" Width="256" HorizontalAlignment="Left">
                 <Image x:Name="PreView"
-                       Height="256" Width="256"
+                       
                    Source="{Binding Path=BackgroundFilePath}"></Image>
             </Border>
           
@@ -89,6 +101,8 @@
                 Grid.Row="4"
                 Grid.Column="1"
                 Height="30"
+                Margin="5,0,20,0"
+                HorizontalAlignment="Right"
                 Command="{Binding ApplyCommand}">应用</Button>
     </Grid>
 </UserControl>
