@@ -95,13 +95,16 @@ namespace Services.ProtocolService
             //}
         }
 
-        private const double radiusGPS = 0.3;
+        private const double radiusGPS = 0.1;
         private const double deltaDeg = 5;
         private const int indexGPS = 0;
-        private void CaculateGPS(out double lat, out double lon)
+        private void CaculateGPS(out double lat, out double lon, int index)
         {
-            lat = _configService.ConfigInfos.CenteredLatitude + radiusGPS*Math.Sin(indexGPS * deltaDeg / 180.0 * Math.PI);
-            lon = _configService.ConfigInfos.CenteredLongitude - radiusGPS * Math.Cos(indexGPS * deltaDeg / 180.0 * Math.PI);
+            lat = _configService.ConfigInfos.CenteredLatitude + radiusGPS * Math.Sin(index * deltaDeg / 180.0 * Math.PI);
+            lon = _configService.ConfigInfos.CenteredLongitude - radiusGPS * Math.Cos(index * deltaDeg / 180.0 * Math.PI);
+            //lat = _configService.ConfigInfos.CenteredLatitude;
+            //lon = _configService.ConfigInfos.CenteredLongitude;
+        
         }
 
         [Parser(ParseID = ConstIDs.O_TDMOM_TOP_INFO_RSP, Description = "接收拓扑信息")]
@@ -119,13 +122,20 @@ namespace Services.ProtocolService
             {
                 CommunicationNet.NodeNum = Endian.SwapUInt16(CommunicationNet.NodeNum);
             }
+            //判断 数据长度 是否满足格式要求
+            if (DataLen != CommunicationNet.NodeNum*COLCOUNT+2+CommunicationNet.NodeNum*CommunicationNet.NodeNum*Marshal.SizeOf(typeof(LINE_INFO)))
+            {
+                //数据长度不一致，数据帧错误
+                return;
+            }
+
             //set the update sign to false
             BeginUpdateNode();
             //mac info for nodes
             for (int i = 0; i < CommunicationNet.NodeNum; i++)
             {
-                byte[] tmpbuffer = new byte[MacAddr.MACADDRLEN];
-                Buffer.BlockCopy(srcBuffer, index, tmpbuffer, 0, MacAddr.MACADDRLEN);
+                byte[] tmpbuffer = new byte[MacAddr.MACADDRLEN_SHORT];
+                Buffer.BlockCopy(srcBuffer, index, tmpbuffer, 0, MacAddr.MACADDRLEN_SHORT);
                 MacAddr ma = new MacAddr(tmpbuffer);
                 CommNode cn = FindMac(ma);
                 bool isNull = (cn == null);
@@ -135,7 +145,7 @@ namespace Services.ProtocolService
                     CommunicationNet.CommNodes.Add(cn);
                 }
                 cn.Index = i;
-                index += MacAddr.MACADDRLEN;
+                index += MacAddr.MACADDRLEN_SHORT;
 
                 if (_configService.ConfigInfos.IsGPSShow)
                 {
@@ -146,15 +156,19 @@ namespace Services.ProtocolService
                     cn.Altitude = BitConverter.ToInt32(srcBuffer, index);
                     index += 4;
                 }
-                else
+                else if(isNull)
                 {
                     double lat,lon;
-                    CaculateGPS(out lat, out lon);
+                    CaculateGPS(out lat, out lon, cn.Index);
                     index += 12;
                     cn.Longitude = lon;
                     cn.Latitude = lat;
                     cn.Altitude = 0;
 
+                }
+                else
+                {
+                    index += 12;
                 }
                 cn.NodeType = srcBuffer[index++];
                 if (isNull)
@@ -165,26 +179,44 @@ namespace Services.ProtocolService
             
             BeginUpdateLine();
             //modify the net
-            byte[,] TopInfo = new byte[CommunicationNet.NodeNum, CommunicationNet.NodeNum];
-            Buffer.BlockCopy(srcBuffer, index, TopInfo, 0, CommunicationNet.NodeNum * CommunicationNet.NodeNum);
+            LINE_INFO[,] TopInfo = new LINE_INFO[CommunicationNet.NodeNum, CommunicationNet.NodeNum];
+
+            //Buffer.BlockCopy(srcBuffer, index, TopInfo, 0, CommunicationNet.NodeNum * CommunicationNet.NodeNum * Marshal.SizeOf(typeof(LINE_INFO)));
+            byte[] tmpBuffer = new byte[Marshal.SizeOf(typeof(LINE_INFO))];
+            int srcBufferOffset= 0;
             for (int i = 0; i < CommunicationNet.NodeNum; i++)
             {
-                for (int j = 0; j < CommunicationNet.NodeNum; j++)
+                for (int j = i; j < CommunicationNet.NodeNum; j++)
                 {
-                    if (i > j)
+                    if (i < j)
                     {
+                        srcBufferOffset = i*Marshal.SizeOf(typeof(LINE_INFO))*CommunicationNet.NodeNum+j*Marshal.SizeOf(typeof(LINE_INFO));
+                        Buffer.BlockCopy(srcBuffer, index+srcBufferOffset, tmpBuffer, 0, tmpBuffer.Length);
+                        TopInfo[i, j] = (LINE_INFO)StructConverter.BytesToStruct(tmpBuffer, typeof(LINE_INFO));
+                        srcBufferOffset = j * Marshal.SizeOf(typeof(LINE_INFO)) * CommunicationNet.NodeNum + i * Marshal.SizeOf(typeof(LINE_INFO));
+                        Buffer.BlockCopy(srcBuffer, index+srcBufferOffset, tmpBuffer, 0, tmpBuffer.Length);
+                        TopInfo[j, i] = (LINE_INFO)StructConverter.BytesToStruct(tmpBuffer, typeof(LINE_INFO));
+
                         CommLine cl = FindLine(i, j);
                         bool IsNull = (cl == null);
-                        if (IsNull && ((CommStatues)TopInfo[i, j] != CommStatues.NON || (CommStatues)TopInfo[j, i] != CommStatues.NON))
+                        if (IsNull && ((CommStatues)TopInfo[i, j].InfoQuality != 0 || (CommStatues)TopInfo[j, i].InfoQuality != 0))
                         {
-                            cl = new CommLine { StartNode = FindNode(i), EndNode = FindNode(j), CommStatuPre = (CommStatues)TopInfo[i, j], CommStatuBac = (CommStatues)TopInfo[j, i] };
+                            
+                            cl = new CommLine { StartNode = FindNode(i),
+                                                EndNode = FindNode(j),
+                                                LineInfoPre = TopInfo[i, j],
+                                                LineInfoBac= TopInfo[j,i],
+                                                CommStatuPre = GetCommStatus(TopInfo[i, j].InfoQuality),
+                                                CommStatuBac = GetCommStatus(TopInfo[j, i].InfoQuality) };
                             CommunicationNet.CommLines.Add(cl);
                             LineChangeEvent(this, new LineChangeEventArg { oper = Operations.ADD, Line = cl });
                         }
                         else
                         {
-                            cl.CommStatuPre = (CommStatues)TopInfo[i, j];
-                            cl.CommStatuBac = (CommStatues)TopInfo[j, i];
+                            cl.LineInfoPre = TopInfo[i, j];
+                            cl.LineInfoBac = TopInfo[j, i];
+                            cl.CommStatuPre = GetCommStatus(TopInfo[i, j].InfoQuality);
+                            cl.CommStatuBac = GetCommStatus(TopInfo[j, i].InfoQuality);
                             
                             if (cl.CommStatuBac == CommStatues.NON && cl.CommStatuPre == CommStatues.NON)
                             {
@@ -222,7 +254,7 @@ namespace Services.ProtocolService
             CommNode res = null;
             foreach (var item in CommunicationNet.CommNodes)
             {
-                if (item.MacAddr == ma)
+                if (item.MacAddr.Equals(ma))
                 {
                     item.IsUpdate = true;
                     return item;
@@ -297,6 +329,25 @@ namespace Services.ProtocolService
             return res;
         }
         
+        private CommStatues GetCommStatus(byte InfoQuality)
+        {
+            if (InfoQuality<=_configService.ConfigInfos.BadUpper)
+            {
+                return CommStatues.BAD;
+            }
+            else if (InfoQuality<=_configService.ConfigInfos.MedianUpper)
+            {
+                return CommStatues.NORMAL;
+            }
+            else if (InfoQuality<=_configService.ConfigInfos.GoodUpper)
+            {
+                return CommStatues.GOOD;
+            }
+            else
+            {
+                return CommStatues.EXCELLENT;
+            }
+        }
         private int ParseMsgHeader(byte[] srcBuffer)
         {
             //消息ID

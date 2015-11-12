@@ -11,4 +11,8 @@ namespace Modules.InfosDisplay.Event
     public class SelNodeEvent :PubSubEvent<CommNode>
     {
     }
+
+    public class SelLineEvent : PubSubEvent<CommLine>
+    {
+    }
 }

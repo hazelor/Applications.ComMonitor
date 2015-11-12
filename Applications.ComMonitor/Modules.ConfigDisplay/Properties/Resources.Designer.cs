@@ -59,5 +59,14 @@ namespace Modules.ConfigDisplay.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ./conf/msg.conf.
+        /// </summary>
+        internal static string MsgConfPath {
+            get {
+                return ResourceManager.GetString("MsgConfPath", resourceCulture);
+            }
+        }
     }
 }

@@ -18,5 +18,7 @@ namespace Commons.Infrastructure.Interface
 
         void StartChannel();
         void StopChannel();
+
+        void FilterMsg(ushort[] msgs);
     }
 }

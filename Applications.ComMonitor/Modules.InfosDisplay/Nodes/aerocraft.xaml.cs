@@ -20,7 +20,7 @@ namespace Modules.InfosDisplay.Nodes
     /// </summary>
     public partial class Aerocraft : NodeBase
     {
-        public Aerocraft()
+        public Aerocraft():base()
         {
             InitializeComponent();
         }

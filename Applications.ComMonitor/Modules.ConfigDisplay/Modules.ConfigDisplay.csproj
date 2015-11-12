@@ -77,6 +77,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandFilterPanel.xaml.cs">
+      <DependentUpon>CommandFilterPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CommandFilterViewModel.cs" />
     <Compile Include="ConfigurationSettingViewModel.cs" />
     <Compile Include="ConfigurationSettingPanel.xaml.cs">
       <DependentUpon>ConfigurationSettingPanel.xaml</DependentUpon>
@@ -86,10 +90,15 @@
     </Compile>
     <Compile Include="OLSESettingViewModel.cs" />
     <Compile Include="SubConfViewModelBase.cs" />
+    <Compile Include="Tool\MsgItemTemplateSelector.cs" />
     <Compile Include="WIFISettingPanel.xaml.cs">
       <DependentUpon>WIFISettingPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="WIFISettingViewModel.cs" />
+    <Page Include="CommandFilterPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ConfigPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -161,6 +170,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="Conf\msgs.conf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -182,15 +192,15 @@
     <Resource Include="images\RadioButton.png" />
     <Resource Include="images\RadioButtonBack.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Conf\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="images\TextBoxBackGround.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Modules\" /Y</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Modules\" /Y
+
+copy "$(ProjectDir)\Conf\msgs.conf" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\conf\" /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

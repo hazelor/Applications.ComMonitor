@@ -31,10 +31,12 @@
                     <ImageBrush ImageSource="..\images\TextBoxBackGround2.png"  Stretch="UniformToFill"/>
                 </Setter.Value>
             </Setter>
+            
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="TextAlignment" Value="Center"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="16"/>
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -55,16 +57,19 @@
 
         <Label Grid.Column="0" Grid.Row="1" Style="{StaticResource MLabel2Style}" >经度</Label>
         <TextBlock Grid.Column="1" Grid.Row="1" MinWidth="150"
+                   VerticalAlignment="Center"
                    Text="{Binding Longitude,Converter={StaticResource LatLonConverter}}"
                    Style="{StaticResource MTextBox2Style}"/>
 
         <Label Grid.Column="0" Grid.Row="2" Style="{StaticResource MLabel2Style}">高度</Label>
         <TextBlock Grid.Column="1" Grid.Row="2" MinWidth="150" 
+                   VerticalAlignment="Center"
                    Text="{Binding Altitude,Converter={StaticResource AltConverter}}"
                    Style="{StaticResource MTextBox2Style}"/>
 
         <Label Grid.Column="0" Grid.Row="3" Style="{StaticResource MLabel2Style}">类型</Label>
         <TextBlock Grid.Column="1" Grid.Row="3" MinWidth="150" Text="{Binding NodeType}"
+                   VerticalAlignment="Center"
                    Style="{StaticResource MTextBox2Style}"/>
 
     </Grid>

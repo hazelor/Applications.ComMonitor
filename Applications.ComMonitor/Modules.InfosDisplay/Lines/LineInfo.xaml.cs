@@ -13,15 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Modules.InfosDisplay.Nodes
+namespace Modules.InfosDisplay.Lines
 {
     /// <summary>
-    /// Interaction logic for Vehicle.xaml
+    /// Interaction logic for NodeInfo.xaml
     /// </summary>
-    public partial class Vehicle : NodeBase
+    public partial class LineInfo : UserControl
     {
-        public Vehicle()
-            : base()
+        public LineInfo()
         {
             InitializeComponent();
         }

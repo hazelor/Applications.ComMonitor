@@ -1,6 +1,7 @@
 ﻿using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Hazelor.MapCtrl;
+using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Modules.InfosDisplay.Lines;
 using Modules.InfosDisplay.Nodes;
@@ -22,12 +23,27 @@ using System.Windows.Shapes;
 
 namespace Modules.InfosDisplay
 {
+    public class BorderNode : BindableBase
+    {
+        
+        private double _Latitude;
+        public double Latitude { get { return this._Latitude; } set { SetProperty(ref this._Latitude, value); } }
+
+
+        private double _Longtitude;
+        public double Longitude { get { return this._Longtitude; } set { SetProperty(ref this._Longtitude, value); } }
+
+        
+    }
+
+
     [Export("InfosPanel")]
     /// <summary>
     /// Interaction logic for UserControl1.xaml
     /// </summary>
     public partial class InfosPanel : UserControl
     {
+
         private IEventAggregator _eventAggregator;
         private IConfigService _configService;
         [ImportingConstructor]
@@ -48,6 +64,7 @@ namespace Modules.InfosDisplay
         private void OnDownloadCountChanged(object sender, EventArgs e)
         {
         }
+
         private void OnDownloadError(object sender, EventArgs e)
         {
 
@@ -69,9 +86,32 @@ namespace Modules.InfosDisplay
 
         private void NormalClick(object sender, RoutedEventArgs e)
         {
-            this.tileCanvas.ShowRoad(this.SatShowButton.IsChecked == true);
+            this.tileCanvas.ShowRoad(this.NormalShowButton.IsChecked == true);
         }
 
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            Point pos = e.GetPosition(this);
+            pos = this.tileCanvas.GetLocation(pos);
+            BorderNode node = new BorderNode();
+            node.Latitude = pos.Y;
+            node.Longitude = pos.X;
+            CursorDisplay.DataContext = node;
+
+        }
+
+        protected override void OnMouseEnter(MouseEventArgs e)
+        {
+            base.OnMouseEnter(e);
+            this.CursorDisplay.Visibility = Visibility.Visible;
+        }
+
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            base.OnMouseLeave(e);
+            this.CursorDisplay.Visibility = Visibility.Collapsed;
+        }
 
         [Import]
         InfosPanelViewModel ViewModel
@@ -111,7 +151,7 @@ namespace Modules.InfosDisplay
         {
             if (e.oper == Operations.ADD)
             {
-                FrameworkElement obj;
+                MapFrameElement obj;
                 switch(e.Node.NodeType)
                 {
                     case 0:
@@ -146,7 +186,7 @@ namespace Modules.InfosDisplay
         {
             if (e.oper==Operations.ADD)
             {
-                FrameworkElement obj = new CLine();
+                MapFrameElement obj = new CLine();
                 this.tileCanvas.AddLineObject(e.Line.ToString(), obj, e.Line);
                 
             }

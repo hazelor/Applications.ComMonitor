@@ -8,6 +8,7 @@
              xmlns:tool="clr-namespace:Modules.InfosDisplay.Tool"
              xmlns:Map="clr-namespace:Hazelor.MapCtrl;assembly=Hazelor.MapCtrl"
              xmlns:Nodes="clr-namespace:Modules.InfosDisplay.Nodes"
+             xmlns:Lines="clr-namespace:Modules.InfosDisplay.Lines"
              Loaded="OnLoadMap"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -104,7 +105,31 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Map:MapCanvas x:Name="tileCanvas" Grid.Column="0"/>
+        <Map:MapCanvas x:Name="tileCanvas" Grid.Column="0">
+            <Border x:Name="CursorDisplay" 
+                    Background="#33575B57"
+                    Visibility="Visible"
+                    CornerRadius="4"
+                    BorderBrush="#FF464646"
+                    BorderThickness="1"
+                     Map:MapCanvas.Latitude="{Binding Latitude}" Map:MapCanvas.Longitude="{Binding Longitude}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" >
+                        <Label Foreground="White">纬度:</Label>
+                        <TextBlock Foreground="Lime" Text="{Binding Latitude}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" >
+                        <Label Foreground="White">经度:</Label>
+                        <TextBlock Foreground="Lime" Text="{Binding Longitude}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+        </Map:MapCanvas>
         <Map:NavigationControls  Map="{Binding ElementName=tileCanvas}" Grid.Column="0"/>
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Width="80" Grid.Column="0">
             <RadioButton Style="{StaticResource SatelliteStyle}" x:Name="SatShowButton" Height="80" Click="SatelliteClick" IsChecked="True"/>
@@ -112,7 +137,7 @@
         </StackPanel>
         
         <!--数据信息显示-->
-        <Grid Grid.Column="1" Width="200">
+        <Grid Grid.Column="1" Width="250">
             <TabControl>
                 <TabItem Header="下位机信息">
                     <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
@@ -120,6 +145,7 @@
                                       Margin="5">
 
                         <tree:TreeList
+                            x:Name="RouteInfoTree"
                             VerticalAlignment="Stretch"
                             ScrollViewer.VerticalScrollBarVisibility="Auto">
                             <tree:TreeList.View>
@@ -144,6 +170,10 @@
                 <TabItem Header="节点信息">
                     <Nodes:NodeInfo DataContext="{Binding SelectedNode}"/>
                 </TabItem>
+                <TabItem Header="链路信息">
+                    <Lines:LineInfo DataContext="{Binding SelectedLine}"/>
+                </TabItem>
+                         
             </TabControl>
             
             

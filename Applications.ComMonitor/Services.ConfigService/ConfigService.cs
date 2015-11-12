@@ -101,13 +101,16 @@ namespace Services.ConfigService
             _configInfos.CommProtocol = ConfigItems.UDP;
             _configInfos.CommType = ConfigItems.CLIENT;
             _configInfos.CPUType = ConfigItems.LITTLE;
-            _configInfos.DownTerminalIP = "192.168.1.123";
-            _configInfos.TermialIP = "192.168.1.123";
-            _configInfos.DownTerminalPort = 40001;
+            _configInfos.DownTerminalIP = "192.168.1.1";
+            _configInfos.TermialIP = "192.168.1.195";
+            _configInfos.DownTerminalPort = 4001;
             _configInfos.TerminalPort = 60000;
             _configInfos.IsDistanceShow = false;
             _configInfos.IsGPSShow = false;
             _configInfos.MapBackFilePath = ConfigItems.NORMAL_BACK;
+            _configInfos.BadUpper = 60;
+            _configInfos.MedianUpper = 120;
+            _configInfos.GoodUpper = 180;
 
 
         }

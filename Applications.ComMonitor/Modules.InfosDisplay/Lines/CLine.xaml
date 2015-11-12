@@ -1,11 +1,75 @@
-﻿<UserControl x:Class="Modules.InfosDisplay.Lines.CLine"
+﻿<Map:MapFrameElement x:Class="Modules.InfosDisplay.Lines.CLine"
+             xmlns:Map="clr-namespace:Hazelor.MapCtrl;assembly=Hazelor.MapCtrl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converter="clr-namespace:Modules.InfosDisplay.converters"
+             xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
              mc:Ignorable="d" 
              >
+    <UserControl.Resources>
+        <converter:QuaulityConverter x:Key="QuaulityConverter"/>
+    </UserControl.Resources>
     <Grid>
-        <Line x:Name="TrajectoryLine" Stroke="Yellow" StrokeThickness="2" Visibility="Visible"></Line>
+        <Line
+            x:Name="TrajectoryLinePre"
+            Stroke="{Binding CommStatuPre, Converter={StaticResource QuaulityConverter}}"
+            StrokeThickness="2"
+            Visibility="Visible"/>
+        <Line Margin="0,10,0,0"
+            x:Name="TrajectoryLineBac"
+            Stroke="{Binding CommStatuBac, Converter={StaticResource QuaulityConverter}}"
+            StrokeThickness="2"
+            Visibility="Visible"/>
+        <!--<Border x:Name="LineInfoDisplay" 
+                    Background="#33575B57"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                    Visibility="Visible"
+                    CornerRadius="4"
+                    BorderBrush="#FF464646"
+                    BorderThickness="1"
+                    >
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" >
+                    <Label Foreground="White">信号质量1:</Label>
+                    <TextBlock Foreground="Lime" Text="{Binding LineInfoPre.InfoQuality}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" >
+                    <Label Foreground="White">信号质量2:</Label>
+                    <TextBlock Foreground="Lime" Text="{Binding LineInfoBac.InfoQuality}" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" >
+                    <Label Foreground="White">白噪声1:</Label>
+                    <TextBlock Foreground="Lime" Text="{Binding LineInfoPre.WhiteInfoQuality}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Orientation="Horizontal" >
+                    <Label Foreground="White">白噪声2:</Label>
+                    <TextBlock Foreground="Lime" Text="{Binding LineInfoBac.WhiteInfoQuality}" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="4" Orientation="Horizontal" >
+                    <Label Foreground="White">信噪比1:</Label>
+                    <TextBlock Foreground="Lime" Text="{Binding LineInfoPre.SignalNoiseRatio}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="5" Orientation="Horizontal" >
+                    <Label Foreground="White">信噪比2:</Label>
+                    <TextBlock Foreground="Lime" Text="{Binding LineInfoBac.SignalNoiseRatio}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>-->
+
     </Grid>
-</UserControl>
+</Map:MapFrameElement>

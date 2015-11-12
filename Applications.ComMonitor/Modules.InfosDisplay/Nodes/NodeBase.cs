@@ -1,6 +1,7 @@
 ﻿using Commons.Infrastructure.Models;
 using Hazelor.MapCtrl;
 using Microsoft.Practices.Prism.PubSubEvents;
+using Microsoft.Practices.ServiceLocation;
 using Modules.InfosDisplay.Event;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,8 @@ using System.Windows.Input;
 
 namespace Modules.InfosDisplay.Nodes
 {
-    public class NodeBase : UserControl
+    public class NodeBase : MapFrameElement
     {
-        [Import]
         private IEventAggregator _eventAggregator;
         protected override void OnMouseDoubleClick(System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -25,6 +25,11 @@ namespace Modules.InfosDisplay.Nodes
             _eventAggregator.GetEvent<SelNodeEvent>().Publish(cn);
             base.OnMouseDoubleClick(e);
 
+        }
+
+        public NodeBase()
+        {
+            _eventAggregator= ServiceLocator.Current.GetInstance<IEventAggregator>();
         }
 
         private bool _mouseCaptured = false;

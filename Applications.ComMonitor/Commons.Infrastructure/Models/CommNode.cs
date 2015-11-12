@@ -27,9 +27,39 @@ namespace Commons.Infrastructure.Models
         private double _Altitude = double.PositiveInfinity;
         private int _NodeType = 0;
 
-        public double Longitude { get { return this._Longitude; } set { SetProperty(ref this._Longitude, value); } }
+        public event EventHandler<EventArgs> GPSChangedEvent;
+        public double Longitude { 
+            get
+            { 
+            return this._Longitude;
+            } 
+            set 
+            {
+                SetProperty(ref this._Longitude, value);
+                if (GPSChangedEvent!=null)
+                {
+                    this.GPSChangedEvent(this, null);
+                }
+                
+            } 
+        }
 
-        public double Latitude { get { return this._Latitude; } set { SetProperty(ref this._Latitude, value); } }
+        public double Latitude { 
+            get 
+            { 
+                return this._Latitude;
+            }
+            set 
+            {
+                SetProperty(ref this._Latitude, value);
+                if (GPSChangedEvent != null)
+                {
+                    this.GPSChangedEvent(this, null); 
+                }
+                
+            }
+        }
+
 
         public double Altitude { get { return this._Altitude; } set { SetProperty(ref this._Altitude, value); } }
 

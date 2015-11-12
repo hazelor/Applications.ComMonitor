@@ -1,4 +1,5 @@
 ﻿using Applications.ComMonitor.Notification;
+using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Commons.Infrastructure.Models;
 using Commons.Infrastructure.Requests;
@@ -87,8 +88,9 @@ namespace Applications.ComMonitor
             AdminLoginRequest = new GenericInteractionRequest<AdminLoginNotification>();
             ConfigRequest = new GenericInteractionRequest<ConfigNotification>();
             //注册消息
-
+            _eventAggregator.GetEvent<SystemInfoEvent>().Subscribe(OnSystemInfoUpdate);
             StartCommand = new DelegateCommand(StartExecuted);
+
 
         }
 
@@ -132,5 +134,22 @@ namespace Applications.ComMonitor
             }
         }
 
+        private string _SystemInfo = "系统初始化成功！";
+        public string SystemInfo
+        {
+            get
+            {
+                return this._SystemInfo;
+            }
+            set
+            {
+                SetProperty(ref this._SystemInfo, value);
+            }
+        }
+
+        private void OnSystemInfoUpdate(SystemInfos s)
+        {
+
+        }
     }
 }

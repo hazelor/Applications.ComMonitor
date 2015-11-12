@@ -16,6 +16,7 @@ namespace Services.ProtocolService
         public const ushort O_TDMOM_TOP_INFO_RSP = 0x2005;
         public const ushort O_OMTDM_ALL_USER_IND = 0x2006;
         public const ushort O_TDMOM_FREQ_ONOFF = 0x1005;
+        public const ushort O_TDMON_FILTER_CFG = 0x1002;
 
         public const ushort SRC_ID = 0x2000;
         public const ushort DST_ID = 0x1000;

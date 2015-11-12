@@ -21,6 +21,7 @@ namespace Modules.InfosDisplay.Nodes
     public partial class Boat : NodeBase
     {
         public Boat()
+            : base()
         {
             InitializeComponent();
         }

@@ -68,6 +68,22 @@ namespace Commons.Infrastructure.Models
         /// </summary>
         public int UpdateRate { get; set; }
 
+
+        /// <summary>
+        /// 信号坏的上限，下限为0, <=BadUpper
+        /// </summary>
+        public int BadUpper { get; set; }
+
+        /// <summary>
+        /// 信号中的上限，下限为BadUpper <=MedianUpper
+        /// </summary>
+        public int MedianUpper { get; set; }
+
+        /// <summary>
+        /// 信号中的上限，下限为MedianUpper, <=GoodUpper
+        /// </summary>
+        public int GoodUpper { get; set; }
+
         #endregion
 
     }

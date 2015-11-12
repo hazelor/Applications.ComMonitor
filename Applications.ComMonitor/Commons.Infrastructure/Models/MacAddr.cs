@@ -11,6 +11,7 @@ namespace Commons.Infrastructure.Models
     public class MacAddr
     {
         public static int MACADDRLEN = 8;
+        public static int MACADDRLEN_SHORT = 6;
 
         public byte[] Src { get; set; }
 
@@ -22,8 +23,8 @@ namespace Commons.Infrastructure.Models
             Addr = "";
             foreach (var b in Src)
             {
-                Addr += b.ToString("X");
-                Addr += '-';
+                Addr += b.ToString("X2");
+                //Addr += '';
             }
             Addr = Addr.Remove(Addr.Length - 1);
         }
@@ -37,8 +38,8 @@ namespace Commons.Infrastructure.Models
             Addr = "";
             foreach (var b in Src)
             {
-                Addr += b.ToString("X");
-                Addr += '-';
+                Addr += b.ToString("X2");
+                //Addr += '';
             }
             Addr = Addr.Remove(Addr.Length - 1);
 

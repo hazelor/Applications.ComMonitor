@@ -68,5 +68,10 @@ namespace Applications.ComMonitor
             this.NodeDisplayButton.IsChecked = true;
             this.regionManager.RequestNavigate(RegionNames.MainRegion, InfoDisplayUri);
         }
+
+        private void OnExit(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
     }
 }

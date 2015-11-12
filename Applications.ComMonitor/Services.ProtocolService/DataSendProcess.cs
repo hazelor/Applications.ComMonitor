@@ -120,6 +120,34 @@ namespace Services.ProtocolService
             return res_mh;
         }
 
+
+        public void FilterMsg(ushort[] msgs)
+        {
+            MsgHeader mh = new MsgHeader();
+            //参数赋值
+            mh.MsgID = ConstIDs.O_TDMON_FILTER_CFG;
+            mh.SrcID = ConstIDs.SRC_ID;
+            mh.DstID = ConstIDs.DST_ID;
+            mh.puData = 0;
+            mh.DataLen = (uint)msgs.Length*sizeof(ushort);
+            mh.MsgLen = (uint)Marshal.SizeOf(mh);
+            byte[] sendBuffer = new byte[mh.DataLen + mh.MsgLen];
+            CheckCPUTypeMsgHeader(ref mh);
+            int index = 0;
+            Buffer.BlockCopy(StructConverter.StructToBytes(mh), 0, sendBuffer, index, Marshal.SizeOf(typeof(MsgHeader)));
+            index += Marshal.SizeOf(typeof(MsgHeader));
+            for (int i = 0; i < msgs.Length; i++)
+            {
+                if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == "Little"))
+                {
+                    Buffer.BlockCopy(BitConverter.GetBytes(Endian.SwapUInt16(msgs[i])),0,sendBuffer,index,2);
+                    index += 2;
+                }
+            }
+            AddSendData(sendBuffer);
+            //SendData(sendBuffer);
+
+        }
         private void CheckCPUTypeMsgHeader(ref MsgHeader mh)
         {
             if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == "Little"))

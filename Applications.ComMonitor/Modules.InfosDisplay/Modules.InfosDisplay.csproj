@@ -94,6 +94,11 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="converters\LineValueConverter.cs" />
+    <Compile Include="converters\QuaulityConverter.cs" />
+    <Compile Include="Lines\LineInfo.xaml.cs">
+      <DependentUpon>LineInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tool\Converters.cs" />
     <Compile Include="Tool\TreeValueTypeTemplateSelector.cs" />
     <Page Include="InfosPanel.xaml">
@@ -110,6 +115,10 @@
     <Page Include="Lines\CLine.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Lines\LineInfo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Nodes\Aerocraft.xaml">
       <SubType>Designer</SubType>
@@ -201,6 +210,7 @@
     <Resource Include="images\LabelBackGround2.png" />
     <Resource Include="images\TextBoxBackGround2.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Modules\" /Y</PostBuildEvent>

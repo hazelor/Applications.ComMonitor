@@ -48,7 +48,7 @@ namespace Services.ProtocolService
         }
 
         PreciseTimer _queryTimer = new PreciseTimer();
-
+        PreciseTimer _sendTimer = new PreciseTimer(20);
         private ushort MsgID;
         private ushort SrcID;
         private ushort DstID;
@@ -88,10 +88,14 @@ namespace Services.ProtocolService
             _CommNet.CommNodes = new ObservableCollection<CommNode>();
             _CommNet.UserDevs = new ObservableCollection<UserDev>();
             DTerminalInfo.RouteInfo = new ObservableCollection<RouteInfo>();
+
+            
             //获取基础数据收发服务的实例
             _tcpClientService = new TcpClientService(_configService.ConfigInfos.TerminalPort);
             _udpClientService = new UdpClientService(_configService.ConfigInfos.DownTerminalIP,
-                _configService.ConfigInfos.DownTerminalPort, _configService.ConfigInfos.TerminalPort);
+                _configService.ConfigInfos.DownTerminalPort,
+                _configService.ConfigInfos.TermialIP,
+                _configService.ConfigInfos.TerminalPort);
             _tcpListenerService = new TcpListenerService(_configService.ConfigInfos.TerminalPort);
             //获取该类下面对应的处理方法的反射，用以与ID对应并方便扩展调用，如需新的处理方法可定义一个method并辅以ParserAttribute
             var info  = typeof(ProtocolService);
@@ -101,7 +105,6 @@ namespace Services.ProtocolService
                 try
                 {
                      ma = (ParserAttribute)Attribute.GetCustomAttribute(item, typeof(ParserAttribute));
-                
                 }
                 catch (ArgumentNullException)
                 {
@@ -148,6 +151,7 @@ namespace Services.ProtocolService
             if (CanStartTimer)
             {
                 _queryTimer.Start();
+                _sendTimer.Start();
                 
             }
             IsStartChannel = true;
@@ -157,65 +161,108 @@ namespace Services.ProtocolService
         /// </summary>
         public void StopChannel()
         {
+            _sendTimer.Stop();
             _queryTimer.Stop();
             ResetChannel();
             IsStartChannel = false;
         }
 
-        /// <summary>
-        /// 通过TcpClient向下位机发送数据
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void QueryByTcpClient(object sender, EventArgs e)
-        {
-            if (CanQueryRouteAndTopInfo)
-            {
-                _tcpClientService.SendData(QueryRouteInfo());
-                _tcpClientService.SendData(QueryTopInfo());
-            }
-            else
-            {
-                _tcpClientService.SendData(SendIpInfo());
-            }
-        }
+        ///// <summary>
+        ///// 通过TcpClient向下位机发送数据
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void QueryByTcpClient(object sender, EventArgs e)
+        //{
+        //    if (CanQueryRouteAndTopInfo)
+        //    {
+        //        _tcpClientService.SendData(QueryRouteInfo());
+        //        _tcpClientService.SendData(QueryTopInfo());
+        //    }
+        //    else
+        //    {
+        //        _tcpClientService.SendData(SendIpInfo());
+        //    }
+        //}
 
-        /// <summary>
-        /// 通过TcpListener向下位机发送数据
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void QueryByTcpListener(object sender, EventArgs e)
-        {
-            if (CanQueryRouteAndTopInfo)
-            {
-                _tcpListenerService.SendDataToALL(QueryRouteInfo());
-                _tcpListenerService.SendDataToALL(QueryTopInfo());
-            }
-            else
-            {
-                _tcpListenerService.SendDataToALL(SendIpInfo());
-            }
-        }
+        ///// <summary>
+        ///// 通过TcpListener向下位机发送数据
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void QueryByTcpListener(object sender, EventArgs e)
+        //{
+        //    if (CanQueryRouteAndTopInfo)
+        //    {
+        //        _tcpListenerService.SendDataToALL(QueryRouteInfo());
+        //        _tcpListenerService.SendDataToALL(QueryTopInfo());
+        //    }
+        //    else
+        //    {
+        //        _tcpListenerService.SendDataToALL(SendIpInfo());
+        //    }
+        //}
 
         /// <summary>
         /// 通过UdpClient向下位机发送数据
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void QueryByUdpClient(object sender, EventArgs e)
+        private void OnQueryTimer(object sender, EventArgs e)
         {
             if (CanQueryRouteAndTopInfo)
             {
-                _udpClientService.SendData(QueryRouteInfo());
-                _udpClientService.SendData(QueryTopInfo());
+                AddSendData(QueryRouteInfo());
+                AddSendData(QueryTopInfo());
             }
             else
             {
-                _udpClientService.SendData(SendIpInfo());
+                CanQueryRouteAndTopInfo = true;
+                AddSendData(SendIpInfo());
             }
         }
 
+        private Queue<byte[]> _sendBuffer = new Queue<byte[]>();
+        private void OnSendTimer(object sender, EventArgs e)
+        {
+            
+            if (_sendBuffer.Count == 0)
+	        {
+		        return;
+	        }
+            else{
+                byte[] b = _sendBuffer.Dequeue();
+                this.SendData(b);
+            }
+            
+        }
+        private void AddSendData(byte[] addsb)
+        {
+            this._sendBuffer.Enqueue(addsb);
+        }
+        private void SendData(byte[] sendBuffer)
+        {
+            if (_configService.ConfigInfos.CommProtocol == ConfigItems.UDP)
+            {
+                _udpClientService.SendData(sendBuffer);
+                return;
+            }
+
+            if (_configService.ConfigInfos.CommProtocol == ConfigItems.TCP)
+            {
+                if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
+                {
+                    _tcpClientService.SendData(sendBuffer);
+                    return;
+                }
+                if (_configService.ConfigInfos.CommType == ConfigItems.SERVER)
+                {
+                    _tcpListenerService.SendDataToALL(sendBuffer);
+                    return;
+                }
+
+            }
+        }
         //private void OnQueryTimmer(object sender, EventArgs e)
         //{
         //    //_queryTimmer.Stop();
@@ -230,6 +277,8 @@ namespace Services.ProtocolService
         /// </summary>
         private void InitializeChannel()
         {
+            _sendTimer.Elapsed += OnSendTimer;
+            _queryTimer.Elapsed += OnQueryTimer;
             if (_configService.ConfigInfos.CommProtocol == ConfigItems.TCP)
             {
                 if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
@@ -238,7 +287,7 @@ namespace Services.ProtocolService
                     _tcpClientService.InitializeConfiguration(_configService.ConfigInfos.TerminalPort);
                     _tcpClientService.Register(OnTcpDiagramReceived);
                     _tcpClientService.ErrorHappenedEvent += OnChannelErrorHappened;
-                    _queryTimer.Elapsed+= QueryByTcpClient;
+                    
                     CanStartTimer = _tcpClientService.Connect(_configService.ConfigInfos.DownTerminalIP, _configService.ConfigInfos.DownTerminalPort);
                 }
                 if (_configService.ConfigInfos.CommType == ConfigItems.SERVER)
@@ -246,7 +295,7 @@ namespace Services.ProtocolService
                     ChannelServiceType = "TcpListener";
                     _tcpListenerService.InitializeConfiguration(_configService.ConfigInfos.TerminalPort);
                     _tcpListenerService.Register(OnTcpDiagramReceived);
-                    _queryTimer.Elapsed+= QueryByTcpListener;
+                    
                     _tcpListenerService.ErrorHappenedEvent += OnChannelErrorHappened;
                     _tcpListenerService.StartService();
                     CanStartTimer = true;
@@ -254,20 +303,21 @@ namespace Services.ProtocolService
             }
             if (_configService.ConfigInfos.CommProtocol == ConfigItems.UDP)
             {
-                if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
-                {
-                    ChannelServiceType = "UdpClient";
-                    _udpClientService.InitializeConfiguration(_configService.ConfigInfos.DownTerminalIP,
-                _configService.ConfigInfos.DownTerminalPort, _configService.ConfigInfos.TerminalPort);
-                    _udpClientService.Register(OnUdpDiagramReceived);
-                    _udpClientService.ErrorHappenedEvent += OnChannelErrorHappened;
-                    _queryTimer.Elapsed += QueryByUdpClient;
-                    _udpClientService.StartService();
-                    CanStartTimer = true;
-                }
-                if (_configService.ConfigInfos.CommType == ConfigItems.SERVER)
-                {
-                }
+                ChannelServiceType = "UdpClient";
+                _udpClientService.InitializeConfiguration(_configService.ConfigInfos.DownTerminalIP,
+            _configService.ConfigInfos.DownTerminalPort, _configService.ConfigInfos.TerminalPort);
+                _udpClientService.Register(OnUdpDiagramReceived);
+                _udpClientService.ErrorHappenedEvent += OnChannelErrorHappened;
+                
+                _udpClientService.StartService();
+                CanStartTimer = true;
+                //if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
+                //{
+                   
+                //}
+                //if (_configService.ConfigInfos.CommType == ConfigItems.SERVER)
+                //{
+                //}
             }
         }
 

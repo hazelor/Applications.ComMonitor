@@ -41,7 +41,7 @@ namespace Commons.Infrastructure.Converters
             if (result == null)
                 result = 0;
             result = result / 1000;
-            return System.String.Format(CultureInfo.CurrentUICulture, "{0:f2}°", result.Value);
+            return System.String.Format(CultureInfo.CurrentUICulture, "{0:f2}km", result.Value);
         }
 
         public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)

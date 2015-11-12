@@ -26,8 +26,8 @@ namespace Modules.InfosDisplay
             _protocolService.LineChangeEvent += OnLineChanged;
             _protocolService.NodeChangeEvent += OnNodeChanged;
 
-            _eventAggregator.GetEvent<SelNodeEvent>().Subscribe(SelectChanged);
-
+            _eventAggregator.GetEvent<SelNodeEvent>().Subscribe(NodeSelectChanged);
+            _eventAggregator.GetEvent<SelLineEvent>().Subscribe(LineSelectedChanged);
         }
 
         public event EventHandler<NodeChangeEventArg> NodeChangedEvent;
@@ -49,9 +49,14 @@ namespace Modules.InfosDisplay
             return res;
         }
 
-        private void SelectChanged(CommNode cn)
+        private void NodeSelectChanged(CommNode cn)
         {
             this.SelectedNode = cn;
+        }
+
+        private void LineSelectedChanged(CommLine cl)
+        {
+            this.SelectedLine = cl;
         }
         #region public properties
         public DownTerminalInfo TerminalInfo
@@ -71,6 +76,19 @@ namespace Modules.InfosDisplay
             set
             {
                 SetProperty(ref this._SelectedNode, value);
+            }
+        }
+
+        private CommLine _SelectedLine;
+        public CommLine SelectedLine
+        {
+            get
+            {
+                return this._SelectedLine;
+            }
+            set
+            {
+                SetProperty(ref this._SelectedLine, value);
             }
         }
         #endregion
