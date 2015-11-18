@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="Modules.ConfigDisplay.CommandFilterPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:tool="clr-namespace:Modules.ConfigDisplay.Tool"
+             xmlns:model="clr-namespace:Commons.Infrastructure.Models;assembly=Commons.Infrastructure"
+             mc:Ignorable="d" 
+             d:DesignHeight="320" d:DesignWidth="420">
+    <UserControl.Resources>
+        <DataTemplate x:Key="BaseTemplate">
+            <CheckBox Style="{StaticResource MCheckBoxStyle}" IsChecked="{Binding Filter}" Content="{Binding BaseName}"  Height="25"/>
+        </DataTemplate>
+        <DataTemplate x:Key="MsgTemplate">
+            <CheckBox Style="{StaticResource MCheckBoxStyle}" IsChecked="{Binding Filter}" Content="{Binding Name}"  Height="25"/>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Border CornerRadius="4" BorderBrush="White" BorderThickness="2" Background="{x:Null}" Margin="10">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Background="{x:Null}"
+                          Style="{StaticResource ScrollViewerStyleKey}">
+                <TreeView Grid.Row="0" ItemsSource="{Binding BaseNameCollection}"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      Background="{x:Null}">
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate DataType="{x:Type model:BaseNameItem}"  ItemsSource="{Binding MsgItems}">
+                            <CheckBox Style="{StaticResource MCheckBoxStyle}" IsChecked="{Binding Filter}" Content="{Binding BaseName}" Height="30"/>
+                            <HierarchicalDataTemplate.ItemTemplateSelector>
+                                <!---->
+                            <tool:MsgItemTemplateSelector BaseTemplate="{StaticResource BaseTemplate}"
+                                              MsgTemplate="{StaticResource MsgTemplate}"/>
+                        </HierarchicalDataTemplate.ItemTemplateSelector>
+                    </HierarchicalDataTemplate>
+                    <!--<DataTemplate x:Key="MsgTemplate" DataType="{x:Type model:MsgItem}">
+                        <CheckBox Style="{StaticResource MCheckBoxStyle}" IsChecked="{Binding Filter}" Content="{Binding Name}"/>
+                    </DataTemplate>-->
+                    </TreeView.Resources>
+                </TreeView>
+            </ScrollViewer>
+
+            </Border>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Height="40">
+            <Button Content="全选" Style="{StaticResource MButtonStyle}" Margin="5" Command="{Binding SelectAllCommand}"/>
+            <Button Content="全不选" Style="{StaticResource MButtonStyle}" Margin="5" Command="{Binding CancelAllCommand}"/>
+            <Button Content="发送" Style="{StaticResource MButtonStyle}" Margin="5" Command="{Binding FilterCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
