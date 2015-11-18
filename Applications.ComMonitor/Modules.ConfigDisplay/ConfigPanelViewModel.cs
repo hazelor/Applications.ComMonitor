@@ -75,8 +75,15 @@ namespace Modules.ConfigDisplay
 
             vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.ConfigurationSetting);
             _confController.AddSubConfPanel(vm);
+
+            vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MsgFilterSetting);
+            _confController.AddSubConfPanel(vm);
+
             //添加通知操作
             _confController.AddNotificationCommand();
+
+            //初始化界面
+            _confController.InitViewModels();
 
             //读取config从文件
         }

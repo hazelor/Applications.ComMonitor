@@ -155,6 +155,7 @@ namespace Services.ProtocolService
                 
             }
             IsStartChannel = true;
+            
         }
         /// <summary>
         /// 结束数据定时发送
@@ -165,6 +166,7 @@ namespace Services.ProtocolService
             _queryTimer.Stop();
             ResetChannel();
             IsStartChannel = false;
+            
         }
 
         ///// <summary>

@@ -21,7 +21,7 @@ namespace Commons.Infrastructure.Models
         /// </summary>
         public MacAddr MacAddr { get; set; }
 
-
+        
         private double _Longitude = double.PositiveInfinity;
         private double _Latitude = double.PositiveInfinity;
         private double _Altitude = double.PositiveInfinity;

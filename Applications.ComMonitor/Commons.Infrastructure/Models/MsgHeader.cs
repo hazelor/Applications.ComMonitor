@@ -18,4 +18,11 @@ namespace Commons.Infrastructure.Models
         public UInt32 DataLen;
         public UInt32 MsgLen;
     }
+
+
+    public class EventMsgArgs
+    {
+        public ushort MsgID { get; set; }
+        public object Content { get; set; }
+    }
 }

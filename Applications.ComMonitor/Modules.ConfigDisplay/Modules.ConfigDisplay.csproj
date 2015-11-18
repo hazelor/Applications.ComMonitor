@@ -77,6 +77,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminPasswordPanel.xaml.cs">
+      <DependentUpon>AdminPasswordPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AdminPasswordViewModel.cs" />
     <Compile Include="CommandFilterPanel.xaml.cs">
       <DependentUpon>CommandFilterPanel.xaml</DependentUpon>
     </Compile>
@@ -85,16 +89,16 @@
     <Compile Include="ConfigurationSettingPanel.xaml.cs">
       <DependentUpon>ConfigurationSettingPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OLSESettingPanel.xaml.cs">
-      <DependentUpon>OLSESettingPanel.xaml</DependentUpon>
+    <Compile Include="SettingPanel.xaml.cs">
+      <DependentUpon>SettingPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OLSESettingViewModel.cs" />
     <Compile Include="SubConfViewModelBase.cs" />
     <Compile Include="Tool\MsgItemTemplateSelector.cs" />
-    <Compile Include="WIFISettingPanel.xaml.cs">
-      <DependentUpon>WIFISettingPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WIFISettingViewModel.cs" />
+    <Compile Include="Tool\StructShell.cs" />
+    <Page Include="AdminPasswordPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CommandFilterPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -123,11 +127,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="OLSESettingPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WIFISettingPanel.xaml">
+    <Page Include="SettingPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -192,13 +192,34 @@
     <Resource Include="images\RadioButton.png" />
     <Resource Include="images\RadioButtonBack.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="images\moutain.jpg" />
+    <Resource Include="images\sea.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="images\TextBoxBackGround.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\normal.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="moutain.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="normal.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="sea.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Modules\" /Y
+
+copy "$(ProjectDir)\images\sea.jpg" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\" /Y
+
+copy "$(ProjectDir)\images\normal.jpg" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\" /Y
+
+copy "$(ProjectDir)\images\moutain.jpg" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\" /Y
 
 copy "$(ProjectDir)\Conf\msgs.conf" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\conf\" /Y</PostBuildEvent>
   </PropertyGroup>

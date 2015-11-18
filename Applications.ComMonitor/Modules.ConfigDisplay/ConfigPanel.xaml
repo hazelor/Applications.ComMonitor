@@ -21,21 +21,23 @@
                  VerticalAlignment="Stretch"
                 Margin="20,0,0,0"
                 CornerRadius="4">
-            <ListBox x:Name="ConfNavi" BorderThickness="0" IsSynchronizedWithCurrentItem="True" 
+            <ItemsControl x:Name="ConfNavi" BorderThickness="0" 
                      prism:RegionManager.RegionName="{x:Static inf:RegionNames.ConfNavigatorRegion}"
                      Background="{x:Null}"
                      HorizontalContentAlignment="Center">
-                <ListBox.ItemTemplate>
+                <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <RadioButton  Style="{StaticResource MRadioButtonNonFStyle}"
                                       GroupName="ConfNavi"
                                       Command="{Binding NavigatorCommand}"
                                       Content="{Binding Name}"
                                       HorizontalAlignment="Center"
+                                      Margin="10"
+                                      Width="100"
                                       Height="30"/>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             <!--<StackPanel Orientation="Vertical" Margin="5,10,5,0">
                 <RadioButton x:Name="ConnectSettingButton" Style="{StaticResource MRadioButtonStyle}" Click="OnConnectSettingClicked">连接设置</RadioButton>
                 <RadioButton x:Name="MapSettingButton" Style="{StaticResource MRadioButtonStyle}" Click="OnMapSettingClicked">地图设置</RadioButton>
@@ -56,8 +58,8 @@
             </Grid.RowDefinitions>
             <ContentControl prism:RegionManager.RegionName="{x:Static inf:RegionNames.ConfContentRegion}" 
                                     Grid.Row="0" Margin="10,0,5,5" 
-                                    HorizontalContentAlignment="Stretch" 
-                                    VerticalContentAlignment="Stretch"
+                                    HorizontalContentAlignment="Left" 
+                                    VerticalContentAlignment="Top"
                                 Background="White"
                                 />
             

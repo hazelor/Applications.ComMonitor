@@ -99,5 +99,10 @@ namespace Modules.ConfigDisplay.Controller
         {
             _commandProxy.ApplyConfCommand.RegisterCommand(this.UpdateConfigCommand);
         }
+
+        public void InitViewModels()
+        {
+            naviViewModelList[0].NavigatorCommand.Execute(null);
+        }
     }
 }

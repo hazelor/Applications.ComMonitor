@@ -99,6 +99,7 @@
     <Compile Include="Lines\LineInfo.xaml.cs">
       <DependentUpon>LineInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\RoutInfoDecorator.cs" />
     <Compile Include="Tool\Converters.cs" />
     <Compile Include="Tool\TreeValueTypeTemplateSelector.cs" />
     <Page Include="InfosPanel.xaml">

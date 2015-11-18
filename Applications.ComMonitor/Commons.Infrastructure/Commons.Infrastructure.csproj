@@ -74,6 +74,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\DescriptionFieldAttribute.cs" />
     <Compile Include="Behaviors\AutoPopulateExportedViewsBehavior.cs" />
     <Compile Include="Behaviors\IViewRegionRegistration.cs" />
     <Compile Include="Behaviors\ViewExportAttribute.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Models\MacAddr.cs" />
     <Compile Include="Models\MsgHeader.cs" />
     <Compile Include="Models\MsgItem.cs" />
+    <Compile Include="Models\ParserIDs.cs" />
     <Compile Include="Models\STRU_OMTDM_FREQ_RSP.cs" />
     <Compile Include="Models\STRU_TDMOM_PARA_CFG.cs" />
     <Compile Include="Models\UserDev.cs" />

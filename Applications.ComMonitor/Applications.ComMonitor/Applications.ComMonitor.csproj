@@ -114,6 +114,7 @@
     <Compile Include="ConfigPanel.xaml.cs">
       <DependentUpon>ConfigPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HeightConverter.cs" />
     <Compile Include="Interactions\AdminLoginInterationAction.cs" />
     <Compile Include="Interactions\AdminLoginInterationDialog.cs" />
     <Compile Include="Interactions\ConfigAdapter.cs" />

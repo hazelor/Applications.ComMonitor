@@ -43,13 +43,13 @@ namespace Commons.Infrastructure.Models
 
         public ObservableCollection<RouteInfo> RouteInfo { get; set; }
 
-        /// <summary>
-        /// 路由跳数
-        /// </summary>
-        public int Dist { get; set; }
+        public int numRouteInfo;
+        public void OnUpdate()
+        {
+            this.OnRoutInfoChanged(this, null);
+        }
 
-        public int Weight { get; set; }
-
+        public event EventHandler OnRoutInfoChanged;
 
     }
 }

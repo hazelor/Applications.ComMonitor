@@ -1,4 +1,5 @@
 ﻿using Commons.Infrastructure.Models;
+using Hazelor.Infrastructure.Tools;
 using Hazelor.MapCtrl;
 using Hazelor.MapCtrl.Interfaces;
 using Microsoft.Practices.Prism.PubSubEvents;
@@ -39,20 +40,27 @@ namespace Modules.InfosDisplay.Lines
             base.OnMouseDoubleClick(e);
 
         }
-        public Line PreLineObject
+        public Arrow PreLineObject
         {
             get
             {
-                return this.TrajectoryLinePre;
+                return this.PreTLine;
+            }
+        }
+        public Arrow BacLineObject
+        {
+            get
+            {
+                return this.BacTLine;
             }
         }
 
-        public Line BacLineObject
-        {
-            get
-            {
-                return this.TrajectoryLineBac;
-            }
-        }
+        //public Arrow BacLineObject
+        //{
+        //    get
+        //    {
+        //        return this.TrajectoryLineBac;
+        //    }
+        //}
     }
 }

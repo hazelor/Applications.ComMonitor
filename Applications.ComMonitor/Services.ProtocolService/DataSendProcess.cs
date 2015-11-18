@@ -121,11 +121,12 @@ namespace Services.ProtocolService
         }
 
 
+        
         public void FilterMsg(ushort[] msgs)
         {
             MsgHeader mh = new MsgHeader();
             //参数赋值
-            mh.MsgID = ConstIDs.O_TDMON_FILTER_CFG;
+            mh.MsgID = ConstIDs.O_TDMOM_FILTER_CFG;
             mh.SrcID = ConstIDs.SRC_ID;
             mh.DstID = ConstIDs.DST_ID;
             mh.puData = 0;
@@ -148,6 +149,49 @@ namespace Services.ProtocolService
             //SendData(sendBuffer);
 
         }
+
+
+        
+        public void ParamSetting(byte[] datas)
+        {
+            MsgHeader mh = new MsgHeader();
+            //参数赋值
+            mh.MsgID = ConstIDs.O_TDMOM_PARA_REQ;
+            mh.SrcID = ConstIDs.SRC_ID;
+            mh.DstID = ConstIDs.DST_ID;
+            mh.puData = 0;
+            mh.DataLen = (uint)datas.Length;
+            mh.MsgLen = (uint)Marshal.SizeOf(mh);
+            byte[] sendBuffer = new byte[mh.DataLen + mh.MsgLen];
+            CheckCPUTypeMsgHeader(ref mh);
+            int index = 0;
+            Buffer.BlockCopy(StructConverter.StructToBytes(mh), 0, sendBuffer, index, Marshal.SizeOf(typeof(MsgHeader)));
+            index += Marshal.SizeOf(typeof(MsgHeader));
+            Buffer.BlockCopy(datas, 0, sendBuffer, index, datas.Length);
+
+            AddSendData(sendBuffer);
+
+        }
+        
+        public void FreQuery()
+        {
+            MsgHeader mh = new MsgHeader();
+            //参数赋值
+            mh.MsgID = ConstIDs.STRU_TDMOM_FREQ_REQ;
+            mh.SrcID = ConstIDs.SRC_ID;
+            mh.DstID = ConstIDs.DST_ID;
+            mh.puData = 0;
+            mh.DataLen = 0;
+            mh.MsgLen = (uint)Marshal.SizeOf(mh);
+            byte[] sendBuffer = new byte[mh.DataLen + mh.MsgLen];
+            CheckCPUTypeMsgHeader(ref mh);
+            int index = 0;
+            Buffer.BlockCopy(StructConverter.StructToBytes(mh), 0, sendBuffer, index, Marshal.SizeOf(typeof(MsgHeader)));
+            index += Marshal.SizeOf(typeof(MsgHeader));
+
+            AddSendData(sendBuffer);
+        }
+
         private void CheckCPUTypeMsgHeader(ref MsgHeader mh)
         {
             if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == "Little"))

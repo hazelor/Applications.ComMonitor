@@ -31,4 +31,41 @@ namespace Modules.ConfigDisplay.Tool
             return base.SelectTemplate(item, container);
         }
     }
+    public class SettingItemTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate ComboxTemplate { get; set; }
+        public DataTemplate TextBoxTemplate { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            FieldShell<STRU_OLSR_PARAME> setitem = item as FieldShell<STRU_OLSR_PARAME>;
+            if (setitem != null)
+            {
+                if (setitem.Enums == null)
+                {
+                    return TextBoxTemplate;
+                }
+                else
+                {
+                    return ComboxTemplate;
+                }
+            }
+            FieldShell<STRU_WIFI_PARAME> setwitem = item as FieldShell<STRU_WIFI_PARAME>;
+            if (setwitem != null)
+            {
+                if (setwitem.Enums == null)
+                {
+                    return TextBoxTemplate;
+                }
+                else
+                {
+                    return ComboxTemplate;
+                }
+            }
+
+            return base.SelectTemplate(item, container);
+        }
+    }
 }
+
+

@@ -22,7 +22,13 @@ namespace Commons.Infrastructure.Models
             }
             set
             {
-                SetProperty(ref this._Filter, value);
+                this._Filter = value;
+                this.OnPropertyChanged("Filter");
+               // SetProperty(ref , value);
+                if (FilterChangedEvent == null)
+                {
+                    return;
+                }
                 FilterChangedEvent(this, this._Filter);
             }
         }
@@ -53,6 +59,7 @@ namespace Commons.Infrastructure.Models
                         item.Filter = this._Filter;
                     }
                 }
+                this.OnPropertyChanged("Filter");
             }
         }
 
@@ -69,12 +76,12 @@ namespace Commons.Infrastructure.Models
 
         private void FilterChanged(object sender, bool filter)
         {
-            bool res = true;
-            foreach (var item in MsgItems)
-            {
-                res &= item.Filter;
-            }
-            this._Filter = res;
+            //bool res = true;
+            //foreach (var item in MsgItems)
+            //{
+            //    res &= item.Filter;
+            //}
+            //this._Filter = res;
             this.OnPropertyChanged("Filter");
         }
     }

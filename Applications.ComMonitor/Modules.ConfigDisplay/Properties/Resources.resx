@@ -118,6 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MsgConfPath" xml:space="preserve">
-    <value>./conf/msg.conf</value>
+    <value>./conf/msgs.conf</value>
+  </data>
+  <data name="ParamSettingFilePath" xml:space="preserve">
+    <value>./conf/settingParams.conf</value>
   </data>
 </root>

@@ -51,6 +51,7 @@ namespace Services.ProtocolService
         }
 
         #region Parsers
+        public event EventHandler<EventMsgArgs> RecieveMsgEvent;
         
         [Parser(ParseID = ConstIDs.O_TDMOM_IP_PORT_CNF, Description = "接收下位机接收上位机IP确认信息")]
         private void ParseIPPORTCNF(byte[] srcBuffer)
@@ -64,7 +65,7 @@ namespace Services.ProtocolService
         [Parser(ParseID = ConstIDs.O_TDMOM_ROUTE_INFO_RSP, Description = "接收路由信息")]
         private void ParseROUTEINFORSP(byte[] srcBuffer)
         {
-            DTerminalInfo.RouteInfo.Clear();
+            //DTerminalInfo.RouteInfo.Clear();
             int index = ParseMsgHeader(srcBuffer);
             //num of node
             UInt32 numRouteInfo = BitConverter.ToUInt32(srcBuffer, index);
@@ -72,14 +73,32 @@ namespace Services.ProtocolService
             {
                 numRouteInfo = Endian.SwapUInt32(numRouteInfo);
             }
+            DTerminalInfo.numRouteInfo = (int)numRouteInfo;
             RouteInfo ri = new RouteInfo();
-            for (int i = 0; i < MAX_NODE_NUM; i++)
+            if (DTerminalInfo.RouteInfo.Count == 0)
             {
-                byte[] tmpBuffer = new byte[Marshal.SizeOf(ri)];
-                Buffer.BlockCopy(srcBuffer, index, tmpBuffer, 0, tmpBuffer.Count());
-                ri = (RouteInfo)StructConverter.BytesToStruct(tmpBuffer, tmpBuffer.Count(), typeof(RouteInfo));
-                index += Marshal.SizeOf(ri);
+                for (int i = 0; i < MAX_NODE_NUM; i++)
+                {
+                    byte[] tmpBuffer = new byte[Marshal.SizeOf(ri)];
+                    Buffer.BlockCopy(srcBuffer, index, tmpBuffer, 0, tmpBuffer.Count());
+                    ri = (RouteInfo)StructConverter.BytesToStruct(tmpBuffer, tmpBuffer.Count(), typeof(RouteInfo));
+                    index += Marshal.SizeOf(ri);
+                    DTerminalInfo.RouteInfo.Add(ri);
+                }
             }
+            else
+            {
+                for (int i = 0; i < MAX_NODE_NUM; i++)
+                {
+                    byte[] tmpBuffer = new byte[Marshal.SizeOf(ri)];
+                    Buffer.BlockCopy(srcBuffer, index, tmpBuffer, 0, tmpBuffer.Count());
+                    ri = (RouteInfo)StructConverter.BytesToStruct(tmpBuffer, tmpBuffer.Count(), typeof(RouteInfo));
+                    index += Marshal.SizeOf(ri);
+                    DTerminalInfo.RouteInfo[i] = (ri);
+                }
+            }
+            
+            DTerminalInfo.OnUpdate();
             //if ((MsgLen- index)%8 == 0)
             //{
             //    int numRouteInfo = (int)((MsgLen - index) / 8);
@@ -199,7 +218,7 @@ namespace Services.ProtocolService
 
                         CommLine cl = FindLine(i, j);
                         bool IsNull = (cl == null);
-                        if (IsNull && ((CommStatues)TopInfo[i, j].InfoQuality != 0 || (CommStatues)TopInfo[j, i].InfoQuality != 0))
+                        if (IsNull )
                         {
                             
                             cl = new CommLine { StartNode = FindNode(i),
@@ -213,6 +232,7 @@ namespace Services.ProtocolService
                         }
                         else
                         {
+
                             cl.LineInfoPre = TopInfo[i, j];
                             cl.LineInfoBac = TopInfo[j, i];
                             cl.CommStatuPre = GetCommStatus(TopInfo[i, j].InfoQuality);
@@ -248,7 +268,31 @@ namespace Services.ProtocolService
                 CommunicationNet.UserDevs.Add(ud);
             }
         }
-        
+
+
+
+        [Parser(ParseID = ConstIDs.STRU_OMTDM_FREQ_RSP, Description = "接收频点查询消息")]
+        private void ParseFREQRSP(byte[] srcBuffer)
+        {
+            int index = ParseMsgHeader(srcBuffer);
+            int userDevNum = (int)MsgLen;
+            if (userDevNum == 24)
+            {
+                byte[] tmpBuffer = new byte[4];
+                Buffer.BlockCopy(srcBuffer,index,tmpBuffer,0,4);
+                //处理四个频点值
+                RecieveMsgEvent(this, new EventMsgArgs { MsgID = ConstIDs.STRU_OMTDM_FREQ_RSP, Content = tmpBuffer });
+            }
+        }
+
+        [Parser(ParseID = ConstIDs.O_TDMOM_PARA_CFG, Description = "接参数设置成功消息")]
+        private void ParsePARAREQ(byte[] srcBuffer)
+        {
+            //接收参数成功
+            RecieveMsgEvent(this, new EventMsgArgs { MsgID = ConstIDs.O_TDMOM_PARA_REQ });
+
+        }
+
         private CommNode FindMac(MacAddr ma)
         {
             CommNode res = null;

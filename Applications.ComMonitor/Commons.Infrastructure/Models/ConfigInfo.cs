@@ -59,6 +59,8 @@ namespace Commons.Infrastructure.Models
 
         public bool IsGPSShow { get; set; }
 
+        public bool IsMapShow { get; set; }
+
         #endregion
 
         #region TopologySetting

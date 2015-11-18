@@ -2,6 +2,7 @@
 using Commons.Infrastructure.Models;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
+using Modules.ConfigDisplay.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -12,8 +13,9 @@ using System.Xml.Linq;
 
 namespace Modules.ConfigDisplay
 {
-    [Export(typeof(CommandFilterViewModel))]
-    class CommandFilterViewModel :BindableBase
+    [Export(PanelNames.MsgFilterSetting, typeof(IConfViewModel))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
+    class CommandFilterViewModel : SubConfViewModelBase
     {
         private IProtocolService _protocolService;
 
@@ -21,17 +23,25 @@ namespace Modules.ConfigDisplay
         public CommandFilterViewModel(IProtocolService protocolService)
         {
             _protocolService = protocolService;
+            ApplyCommand = new DelegateCommand(ApplyExecuted);
+            Uri = PanelNames.MsgFilterSettingPanel;
+            Name = "消息过滤";
             SelectAllCommand = new DelegateCommand(SelectAllExecuted);
             CancelAllCommand = new DelegateCommand(CancelAllExecuted);
             FilterCommand = new DelegateCommand(FilterExecuted);
             InitConfig();
         }
+        private void ApplyExecuted()
+        {
+
+        }
+
         private XDocument doc;
         private void InitConfig()
         {
             doc = XDocument.Load(Properties.Resources.MsgConfPath);
 
-            XElement root = doc.Element("ArrayOfmsg");
+            XElement root = doc.Element("ArrayOfMsg");
 
             foreach(var e in root.Elements("msg"))
             {
@@ -53,9 +63,10 @@ namespace Modules.ConfigDisplay
                 return this._BaseNameCollection;
             }
         }
+
         private void AddMessage(XElement msg)
         {
-            string BaseName = msg.Element("BaseName").Value;
+            string BaseName = msg.Element("basename").Value;
             foreach (var baseitem in _BaseNameCollection)
             {
                 if (baseitem.BaseName == BaseName)
@@ -66,6 +77,7 @@ namespace Modules.ConfigDisplay
             }
             BaseNameItem bni = new BaseNameItem { BaseName = BaseName, Filter = false };
             _BaseNameCollection.Add(bni);
+            bni.MsgItems = new List<MsgItem>();
             bni.MsgItems.Add(ConstructMessage(msg));
 
         }
@@ -75,7 +87,15 @@ namespace Modules.ConfigDisplay
             MsgItem mi = new MsgItem();
             mi.ID = ushort.Parse(msg.Element("id").Value, System.Globalization.NumberStyles.HexNumber);
             mi.Name = msg.Element("name").Value;
-            mi.Filter = bool.Parse(msg.Element("filter").Value);
+            string tmp = msg.Element("filter").Value.ToLower();
+            if (tmp == "true")
+            {
+                mi.Filter = true;
+            }
+            else
+            {
+                mi.Filter = false;
+            }
             mi.Core = int.Parse(msg.Element("core").Value);
             mi.FilterChangedEvent += MsgItemFilterChanged;
             return mi;

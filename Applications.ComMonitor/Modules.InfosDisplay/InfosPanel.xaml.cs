@@ -145,6 +145,7 @@ namespace Modules.InfosDisplay
                 this.tileCanvas.SetBackGround();
             }
 
+            tileCanvas.ShowMap(_configService.ConfigInfos.IsMapShow);
         }
 
         private void OperationNode(object sender, NodeChangeEventArg e)
@@ -152,18 +153,20 @@ namespace Modules.InfosDisplay
             if (e.oper == Operations.ADD)
             {
                 MapFrameElement obj;
-                switch(e.Node.NodeType)
+                switch ((NodeType)e.Node.NodeType)
                 {
-                    case 0:
+                    case NodeType.Aircraft:
                         {
                             obj = new Aerocraft();
                             break;
                         }
-                    case 1:{
+                    case NodeType.Boat:
+                        {
                         obj = new Boat();
                         break;
                     }
-                    case 2:{
+                    case NodeType.Vehicle:
+                        {
                         obj = new Vehicle();
                         break;
                     }

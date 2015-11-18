@@ -34,12 +34,13 @@ namespace Modules.ConfigDisplay
             _CenterLatitude = _configService.ConfigInfos.CenteredLatitude;
             _CenterLongitude = _configService.ConfigInfos.CenteredLongitude;
             _IsGPSShow = _configService.ConfigInfos.IsGPSShow;
+            _IsMapShow = _configService.ConfigInfos.IsMapShow;
 
             _IsNormal = _configService.ConfigInfos.MapBackFilePath == ConfigItems.NORMAL_BACK;
 
-            _IsSea = _configService.ConfigInfos.CommType == ConfigItems.SEA_BACK;
+            _IsSea = _configService.ConfigInfos.MapBackFilePath == ConfigItems.SEA_BACK;
 
-            _IsMoutain = _configService.ConfigInfos.CommProtocol == ConfigItems.MOUNTAIN_BACK;
+            _IsMoutain = _configService.ConfigInfos.MapBackFilePath == ConfigItems.MOUNTAIN_BACK;
 
         }
         private void ApplyExecuted()
@@ -49,6 +50,7 @@ namespace Modules.ConfigDisplay
             _configService.ConfigInfos.MapBackFilePath = BackgroundFilePath;
             _configService.ConfigInfos.IsDistanceShow = IsDistanceShow;
             _configService.ConfigInfos.IsGPSShow = IsGPSShow;
+            _configService.ConfigInfos.IsMapShow = IsMapShow;
 
             _configService.SaveConfigCommand.Execute(null);
             IsAvaibleApply = false;
@@ -58,7 +60,7 @@ namespace Modules.ConfigDisplay
         public DelegateCommand<string> ChangeBackCommand { get; set; }
         private void ChangeBackExecuted(string type)
         {
-            BackgroundFilePath = type + ".png";
+            BackgroundFilePath = type + ".jpg";
         }
         #region Properties
         private string _BackgroundFilePath;
@@ -103,6 +105,21 @@ namespace Modules.ConfigDisplay
                 SetApplySign();
             }
         }
+        private bool _IsMapShow;
+
+        public bool IsMapShow
+        {
+            get
+            {
+                return this._IsMapShow;
+            }
+            set
+            {
+                SetProperty(ref this._IsMapShow, value);
+                SetApplySign();
+            }
+        }
+        
         private double _CenterLatitude;
 
         public double CenterLatitude

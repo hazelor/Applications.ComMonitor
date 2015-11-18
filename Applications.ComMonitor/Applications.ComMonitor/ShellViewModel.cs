@@ -113,11 +113,13 @@ namespace Applications.ComMonitor
             {
                 StartName = "结束";
                 _protocolService.StartChannel();
+                _eventAggregator.GetEvent<SystemInfoEvent>().Publish(new SystemInfos { Info = "与下位机通信开始!", Time = DateTime.Now });
             }
             else
             {
                 StartName = "开始";
                 _protocolService.StopChannel();
+                _eventAggregator.GetEvent<SystemInfoEvent>().Publish(new SystemInfos { Info = "与下位机通信停止!", Time = DateTime.Now });
             }
         }
 
@@ -149,7 +151,7 @@ namespace Applications.ComMonitor
 
         private void OnSystemInfoUpdate(SystemInfos s)
         {
-
+            SystemInfo = s.ToString();
         }
     }
 }

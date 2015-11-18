@@ -45,6 +45,7 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>  
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.5*"/>
@@ -70,6 +71,10 @@
         <Label Grid.Column="0" Grid.Row="3" Style="{StaticResource MLabel2Style}">类型</Label>
         <TextBlock Grid.Column="1" Grid.Row="3" MinWidth="150" Text="{Binding NodeType}"
                    VerticalAlignment="Center"
+                   Style="{StaticResource MTextBox2Style}"/>
+        <Label Grid.Column="0" Grid.Row="4" Style="{StaticResource MLabel2Style}">MAC</Label>
+        <TextBlock Grid.Column="1" Grid.Row="4" MinWidth="150"
+                   Text="{Binding MacAddr}"
                    Style="{StaticResource MTextBox2Style}"/>
 
     </Grid>

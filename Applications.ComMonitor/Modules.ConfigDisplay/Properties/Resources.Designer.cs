@@ -61,11 +61,20 @@ namespace Modules.ConfigDisplay.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ./conf/msg.conf.
+        ///   Looks up a localized string similar to ./conf/msgs.conf.
         /// </summary>
         internal static string MsgConfPath {
             get {
                 return ResourceManager.GetString("MsgConfPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ./conf/settingParams.conf.
+        /// </summary>
+        internal static string ParamSettingFilePath {
+            get {
+                return ResourceManager.GetString("ParamSettingFilePath", resourceCulture);
             }
         }
     }

@@ -29,6 +29,10 @@ namespace Commons.Infrastructure.Models
             Addr = Addr.Remove(Addr.Length - 1);
         }
 
+        public override string ToString()
+        {
+            return Addr;
+        }
         public MacAddr(byte[] src)
         {
             System.Diagnostics.Debug.Assert(src.Length <= MACADDRLEN, "the macaddr length"+src.Length+" must small than " + MACADDRLEN.ToString());

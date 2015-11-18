@@ -17,5 +17,7 @@ namespace Modules.ConfigDisplay.Controller
         event EventHandler<EventArgs> IsAvailableApplyHandler;
 
         void AddNotificationCommand();
+
+        void InitViewModels();
     }
 }

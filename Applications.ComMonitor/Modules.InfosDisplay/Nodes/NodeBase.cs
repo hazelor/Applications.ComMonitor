@@ -16,6 +16,13 @@ using System.Windows.Input;
 
 namespace Modules.InfosDisplay.Nodes
 {
+    public enum NodeType
+    {
+        Aircraft = 0,
+        Boat = 1,
+        Vehicle = 2,
+    }
+
     public class NodeBase : MapFrameElement
     {
         private IEventAggregator _eventAggregator;

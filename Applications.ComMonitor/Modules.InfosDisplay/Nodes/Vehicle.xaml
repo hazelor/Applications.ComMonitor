@@ -22,6 +22,6 @@
             </Path.RenderTransform>
         </Path>
 
-        <Image Source="../images/Vehicle.png" Width="50" Height="50"/>
+        <Image Source="../images/Vehicle.png" Width="50" Height="50" Cursor="Hand"/>
     </Grid>
 </Node:NodeBase>

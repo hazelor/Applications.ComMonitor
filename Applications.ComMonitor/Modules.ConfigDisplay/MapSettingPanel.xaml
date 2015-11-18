@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="420">
+             d:DesignHeight="410" d:DesignWidth="420">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -15,33 +15,44 @@
             
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.4*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <!--距离显示-->
-        <CheckBox Style="{StaticResource MCheckBoxStyle}"
-               Grid.Row="0" Grid.Column="0"
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                    Margin="43,0,0,0">
+            <CheckBox Style="{StaticResource MCheckBoxStyle}"
                VerticalAlignment="Center"
                   Height="24"
                  HorizontalAlignment="Center"
                   IsChecked="{Binding IsDistanceShow}">距离显示</CheckBox>
-        <CheckBox Style="{StaticResource MCheckBoxStyle}"
-               Grid.Row="0" Grid.Column="1"
+            <CheckBox Style="{StaticResource MCheckBoxStyle}"
                VerticalAlignment="Center"
                   Height="24"
                  HorizontalAlignment="Center"
                   IsChecked="{Binding IsGPSShow}">GPS显示</CheckBox>
+            <CheckBox Style="{StaticResource MCheckBoxStyle}"
+               VerticalAlignment="Center"
+                  Height="24"
+                 HorizontalAlignment="Center"
+                  IsChecked="{Binding IsMapShow}">地图显示</CheckBox>
+            
+        </StackPanel>
+        
         <!--起始经纬度-->
         <Label Style="{StaticResource MLabelStyle}"
                Grid.Row="1" Grid.Column="0"
                VerticalAlignment="Center"
                Height="30"
-               HorizontalAlignment="Center">初始经度</Label>
+               HorizontalAlignment="Left"
+               Margin="40,0,0,0">初始经度</Label>
         <Label Style="{StaticResource MLabelStyle}"
                Grid.Row="2" Grid.Column="0"
                VerticalAlignment="Center"
                Height="30"
-               HorizontalAlignment="Center">初始纬度</Label>
+               HorizontalAlignment="Left"
+               Margin="40,0,0,0">初始纬度</Label>
         <TextBox Style="{StaticResource MTextBoxStyle}"
                  Grid.Row="1" Grid.Column="1"
                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
@@ -59,50 +70,50 @@
 
         <!--背景-->
         <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="40,5,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="40,0,0,0">
                 <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
                      GroupName="BGSelection"
-                             Height="10"
+                             Height="12"
+                             Margin="0,10,0,10"
                              IsChecked="{Binding IsNormal}"
                              Command="{Binding ChangeBackCommand}" CommandParameter="normal"
                      >通用</RadioButton>
                 <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
                      GroupName="BGSelection"
-                             Height="10"
+                             Height="12"
+                             Margin="0,10,0,10"
                              IsChecked="{Binding IsSea}"
                              Command="{Binding ChangeBackCommand}" CommandParameter="sea"
                      >海洋</RadioButton>
                 <RadioButton Style="{StaticResource MRadioButtonGroupStyle}"
                      GroupName="BGSelection"
-                             Height="10"
+                             Height="12"
+                             Margin="0,10,0,10"
                              IsChecked="{Binding IsMountain}"
-                             Command="{Binding ChangeBackCommand}" CommandParameter="mountain"
+                             Command="{Binding ChangeBackCommand}" CommandParameter="moutain"
                      >山地</RadioButton>
             </StackPanel>
             <Border BorderBrush="Gray"
                     BorderThickness="1"
                     CornerRadius="4"
                     Margin="40,5,0,5"
-                    Grid.Row="1" Height="256" Width="256" HorizontalAlignment="Left">
+                    Grid.Column="1" Height="256" Width="256" HorizontalAlignment="Left">
                 <Image x:Name="PreView"
-                       
                    Source="{Binding Path=BackgroundFilePath}"></Image>
             </Border>
-          
-            
         </Grid>
        
         
-        <Button Style="{StaticResource MButtonStyle}"
+        <!--<Button Style="{StaticResource MButtonStyle}"
                 Grid.Row="4"
                 Grid.Column="1"
                 Height="30"
                 Margin="5,0,20,0"
                 HorizontalAlignment="Right"
-                Command="{Binding ApplyCommand}">应用</Button>
+                Command="{Binding ApplyCommand}">应用</Button>-->
     </Grid>
 </UserControl>

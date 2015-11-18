@@ -15,5 +15,10 @@ namespace Commons.Infrastructure.Events
     {
         public string Info { get; set; }
         public DateTime Time { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}:{1}", Time.ToShortTimeString(), Info);
+        }
     }
 }
