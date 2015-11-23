@@ -30,6 +30,7 @@ namespace Modules.ConfigDisplay
 
         public string Name { get; set; }
 
+        public bool IsNaviChecked { get; set; }
         private void NavigateExecuted()
         {
             regionManager.RequestNavigate(RegionNames.ConfContentRegion, new Uri(Uri, UriKind.Relative));

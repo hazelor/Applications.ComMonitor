@@ -36,13 +36,18 @@ namespace Modules.InfosDisplay
 
         public event EventHandler<NodeChangeEventArg> NodeChangedEvent;
         public event EventHandler<LineChangeEventArg> LineChangedEvent;
+
+        public event EventHandler SelectedNodeEvent;
+        public event EventHandler SelectedLineEvent;
         private void OnNodeChanged(object sender, NodeChangeEventArg e)
         {
+            SelectedNodeEvent(this, null);
             NodeChangedEvent(this, e);
         }
 
         private void OnLineChanged(object sender, LineChangeEventArg e)
         {
+            SelectedLineEvent(this,null);
             LineChangedEvent(this, e);
         }
 
@@ -110,7 +115,7 @@ namespace Modules.InfosDisplay
             }
         }
 
-        private CommNode _SelectedNode;
+        private CommNode _SelectedNode = null;
         public CommNode SelectedNode
         {
             get{
@@ -122,7 +127,7 @@ namespace Modules.InfosDisplay
             }
         }
 
-        private CommLine _SelectedLine;
+        private CommLine _SelectedLine = null;
         public CommLine SelectedLine
         {
             get

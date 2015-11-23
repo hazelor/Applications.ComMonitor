@@ -102,7 +102,10 @@ namespace Modules.ConfigDisplay.Controller
 
         public void InitViewModels()
         {
+            naviViewModelList[0].IsNaviChecked = true;
             naviViewModelList[0].NavigatorCommand.Execute(null);
+
+
         }
     }
 }

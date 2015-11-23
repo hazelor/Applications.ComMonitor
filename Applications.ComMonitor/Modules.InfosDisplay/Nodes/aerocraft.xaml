@@ -24,7 +24,7 @@
 
         <Image Source="../images/Airplane.png" Width="50" Height="50" Margin="-25,-25,0,0" Cursor="Hand">
             <Image.Effect>
-                <DropShadowEffect/>
+                <DropShadowEffect x:Name="Shadow"/>
             </Image.Effect>
         </Image>
 

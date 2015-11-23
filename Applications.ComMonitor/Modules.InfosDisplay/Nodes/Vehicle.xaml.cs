@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Commons.Infrastructure.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,18 @@ namespace Modules.InfosDisplay.Nodes
             : base()
         {
             InitializeComponent();
+        }
+
+        protected override void OnSelectedNodeChanged(CommNode cn)
+        {
+            if (cn == this.DataContext)
+            {
+                this.Shadow.Color = Colors.Green;
+            }
+            else
+            {
+                this.Shadow.Color = Colors.Black;
+            }
         }
     }
 }

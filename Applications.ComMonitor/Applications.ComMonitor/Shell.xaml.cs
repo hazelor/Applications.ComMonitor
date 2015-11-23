@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 namespace Applications.ComMonitor
 {
     [Export(typeof(Shell))]
-    [PartCreationPolicy(CreationPolicy.Shared)]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

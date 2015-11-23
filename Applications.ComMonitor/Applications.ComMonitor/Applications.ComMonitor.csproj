@@ -121,6 +121,10 @@
     <Compile Include="Interactions\ConfigInterationAction.cs" />
     <Compile Include="Interactions\ConfigInterationDialog.cs" />
     <Compile Include="Interactions\ConfigInterationViewModel.cs" />
+    <Compile Include="LoginPanel.xaml.cs">
+      <DependentUpon>LoginPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LoginViewModel.cs" />
     <Compile Include="Notification\AdminLoginNotification.cs" />
     <Compile Include="Notification\ConfigNotification.cs" />
     <Compile Include="PasswordBoxHelper.cs" />
@@ -130,6 +134,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="ConfigPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoginPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -224,6 +232,9 @@
   <ItemGroup>
     <Resource Include="theme\images\RadioButtonBackground.png" />
     <Resource Include="theme\images\RadioButtonForeground.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="theme\images\cancel.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

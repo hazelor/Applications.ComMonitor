@@ -1,6 +1,8 @@
-﻿using Commons.Infrastructure.Interface;
+﻿using Commons.Infrastructure.Events;
+using Commons.Infrastructure.Interface;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Modules.ConfigDisplay.Interface;
 using System;
 using System.Collections.Generic;
@@ -15,10 +17,11 @@ namespace Modules.ConfigDisplay
     [PartCreationPolicy(CreationPolicy.Shared)]
     class LinkStateSettingViewModel : SubConfViewModelBase
     {
-        
+        IEventAggregator _eventAggregator;
         [ImportingConstructor]
-        public LinkStateSettingViewModel(IConfigService configService)
+        public LinkStateSettingViewModel(IConfigService configService, IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             _configService = configService;
             Uri = PanelNames.LinkStateSettingPanel;
             Name = "拓扑设置";
@@ -33,6 +36,7 @@ namespace Modules.ConfigDisplay
             _configService.SaveConfigCommand.Execute(null);
             IsAvaibleApply = false;
             BaseApplyAvailableUpdate(IsAvaibleApply);
+            _eventAggregator.GetEvent<ConfigUpdateEvent>().Publish(true);
         }
 
         #region Perperties

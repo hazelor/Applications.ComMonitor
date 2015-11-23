@@ -13,6 +13,7 @@ namespace Modules.ConfigDisplay
         public const string LinkStateSettingPanel = "LinkStateSettingPanel";
         public const string ConfigurationSettingPanel = "ConfigurationSettingPanel";
         public const string MsgFilterSettingPanel = "MsgFilterSettingPanel";
+        public const string WIFICtrlPanel = "WIFICtrlPanel";
         //public const string
 
         public const string MapSetting = "MapSetting";
@@ -20,5 +21,6 @@ namespace Modules.ConfigDisplay
         public const string LinkStateSetting = "LinkStateSetting";
         public const string ConfigurationSetting = "ConfigurationSetting";
         public const string MsgFilterSetting = "MsgFilterSetting";
+        public const string WIFICtrlSetting = "WIFICtrlSetting";
     }
 }

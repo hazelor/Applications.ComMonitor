@@ -64,7 +64,7 @@ namespace Modules.InfosDisplay.Model
                     return res;
                 }
                 byte[] tmp = new byte[8];
-                for (int i = 0; i < 30; i++)
+                for (int i = 0; i < (info.Dist<30?info.Dist:30); i++)
                 {
                     Buffer.BlockCopy(info.NextAddr, i * 8, tmp, 0, 8);
                     res += GetString(tmp); ;

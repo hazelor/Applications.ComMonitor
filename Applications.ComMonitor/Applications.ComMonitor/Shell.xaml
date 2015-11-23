@@ -16,15 +16,15 @@
     <!--Notification-->
     <Grid>
         <i:Interaction.Triggers>
-            <prism:InteractionRequestTrigger SourceObject="{Binding AdminLoginRequest, Mode=OneWay}">
-                <!-- This PopupWindowAction has a custom view defined. When this action is executed the view will be shown inside a new window -->
-                <!-- Take into account that the view is created only once and will be reused each time the action is executed -->
+            <!--<prism:InteractionRequestTrigger SourceObject="{Binding AdminLoginRequest, Mode=OneWay}">
+                --><!-- This PopupWindowAction has a custom view defined. When this action is executed the view will be shown inside a new window -->
+                <!-- Take into account that the view is created only once and will be reused each time the action is executed --><!--
                 <interactions:AdminLoginInterationAction>
                     <interactions:AdminLoginInterationAction.Dialog>
                         <local:AdminLoginPanel/>
                     </interactions:AdminLoginInterationAction.Dialog>
                 </interactions:AdminLoginInterationAction>
-            </prism:InteractionRequestTrigger>
+            </prism:InteractionRequestTrigger>-->
 
             <prism:InteractionRequestTrigger SourceObject="{Binding ConfigRequest, Mode=OneWay}">
 
@@ -51,7 +51,10 @@
                 <!--<RadioButton x:Name="TopoloyDisplayButton" Style="{StaticResource MRadioButtonStyle}" Click="OnTopoloyDisplayClick">
                     拓扑显示
                 </RadioButton>-->
-                <Button x:Name="ConfigDisplayButton" Style="{StaticResource MRButtonStyle}" Command="{Binding ConfigDisplayCommand}">
+                <Button x:Name="ConfigDisplayButton" 
+                        IsEnabled="{Binding IsEnableConf}"
+                        Style="{StaticResource MRButtonStyle}"
+                        Command="{Binding ConfigDisplayCommand}">
                     系统配置
                 </Button>
                 <Button x:Name="StartButton" Style="{StaticResource MRButtonStyle}" Command="{Binding StartCommand}" Content="{Binding StartName}">

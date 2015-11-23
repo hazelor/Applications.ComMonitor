@@ -1,4 +1,5 @@
-﻿using Commons.Infrastructure.Events;
+﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Commons.Infrastructure.Models;
 using Hazelor.Infrastructure.Tools;
@@ -43,7 +44,7 @@ namespace Services.ProtocolService
             {
                 res = BitConverter.ToUInt16(srcBuffer, 0);
             }
-            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == "Little"))
+            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
             {
                 res = Endian.SwapUInt16(res);
             }
@@ -69,7 +70,8 @@ namespace Services.ProtocolService
             int index = ParseMsgHeader(srcBuffer);
             //num of node
             UInt32 numRouteInfo = BitConverter.ToUInt32(srcBuffer, index);
-            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == "Little"))
+            index += 4;
+            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
             {
                 numRouteInfo = Endian.SwapUInt32(numRouteInfo);
             }
@@ -137,7 +139,7 @@ namespace Services.ProtocolService
             CommunicationNet.NodeNum = BitConverter.ToUInt16(srcBuffer, index);
             
             index += 2;
-            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == "Little"))
+            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
             {
                 CommunicationNet.NodeNum = Endian.SwapUInt16(CommunicationNet.NodeNum);
             }
@@ -418,8 +420,8 @@ namespace Services.ProtocolService
             //MsgLen
             MsgLen = BitConverter.ToUInt32(srcBuffer, index);
             index += 4;
-            
-            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == "Little"))
+
+            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
             {
                 MsgID = Endian.SwapUInt16(MsgID);
                 SrcID = Endian.SwapUInt16(SrcID);

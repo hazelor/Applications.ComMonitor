@@ -25,7 +25,7 @@ namespace Modules.InfosDisplay.Nodes
 
     public class NodeBase : MapFrameElement
     {
-        private IEventAggregator _eventAggregator;
+        protected IEventAggregator _eventAggregator;
         protected override void OnMouseDoubleClick(System.Windows.Input.MouseButtonEventArgs e)
         {
             CommNode cn = this.DataContext as CommNode;
@@ -37,7 +37,15 @@ namespace Modules.InfosDisplay.Nodes
         public NodeBase()
         {
             _eventAggregator= ServiceLocator.Current.GetInstance<IEventAggregator>();
+            _eventAggregator.GetEvent<SelNodeEvent>().Subscribe(OnSelectedNodeChanged);
         }
+
+        protected virtual void OnSelectedNodeChanged(CommNode cn)
+        {
+        }
+
+        
+        
 
         private bool _mouseCaptured = false;
         private Point _previousMouse;

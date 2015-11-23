@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FreqIDs>
+  <FreqID id="700MHz" value="0"/>
+  <FreqID id="2400MHz" value="1"/>
+</FreqIDs>

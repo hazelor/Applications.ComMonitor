@@ -17,6 +17,8 @@ namespace Commons.Infrastructure.Interface
 
         ConfigInfo ConfigInfos { get; }
 
+        bool IsAdminLogin { get; set; }
+
         void LoadConfig();
 
     }

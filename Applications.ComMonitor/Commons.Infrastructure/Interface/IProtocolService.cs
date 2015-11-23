@@ -36,5 +36,11 @@ namespace Commons.Infrastructure.Interface
         /// 频点查询
         /// </summary>
         void FreQuery();
+
+        /// <summary>
+        /// wifi频点开关控制
+        /// </summary>
+        /// <param name="datas"></param>
+        void WIFICtrl(byte[] datas);
     }
 }

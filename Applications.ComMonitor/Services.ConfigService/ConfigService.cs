@@ -29,6 +29,18 @@ namespace Services.ConfigService
         private Serializer _serializer = new Serializer();
 
         #region AdminLogin
+        private bool _IsAdminLogin = false;
+        public bool IsAdminLogin
+        {
+            get
+            {
+                return this._IsAdminLogin;
+            }
+            set
+            {
+                this._IsAdminLogin = value;
+            }
+        }
         private AdminInfo _adminInfo;
         public AdminInfo AdminInfos
         {

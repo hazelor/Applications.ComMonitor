@@ -4,6 +4,7 @@ using Hazelor.Infrastructure.Tools;
 using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.MefExtensions;
 using Microsoft.Practices.Prism.Modularity;
+using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
@@ -31,9 +32,11 @@ namespace Applications.ComMonitor
         protected override void InitializeShell()
         {
             base.InitializeShell();
+            ServiceLocator.Current.GetInstance<LoginPanel>().Show();
 
             Application.Current.MainWindow = (Shell)this.Shell;
-            Application.Current.MainWindow.Show(); 
+            //
+            //Application.Current.MainWindow.Show(); 
 
 
         }

@@ -35,8 +35,9 @@ namespace Applications.ComMonitor
         public ConfigPanel()
         {
             this.adapter = new ConfigAdapter();
-            this.DataContext = this.ViewModel;
+            
             InitializeComponent();
+            this.DataContext = this.ViewModel;
             _eventAggregator = ServiceLocator.Current.GetInstance<IEventAggregator>();
         }
 

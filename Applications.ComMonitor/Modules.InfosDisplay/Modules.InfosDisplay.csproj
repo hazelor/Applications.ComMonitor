@@ -211,7 +211,13 @@
     <Resource Include="images\LabelBackGround2.png" />
     <Resource Include="images\TextBoxBackGround2.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="images\center.png" />
+    <Resource Include="images\measure.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\road.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Modules\" /Y</PostBuildEvent>

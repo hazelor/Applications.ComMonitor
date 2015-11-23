@@ -1,7 +1,9 @@
 ﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Modules.ConfigDisplay.Interface;
 using System;
 using System.Collections.Generic;
@@ -17,10 +19,11 @@ namespace Modules.ConfigDisplay
     [PartCreationPolicy(CreationPolicy.Shared)]
     class ConnectSettingViewModel : SubConfViewModelBase
     {
-        
+        IEventAggregator _eventAggregator;
         [ImportingConstructor]
-        public ConnectSettingViewModel(IConfigService configService)
+        public ConnectSettingViewModel(IConfigService configService, IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             _configService = configService;
             ApplyCommand = new DelegateCommand(ApplyExecuted);
             Uri = PanelNames.ConnectSettingPanel;
@@ -67,6 +70,8 @@ namespace Modules.ConfigDisplay
 
             IsAvaibleApply = false;
             BaseApplyAvailableUpdate(IsAvaibleApply);
+
+            _eventAggregator.GetEvent<ConfigUpdateEvent>().Publish(true);
         }
 
        

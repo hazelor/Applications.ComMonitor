@@ -13,7 +13,8 @@
         <converter:QuaulityConverter x:Key="QuaulityConverter"/>
     </UserControl.Resources>
     <Grid>
-        <tool:Arrow x:Name="PreTLine"
+        <Grid>
+            <tool:Arrow x:Name="PreTLine"
             HeadHeight="4"
             HeadWidth="10"
             StrokeThickness="2"
@@ -21,37 +22,34 @@
                     Cursor="Hand"
                     Stroke="{Binding CommStatuPre, Converter={StaticResource QuaulityConverter}}"
             Visibility="Visible">
-            <tool:Arrow.Effect>
-                <DropShadowEffect/>
-            </tool:Arrow.Effect>
-            <!--<tool:Arrow.Stroke>
+                <tool:Arrow.Effect>
+                    <DropShadowEffect/>
+                </tool:Arrow.Effect>
+                <!--<tool:Arrow.Stroke>
                 <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                     <GradientStop Color="{Binding CommStatuPre, Converter={StaticResource QuaulityConverter}}" Offset="1"/>
                     <GradientStop Color="{Binding CommStatuBac, Converter={StaticResource QuaulityConverter}}" Offset="0"/>
                 </LinearGradientBrush>
             </tool:Arrow.Stroke>-->
-        </tool:Arrow>
-        <tool:Arrow x:Name="BacTLine"
+            </tool:Arrow>
+            <tool:Arrow x:Name="BacTLine"
             HeadHeight="4"
             HeadWidth="10"
-                    Margin="5"
+                    Margin="10"
             StrokeThickness="2"
                     Cursor="Hand"
                     Stroke="{Binding CommStatuBac, Converter={StaticResource QuaulityConverter}}"
             Direct="True"
             Visibility="Visible">
-            <tool:Arrow.Effect>
-                <DropShadowEffect/>
-            </tool:Arrow.Effect>
-            <!--<tool:Arrow.Stroke>
-                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                    <GradientStop Color="{Binding CommStatuPre, Converter={StaticResource QuaulityConverter}}" Offset="1"/>
-                    <GradientStop Color="{Binding CommStatuBac, Converter={StaticResource QuaulityConverter}}" Offset="0"/>
-                </LinearGradientBrush>
-            </tool:Arrow.Stroke>-->
-        </tool:Arrow>
+                <tool:Arrow.Effect>
+                    <DropShadowEffect/>
+                </tool:Arrow.Effect>
+            </tool:Arrow>
+        </Grid>
 
-        
+
+
+
         <!--<Border x:Name="LineInfoDisplay" 
                     Background="#33575B57"
                 VerticalAlignment="Center"

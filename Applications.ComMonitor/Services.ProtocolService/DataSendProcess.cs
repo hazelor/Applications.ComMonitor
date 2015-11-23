@@ -1,4 +1,5 @@
-﻿using Commons.Infrastructure.Interface;
+﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Interface;
 using Commons.Infrastructure.Models;
 using Hazelor.Infrastructure.Tools;
 using Services.ConfigService;
@@ -47,7 +48,7 @@ namespace Services.ProtocolService
             byte[] strbytes = System.Text.Encoding.ASCII.GetBytes(_configService.ConfigInfos.TermialIP);
             Buffer.BlockCopy(strbytes, 0, ips.IpAddr, 0, ips.IpAddr.Length > strbytes.Length ? strbytes.Length : ips.IpAddr.Length);
             ips.PortNum = (uint)_configService.ConfigInfos.TerminalPort;
-            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == "Little"))
+            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
             {
                 ips.PortNum = Endian.SwapUInt32(ips.PortNum);
             }
@@ -121,7 +122,10 @@ namespace Services.ProtocolService
         }
 
 
-        
+        /// <summary>
+        /// 消息过滤
+        /// </summary>
+        /// <param name="msgs">过滤的消息ID list</param>
         public void FilterMsg(ushort[] msgs)
         {
             MsgHeader mh = new MsgHeader();
@@ -139,7 +143,7 @@ namespace Services.ProtocolService
             index += Marshal.SizeOf(typeof(MsgHeader));
             for (int i = 0; i < msgs.Length; i++)
             {
-                if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == "Little"))
+                if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
                 {
                     Buffer.BlockCopy(BitConverter.GetBytes(Endian.SwapUInt16(msgs[i])),0,sendBuffer,index,2);
                     index += 2;
@@ -151,7 +155,10 @@ namespace Services.ProtocolService
         }
 
 
-        
+        /// <summary>
+        /// 参数设置
+        /// </summary>
+        /// <param name="datas">设置参数的数据内容</param>
         public void ParamSetting(byte[] datas)
         {
             MsgHeader mh = new MsgHeader();
@@ -173,6 +180,9 @@ namespace Services.ProtocolService
 
         }
         
+        /// <summary>
+        /// 频点查询
+        /// </summary>
         public void FreQuery()
         {
             MsgHeader mh = new MsgHeader();
@@ -192,9 +202,29 @@ namespace Services.ProtocolService
             AddSendData(sendBuffer);
         }
 
+        public void WIFICtrl(byte[] datas)
+        {
+            MsgHeader mh = new MsgHeader();
+            //参数赋值
+            mh.MsgID = ConstIDs.O_TDMOM_PARA_REQ;
+            mh.SrcID = ConstIDs.SRC_ID;
+            mh.DstID = ConstIDs.DST_ID;
+            mh.puData = 0;
+            mh.DataLen = 0;
+            mh.MsgLen = (uint)Marshal.SizeOf(mh)+4;
+            byte[] sendBuffer = new byte[mh.DataLen + mh.MsgLen];
+            CheckCPUTypeMsgHeader(ref mh);
+            int index = 0;
+            Buffer.BlockCopy(StructConverter.StructToBytes(mh), 0, sendBuffer, index, Marshal.SizeOf(typeof(MsgHeader)));
+            index += Marshal.SizeOf(typeof(MsgHeader));
+            Buffer.BlockCopy(datas, 0, sendBuffer, index, datas.Length);
+
+            AddSendData(sendBuffer);
+        }
+
         private void CheckCPUTypeMsgHeader(ref MsgHeader mh)
         {
-            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == "Little"))
+            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
             {
                 mh.MsgID = Endian.SwapUInt16(mh.MsgID);
                 mh.SrcID = Endian.SwapUInt16(mh.SrcID);

@@ -32,6 +32,7 @@
                                       Command="{Binding NavigatorCommand}"
                                       Content="{Binding Name}"
                                       HorizontalAlignment="Center"
+                                      IsChecked="{Binding IsNaviChecked}"
                                       Margin="10"
                                       Width="100"
                                       Height="30"/>

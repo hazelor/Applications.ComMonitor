@@ -95,6 +95,10 @@
     <Compile Include="SubConfViewModelBase.cs" />
     <Compile Include="Tool\MsgItemTemplateSelector.cs" />
     <Compile Include="Tool\StructShell.cs" />
+    <Compile Include="WifiCtrlPanel.xaml.cs">
+      <DependentUpon>WifiCtrlPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WifiCtrlViewModel.cs" />
     <Page Include="AdminPasswordPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -128,6 +132,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WifiCtrlPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -210,6 +218,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="sea.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Conf\FreqIDs.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

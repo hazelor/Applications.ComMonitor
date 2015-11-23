@@ -12,5 +12,7 @@ namespace Modules.ConfigDisplay.Interface
         ICommand NavigatorCommand { get; set; }
         string Uri { get; set; }
         string Name { get; set; }
+
+        bool IsNaviChecked { get; set; }
     }
 }

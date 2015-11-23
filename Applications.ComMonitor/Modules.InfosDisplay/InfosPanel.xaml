@@ -6,6 +6,7 @@
              xmlns:tree ="clr-namespace:Hazelor.Infrastructure.Tools.TreeDisplay;assembly=Hazelor.Infrastructure.Tools"
              xmlns:Inf="clr-namespace:Commons.Infrastructure.Layout;assembly=Commons.Infrastructure"
              xmlns:tool="clr-namespace:Modules.InfosDisplay.Tool"
+             xmlns:converter="clr-namespace:Modules.InfosDisplay.converters"
              xmlns:Map="clr-namespace:Hazelor.MapCtrl;assembly=Hazelor.MapCtrl"
              xmlns:Nodes="clr-namespace:Modules.InfosDisplay.Nodes"
              xmlns:Lines="clr-namespace:Modules.InfosDisplay.Lines"
@@ -14,6 +15,10 @@
     <UserControl.Resources>
         <tool:AddrConverter x:Key="AddrConverter"/>
         <tool:AddrListConverter x:Key="AddrListConverter"/>
+        <converter:ItemVisibleConverter x:Key="ItemVisibleConverter"/>
+        
+        
+        
         <DataTemplate x:Key="AddrT">
             <TextBlock x:Name="AddrDisplay"
                        Text="{Binding Path=DataContext, ElementName=AddrDisplay, Converter={StaticResource AddrConverter}}"/>
@@ -51,6 +56,69 @@
             <Setter Property="TextAlignment" Value="Center"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style x:Key="CenterButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Image x:Name="signback" Source="./images/center.png"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MeasureButtonStyle" TargetType="CheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid>
+                            <Image x:Name="signback" Source="./images/measure.png"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="RoadButtonStyle" TargetType="CheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid>
+                            <Image x:Name="signback" Source="./images/road.png"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         <Style TargetType="RadioButton" 
                x:Key="SatelliteStyle"
@@ -134,11 +202,99 @@
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Width="80" Grid.Column="0">
             <RadioButton Style="{StaticResource SatelliteStyle}" x:Name="SatShowButton" Height="80" Click="SatelliteClick" IsChecked="True"/>
             <RadioButton Style="{StaticResource NormalStyle}" x:Name="NormalShowButton" Height="80" Click="NormalClick" IsChecked="False"/>
+            <CheckBox x:Name="RoadShowButton" Height="80" Click="RoadClick" IsChecked="False" Style="{StaticResource RoadButtonStyle}"/>
+            <CheckBox x:Name="MeasureButton" Height="80" Click="MeasureClick" IsChecked="False" ToolTip="测距" Style="{StaticResource MeasureButtonStyle}"/>
+            <Button x:Name="CenterButton" Height="80" Click="CenterClick" ToolTip="居中" Style="{StaticResource CenterButtonStyle}"/>
         </StackPanel>
-        
         <!--数据信息显示-->
-        <Grid Grid.Column="1" Width="300">
-            <TabControl>
+        <Grid x:Name="InfoDisplayPanel" Grid.Column="1" Width="300" Visibility="Collapsed">
+            <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  Style="{StaticResource ScrollViewerStyleKey}"
+                                      Margin="5">
+                <StackPanel  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                    <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                        <GroupBox.Header>
+                            <Label Foreground="White">节点信息</Label>
+                        </GroupBox.Header>
+                        <GroupBox.Content>
+                            <Nodes:NodeInfo DataContext="{Binding SelectedNode}" Visibility="Hidden" x:Name="NodeInfo"/>
+                        </GroupBox.Content>
+                    </GroupBox>
+                    <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                        <GroupBox.Header>
+                            <Label Foreground="White">链路信息</Label>
+                        </GroupBox.Header>
+                        <GroupBox.Content>
+                            <Lines:LineInfo DataContext="{Binding SelectedLine}" Visibility="Hidden" x:Name="LineInfo"/>
+                        </GroupBox.Content>
+                    </GroupBox>
+                    <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                        <GroupBox.Header>
+                            <Label Foreground="White">下位机信息</Label>
+                        </GroupBox.Header>
+                        <GroupBox.Content>
+                            <ListBox x:Name="RouteInfo" ItemsSource="{Binding RoutInfoDecs}"
+                                     MinHeight="200"
+                            >
+                                <ListBox.Resources>
+                                    <Style TargetType="ListBox">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style>
+                                </ListBox.Resources>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Expander>
+                                            <Expander.Header>
+                                                <Label Content="{Binding RoutName}" Foreground="White"/>
+                                            </Expander.Header>
+                                            <Expander.Content>
+                                                <Border Background="{x:Null}" BorderBrush="White" BorderThickness="2" CornerRadius="4">
+                                                    <Grid>
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                            <RowDefinition Height="Auto"/>
+                                                        </Grid.RowDefinitions>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="0.6*"/>
+                                                            <ColumnDefinition Width="1*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Grid.Column="0" Grid.Row="0" Margin="5" Style="{StaticResource MLabel2Style}">目标地址</Label>
+                                                        <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" Text="{Binding DstAddr}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                        <Label Grid.Column="0" Grid.Row="1" Margin="5" Style="{StaticResource MLabel2Style}">接口地址</Label>
+                                                        <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding InterfaceAddr}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                        <Label Grid.Column="0" Grid.Row="2" Margin="5" Style="{StaticResource MLabel2Style}">下接口地址</Label>
+                                                        <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding NextIfaceAddr}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                        <Label Grid.Column="0" Grid.Row="3" Margin="5" Style="{StaticResource MLabel2Style}" VerticalAlignment="Top">接口地址s</Label>
+                                                        <TextBlock Grid.Column="1" Grid.Row="3" Margin="5" TextWrapping="Wrap" Text="{Binding NextAddr}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                        <Label Grid.Column="0" Grid.Row="4" Margin="5" Style="{StaticResource MLabel2Style}">路由跳数</Label>
+                                                        <TextBlock Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding Dist}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                        <Label Grid.Column="0" Grid.Row="5" Margin="5" Style="{StaticResource MLabel2Style}">系数</Label>
+                                                        <TextBlock Grid.Column="1" Grid.Row="5" Margin="5" Text="{Binding Weight}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                    </Grid>
+                                                </Border>
+
+                                            </Expander.Content>
+                                        </Expander>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </GroupBox.Content>
+                    </GroupBox>
+                </StackPanel>
+                
+                
+            </ScrollViewer>
+            <!--<TabControl>
                 <TabItem Header="下位机信息">
                     <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -202,7 +358,7 @@
                     <Lines:LineInfo DataContext="{Binding SelectedLine}"/>
                 </TabItem>
                          
-            </TabControl>
+            </TabControl>-->
             
             
             

@@ -14,6 +14,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Applications.ComMonitor
 {
@@ -25,15 +26,16 @@ namespace Applications.ComMonitor
 
         private void ConfigDisplayExecuted()
         {
-            AdminLoginNotification notification = new AdminLoginNotification();
+            //AdminLoginNotification notification = new AdminLoginNotification();
             
-            notification.AdminName = this._adminInfo.Name;
-            notification.AdminNameInput = this._adminInfo.Name;
-            notification.AdminPassword = this._adminInfo.Password;
-            notification.Title = "管理员登录";
+            //notification.AdminName = this._adminInfo.Name;
+            //notification.AdminNameInput = this._adminInfo.Name;
+            //notification.AdminPassword = this._adminInfo.Password;
+            //notification.Title = "管理员登录";
 
-            this.AdminLoginRequest.Raise(notification, GetAdminLoginCallBack, CancelAdminLoginCallBack);
-
+            //this.AdminLoginRequest.Raise(notification, GetAdminLoginCallBack, CancelAdminLoginCallBack);
+            ConfigNotification notification = new ConfigNotification();
+            this.ConfigRequest.Raise(notification, GetConfigCallBack, CancelConfigCallBack);
         }
 
 
@@ -49,8 +51,8 @@ namespace Applications.ComMonitor
         
         private void GetAdminLoginCallBack(AdminLoginNotification a)
         {
-            ConfigNotification notification = new ConfigNotification();
-            this.ConfigRequest.Raise(notification, GetConfigCallBack, CancelConfigCallBack);
+            
+            
         }
         private void CancelAdminLoginCallBack()
         {
@@ -93,16 +95,43 @@ namespace Applications.ComMonitor
 
 
         }
-
+        private bool _IsEnableConf= true;
+        public bool IsEnableConf
+        {
+            get
+            {
+                return this._IsEnableConf;
+            }
+            set
+            {
+                SetProperty(ref this._IsEnableConf, value);
+            }
+        }
+        public Visibility InfoVisible
+        {
+            get
+            {
+                if (_configService.IsAdminLogin)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+        }
         private void OnIsStartChannelUpdate(object sender, bool IsStartChannel)
         {
             if (IsStartChannel)
             {
                 StartName = "结束";
+                IsEnableConf = false;
             }
             else
             {
                 StartName = "开始";
+                IsEnableConf = true;
             }
         }
         public DelegateCommand StartCommand { get; set; }

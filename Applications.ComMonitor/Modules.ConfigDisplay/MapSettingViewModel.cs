@@ -1,7 +1,9 @@
 ﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Modules.ConfigDisplay.Interface;
 using System;
 using System.Collections.Generic;
@@ -16,10 +18,11 @@ namespace Modules.ConfigDisplay
     [PartCreationPolicy(CreationPolicy.Shared)]
     class MapSettingViewModel : SubConfViewModelBase
     {
-        
+        IEventAggregator _eventAggregator;
         [ImportingConstructor]
-        public MapSettingViewModel(IConfigService configService)
+        public MapSettingViewModel(IConfigService configService, IEventAggregator eventAggregator)
         {
+            _eventAggregator = eventAggregator;
             _configService = configService;
             Uri = PanelNames.MapSettingPanel;
             Name = "地图设置";
@@ -55,6 +58,7 @@ namespace Modules.ConfigDisplay
             _configService.SaveConfigCommand.Execute(null);
             IsAvaibleApply = false;
             BaseApplyAvailableUpdate(IsAvaibleApply);
+            _eventAggregator.GetEvent<ConfigUpdateEvent>().Publish(true);
         }
 
         public DelegateCommand<string> ChangeBackCommand { get; set; }

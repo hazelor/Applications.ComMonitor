@@ -56,11 +56,26 @@ namespace Modules.InfosDisplay
             TileGenerator.DownloadCountChanged += this.OnDownloadCountChanged;
             TileGenerator.DownloadError += this.OnDownloadError;
             InitializeComponent();
-
+            if (_configService.IsAdminLogin)
+            {
+                InfoDisplayPanel.Visibility = Visibility.Visible;
+            }
+            //按配置文件更新
+            OnConfigUpdated(true);
             _eventAggregator.GetEvent<ConfigUpdateEvent>().Subscribe(OnConfigUpdated);
         }
 
+        private void OnSelectedNodeEvent(object sender, EventArgs e)
+        {
+            this.NodeInfo.Visibility = Visibility.Visible;
+            //this.LineInfo.Visibility = Visibility.Visible;
+        }
 
+        private void OnSelectedLineEvent(object sender, EventArgs e)
+        {
+            //this.NodeInfo.Visibility = Visibility.Visible;
+            this.LineInfo.Visibility = Visibility.Visible;
+        }
         private void OnDownloadCountChanged(object sender, EventArgs e)
         {
         }
@@ -81,12 +96,32 @@ namespace Modules.InfosDisplay
 
         private void SatelliteClick(object sender, RoutedEventArgs e)
         {
-            this.tileCanvas.ShowRoad(this.SatShowButton.IsChecked == false);
+            this.tileCanvas.ShowSat(this.SatShowButton.IsChecked == true);
         }
 
         private void NormalClick(object sender, RoutedEventArgs e)
         {
-            this.tileCanvas.ShowRoad(this.NormalShowButton.IsChecked == true);
+            this.tileCanvas.ShowNormal(this.NormalShowButton.IsChecked == true);
+        }
+
+        
+        private void RoadClick(object sender, RoutedEventArgs e)
+        {
+
+            this.tileCanvas.ShowRoad(RoadShowButton.IsChecked == true);
+        }
+
+        private void MeasureClick(object sender, RoutedEventArgs e)
+        {
+            if (true)
+            {
+                
+            }
+        }
+
+        private void CenterClick(object sender, RoutedEventArgs e)
+        {
+            this.tileCanvas.Center(_configService.ConfigInfos.CenteredLatitude, _configService.ConfigInfos.CenteredLongitude, 13);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -121,6 +156,9 @@ namespace Modules.InfosDisplay
                 this.DataContext = value;
                 ((InfosPanelViewModel)DataContext).NodeChangedEvent += OperationNode;
                 ((InfosPanelViewModel)DataContext).LineChangedEvent += OperationLine;
+                ((InfosPanelViewModel)DataContext).SelectedNodeEvent += OnSelectedNodeEvent;
+                ((InfosPanelViewModel)DataContext).SelectedLineEvent += OnSelectedLineEvent;
+                 
 
             }
         }

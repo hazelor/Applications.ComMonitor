@@ -78,8 +78,30 @@ namespace Commons.Infrastructure.Models
         public double EndLatitude { get { return EndNode.Latitude; } set { EndNode.Latitude = value; this.OnPropertyChanged("EndLatitude"); } }
         public double EndLongitude { get { return EndNode.Longitude; } set { EndNode.Longitude = value; this.OnPropertyChanged("EndLongitude"); } }
 
-        public CommStatues CommStatuPre { get; set; }
-        public CommStatues CommStatuBac { get; set; }
+        private CommStatues _CommStatuPre;
+        private CommStatues _CommStatuBac;
+        public CommStatues CommStatuPre
+        {
+            get
+            {
+                return this._CommStatuPre;
+            }
+            set
+            {
+                SetProperty(ref this._CommStatuPre, value);
+            }
+        }
+        public CommStatues CommStatuBac
+        {
+            get
+            {
+                return this._CommStatuBac;
+            }
+            set
+            {
+                SetProperty(ref this._CommStatuBac, value);
+            }
+        }
 
         private LINE_INFO _LineInfoPre;
 

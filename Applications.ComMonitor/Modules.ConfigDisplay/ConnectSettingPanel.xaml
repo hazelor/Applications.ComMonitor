@@ -89,16 +89,16 @@
                          Margin="5,0,10,0"
                 Width="80"
                          GroupName="ProtocolType"
-                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         Style="{StaticResource MCheckBoxRadioButtonStyle}"
                          FontSize="12"
-                         Height="10" IsChecked="{Binding IsTcp}">TCP</RadioButton>
+                         Height="30" IsChecked="{Binding IsTcp}">TCP</RadioButton>
             <RadioButton 
                          Margin="5,0,10,0"
                          GroupName="ProtocolType"
                 Width="80"
-                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         Style="{StaticResource MCheckBoxRadioButtonStyle}"
                          FontSize="12"
-                         Height="10" IsChecked="{Binding IsUdp}">UDP</RadioButton>
+                         Height="30" IsChecked="{Binding IsUdp}">UDP</RadioButton>
         </StackPanel>
 
         <StackPanel x:Name="ServiceTypeGroup"
@@ -111,17 +111,17 @@
             <RadioButton Grid.Column="0"
                          Margin="5,0,10,0"
                          GroupName="ServiceType"
-                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         Style="{StaticResource MCheckBoxRadioButtonStyle}"
                          FontSize="12"
                          Width="80"
-                         Height="10" IsChecked="{Binding IsClient}">客户端</RadioButton>
+                         Height="30" IsChecked="{Binding IsClient}">客户端</RadioButton>
             <RadioButton Grid.Column="1"
                          Margin="5,0,10,0"
                          GroupName="ServiceType"
-                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         Style="{StaticResource MCheckBoxRadioButtonStyle}"
                          FontSize="12"
                          Width="80"
-                         Height="10" IsChecked="{Binding IsServer}">服务端</RadioButton>
+                         Height="30" IsChecked="{Binding IsServer}">服务端</RadioButton>
         </StackPanel>
         <StackPanel x:Name="CPUTypeGroup"
                     Grid.Row="4" Grid.Column="1"
@@ -134,16 +134,16 @@
                          Margin="5,0,10,0"
                          GroupName="CPUType"
                          Width="80"
-                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         Style="{StaticResource MCheckBoxRadioButtonStyle}"
                          FontSize="12"
-                         Height="10" IsChecked="{Binding IsBig}">大端</RadioButton>
+                         Height="30" IsChecked="{Binding IsBig}">大端</RadioButton>
             <RadioButton Grid.Column="1"
                          Margin="5,0,10,0"
                          GroupName="CPUType" 
                          Width="80"
-                         Style="{StaticResource MRadioButtonGroupStyle}"
+                         Style="{StaticResource MCheckBoxRadioButtonStyle}"
                          FontSize="12"
-                         Height="10" IsChecked="{Binding IsLittle}">小端</RadioButton>
+                         Height="30" IsChecked="{Binding IsLittle}">小端</RadioButton>
         </StackPanel>
         <!--<Button Style="{StaticResource MButtonStyle}"
                 Grid.Row="5"
