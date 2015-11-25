@@ -151,8 +151,8 @@ namespace Modules.ConfigDisplay.Tool
 	                    }
 
                         string tmp = "";
-                        tmp = System.Text.Encoding.Unicode.GetString(srcArray);
-                        tmp = tmp.Trim();
+                        tmp = System.Text.Encoding.UTF8.GetString(srcArray);
+                        tmp = tmp.TrimEnd((char)0);
                         return tmp;
                     case FieldTypeEnum.Byte:
                         byte? srcByte = src as byte?;

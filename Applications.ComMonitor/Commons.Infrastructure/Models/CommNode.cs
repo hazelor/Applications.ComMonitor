@@ -2,6 +2,7 @@
 using Microsoft.Practices.Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,12 +61,17 @@ namespace Commons.Infrastructure.Models
             }
         }
 
+        public ObservableCollection<CommLine> LineInfoOfNode { get; set; }
+        private string _NodeName = "";
+        public string NodeName { get { return this._NodeName; } set { SetProperty(ref this._NodeName, value); } }
 
         public double Altitude { get { return this._Altitude; } set { SetProperty(ref this._Altitude, value); } }
 
         public int NodeType { get { return this._NodeType; } set { SetProperty(ref this._NodeType, value);} }
 
         public bool IsUpdate { get; set; }
+
+        public string ImagePath { get; set; }
 
         public override string ToString()
         {

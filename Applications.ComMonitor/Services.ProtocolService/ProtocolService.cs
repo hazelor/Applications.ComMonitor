@@ -15,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.Practices.Prism.PubSubEvents;
+using System.Xml.Linq;
 
 namespace Services.ProtocolService
 {
@@ -121,6 +122,8 @@ namespace Services.ProtocolService
                 } 
                 
             }
+            //Parse conf for nodeImage
+            LoadNodeImagesConf();
 
             //register event
             _eventAggregator.GetEvent<ConfigUpdateEvent>().Subscribe(OnConfigUpdated);
@@ -128,6 +131,25 @@ namespace Services.ProtocolService
 
         }
 
+        Dictionary<int, string> _NodeImageDict = new Dictionary<int, string>();
+        private void LoadNodeImagesConf()
+        {
+            try
+            {
+                XDocument doc = XDocument.Load("./Conf/NodeImagesConf.xml");
+                XElement root = doc.Element("NodeImages");
+                foreach (var item in root.Elements("Item"))
+                {
+                    _NodeImageDict[int.Parse(item.Attribute("Type").Value)] = string.Format(@".\Images\{0}", item.Attribute("Path").Value);
+                }
+            }
+            catch (Exception)
+            {
+                
+                
+            }
+            
+        }
        
         private void OnConfigUpdated(bool sign)
         {

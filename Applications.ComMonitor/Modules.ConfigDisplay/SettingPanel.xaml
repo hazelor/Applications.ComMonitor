@@ -8,7 +8,7 @@
              d:DesignHeight="280" d:DesignWidth="420">
     <UserControl.Resources>
         <DataTemplate x:Key="ComboxTemplate">
-            <Grid Width="200" Height="Auto" MinHeight="40">
+            <Grid Width="200" Height="Auto" MinHeight="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="0.8*"/>
@@ -34,16 +34,14 @@
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="TextBoxTemplate">
-            <Grid Width="200" Height="Auto" MinHeight="40">
+            <Grid Width="200" Height="Auto" MinHeight="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="0.8*"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0"
                     VerticalAlignment="Center"
-                       
-                       MaxWidth="150"
-                    >
+                    MaxWidth="150">
                     <TextBlock Foreground="White"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Right"
@@ -68,15 +66,18 @@
     </UserControl.Resources>
     <Grid>
         <Border CornerRadius="4" BorderThickness="2" BorderBrush="White">
-            <ListBox ItemsSource="{Binding SubField}"
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ListBox ItemsSource="{Binding SubField}"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                  ItemTemplateSelector="{StaticResource SettingItemTemplateSelector}"
                  Background="#ACCECECE">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Width="420"></WrapPanel>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-            </ListBox>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Width="420"></WrapPanel>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+            </ScrollViewer>
         </Border>
         
     </Grid>

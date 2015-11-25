@@ -152,5 +152,7 @@ namespace Commons.Infrastructure.Models
         {
             return StartNode.ToString() + EndNode.ToString();
         }
+
+        public string LineDirection { get { return this.StartNode.NodeName + "--->" + this.EndNode.NodeName; } }
     }
 }

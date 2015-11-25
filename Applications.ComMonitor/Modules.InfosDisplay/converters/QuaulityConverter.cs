@@ -66,4 +66,29 @@ namespace Modules.InfosDisplay.converters
 
         #endregion
     }
+
+    public class LineVisibleConverter : IValueConverter
+    {
+        #region IValueConverter Members
+        public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            var IsUsed = value as int?;
+
+            if (IsUsed == 1)
+            {
+                return Visibility.Visible;
+            }
+            else
+            {
+                return Visibility.Collapsed;
+            }
+
+        }
+        public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+    }
 }

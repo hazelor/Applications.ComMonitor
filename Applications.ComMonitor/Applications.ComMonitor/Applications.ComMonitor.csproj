@@ -241,7 +241,7 @@
     <PreBuildEvent>IF NOT EXIST "$(TargetDir)\Modules" mkdir "$(TargetDir)\Modules";
 IF NOT EXIST "$(TargetDir)\Services" mkdir "$(TargetDir)\Services";
 IF NOT EXIST "$(TargetDir)\Commons" mkdir "$(TargetDir)\Commons";
-
+IF NOT EXIST "$(TargetDir)\Images" mkdir "$(TargetDir)\Images";
 IF NOT EXIST "$(TargetDir)\conf" mkdir "$(TargetDir)\conf";</PreBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.98.1\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.98.1\build\net45\System.Data.SQLite.Core.targets')" />

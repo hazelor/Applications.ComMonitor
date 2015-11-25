@@ -75,8 +75,11 @@
         <TabControl Grid.Row="0">
             <TabItem Header="OLSE配置">
                 <StackPanel>
-                    <local:SettingPanel DataContext="{Binding OLSESettingInfo}"/>
-                    
+
+                    <local:SettingPanel
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            DataContext="{Binding OLSESettingInfo}"/>
+
                 </StackPanel>
                 
             </TabItem>

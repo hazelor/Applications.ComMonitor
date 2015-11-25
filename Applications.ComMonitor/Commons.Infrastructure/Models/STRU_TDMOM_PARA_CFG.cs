@@ -84,8 +84,17 @@ namespace Commons.Infrastructure.Models
         [DescriptionField(Size = 1, FieldType = FieldTypeEnum.Byte, Description = "HopSNR频率")]
         public byte ratio_HopSNR;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-        public byte[] au8Rsv2;
+        [Description("节点类型")]
+        [DescriptionField(Size = 1, FieldType = FieldTypeEnum.Byte, Description = "节点类型")]
+        public byte nodeType;
+
+        [Description("保留")]
+        public byte au8Rsv2;
+
+        [Description("节点名称")]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        [DescriptionField(Size = 4, FieldType = FieldTypeEnum.String, Description = "节点名称")]
+        public byte[] nodeName;
         //     [Description("信道质量参数Ch_quality计算过程中，链路信噪比SNR的权重系数a")]
         //public byte  ratio_SNR;
         //     [Description("信道质量参数Ch_quality计算过程中，链路传输时延DELAY的权重系数b")]

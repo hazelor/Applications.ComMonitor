@@ -97,6 +97,14 @@ namespace Modules.InfosDisplay
             }
             
         }
+
+        public ObservableCollection<CommLine> LineInfoOfNode
+        {
+            get
+            {
+                return this.SelectedNode.LineInfoOfNode;
+            }
+        }
         private void NodeSelectChanged(CommNode cn)
         {
             this.SelectedNode = cn;
@@ -124,6 +132,7 @@ namespace Modules.InfosDisplay
             set
             {
                 SetProperty(ref this._SelectedNode, value);
+                this.OnPropertyChanged("LineInfoOfNode");
             }
         }
 

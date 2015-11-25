@@ -162,8 +162,10 @@ namespace Services.ProtocolService
                 bool isNull = (cn == null);
                 if (isNull)
                 {
-                    cn = new CommNode { MacAddr = ma, Index = i, IsUpdate = true };
+                    cn = new CommNode { MacAddr = ma, Index = i, IsUpdate = true, LineInfoOfNode = new System.Collections.ObjectModel.ObservableCollection<CommLine>() };
+
                     CommunicationNet.CommNodes.Add(cn);
+
                 }
                 cn.Index = i;
                 index += MacAddr.MACADDRLEN_SHORT;
@@ -191,7 +193,19 @@ namespace Services.ProtocolService
                 {
                     index += 12;
                 }
+                //节点类型
                 cn.NodeType = srcBuffer[index++];
+                if (_NodeImageDict.ContainsKey(cn.NodeType))
+                {
+                    cn.ImagePath = _NodeImageDict[cn.NodeType];
+                }
+               
+
+                //节点名称
+                tmpbuffer = new byte[4];
+                Buffer.BlockCopy(srcBuffer,index,tmpbuffer,0,4);
+                cn.NodeName = System.Text.Encoding.UTF8.GetString(tmpbuffer);
+
                 if (isNull)
                 {
                     NodeChangeEvent(this, new NodeChangeEventArg { oper = Operations.ADD, Node = cn });
@@ -229,6 +243,17 @@ namespace Services.ProtocolService
                                                 LineInfoBac= TopInfo[j,i],
                                                 CommStatuPre = GetCommStatus(TopInfo[i, j].InfoQuality),
                                                 CommStatuBac = GetCommStatus(TopInfo[j, i].InfoQuality) };
+                            if (HasLine(cl.StartNode, cl))
+                            {
+                                cl.StartNode.LineInfoOfNode.Add(cl);
+                            }
+
+                            if (HasLine(cl.EndNode, cl))
+                            {
+                                cl.EndNode.LineInfoOfNode.Add(cl);
+                            }
+                            
+
                             CommunicationNet.CommLines.Add(cl);
                             LineChangeEvent(this, new LineChangeEventArg { oper = Operations.ADD, Line = cl });
                         }
@@ -309,6 +334,21 @@ namespace Services.ProtocolService
             return res;
         }
         
+        private bool HasLine(CommNode n, CommLine l)
+        {
+            if (n.LineInfoOfNode!= null && n.LineInfoOfNode.Count>0)
+            {
+                foreach (var item in n.LineInfoOfNode)
+                {
+                    if (item.Key == l.Key)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         private void BeginUpdateNode()
         {
             foreach (var item in CommunicationNet.CommNodes)
@@ -324,6 +364,7 @@ namespace Services.ProtocolService
                 if (!CommunicationNet.CommNodes[i].IsUpdate)
                 {
                     NodeChangeEvent(this, new NodeChangeEventArg { Node = CommunicationNet.CommNodes[i], oper = Operations.DEL });
+                    CommunicationNet.CommNodes[i].LineInfoOfNode.Clear();
                     CommunicationNet.CommNodes[i] = null;
                     CommunicationNet.CommNodes.RemoveAt(i);
                     i--;

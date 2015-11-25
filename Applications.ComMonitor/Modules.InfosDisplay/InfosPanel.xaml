@@ -17,7 +17,142 @@
         <tool:AddrListConverter x:Key="AddrListConverter"/>
         <converter:ItemVisibleConverter x:Key="ItemVisibleConverter"/>
         
-        
+        <SolidColorBrush x:Key="BackgroundBrush" Color="#C222" />
+        <PathGeometry x:Key="FlightMonitor1">
+            M3.658,0.284L23.656,0.284C25.514,0.284,27.032,1.802,27.032,3.658L27.032,23.656C27.032,25.514,25.514,27.032,23.656,27.032L3.658,27.032C1.802,27.032,0.283,25.514,0.283,23.656L0.283,3.658C0.283,1.802,1.802,0.284,3.658,0.284
+        </PathGeometry>
+        <PathGeometry x:Key="FlightMonitor2">
+            M14.95,6.04L14.956,3.367 16.59,3.372 16.576,6.04z M12.885,6.039L12.889,3.367 14.522,3.367 14.507,6.041z M19.123,6.01L17.042,6.026 17.062,3.371C17.625,3.38 18.232,3.786 18.468,4.291 18.726,4.846 18.881,5.452 19.123,6.01 M3.039,0.775L9.345,0.775C9.842,0.775 9.768,0.547 10.036,0.546 10.355,0.546 10.734,0.534 11.045,0.559L11.043,2.589 3.259,2.605 3.254,2.605 2.958,2.606 2.957,2.605 0.296,2.605C-0.123,2.974 -0.076,3.316 0.296,3.642 0.496,3.755 0.64,3.839 0.64,3.839L3.352,4.839C4.682,5.288 7.471,6.277 7.914,6.422 8.781,6.708 8.625,6.593 8.869,7.221 9.05,7.686 9.695,9.412 9.857,9.73 10.071,10.152 10.414,10.453 10.932,10.453L19.841,10.453C20.052,10.453 20.295,10.305 20.428,10.218 20.642,10.076 20.691,10.01 20.8,9.777 21.205,8.911 20.721,8.042 20.402,7.198L19.286,4.248C19.19,3.988 18.807,3.449 18.625,3.28 18.18,2.868 17.527,2.606 16.871,2.606L11.645,2.607 11.645,0.545C11.935,0.548 12.233,0.537 12.521,0.543 12.912,0.551 12.823,0.775 13.21,0.775L19.72,0.775C20.011,0.775 20.495,0.518 20.139,0.18 19.864,-0.08 19.168,0.018 18.661,0.018L13.535,0.018C13.147,0.016 12.891,0.016 12.735,0.269 12.204,0.265 10.443,0.298 10.033,0.27 9.782,0.253 9.741,0.018 9.386,0.018L3.039,0.018C2.201,0.018,2.053,0.772,3.039,0.775
+        </PathGeometry>
+        <ControlTemplate x:Key="AnimatedExpanderButtonTemp" TargetType="{x:Type ToggleButton}">
+            <Border Background="{TemplateBinding Background}" CornerRadius="15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Ellipse Name="Circle"
+                         Grid.Column="0"
+                         Stroke="White"
+                         Width="30"
+                         Height="30"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         />
+                    <Path x:Name="Arrow"
+                      Grid.Column="0"
+                      Data="M 1,1.5 L 4.5,5 8,1.5"
+                      Stroke="White"
+                      StrokeThickness="2"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      RenderTransformOrigin="0.5,0.5"
+                      >
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="270">
+                            </RotateTransform>
+                        </Path.RenderTransform>
+                    </Path>
+                </Grid>
+            </Border>
+
+            <ControlTemplate.Triggers>
+                <!-- Animate arrow when toggled-->
+                <Trigger Property="IsChecked"
+                         Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Arrow"
+                                                 Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
+                                                 To="90"
+                                                 Duration="0:0:0.4"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Arrow"
+                                                 Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
+                                                 To="270"
+                                                 Duration="0:0:0.4"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+
+                <!-- MouseOver, Pressed behaviours-->
+                <Trigger Property="IsMouseOver"
+                                 Value="true">
+                    <Setter Property="Stroke"
+                                    Value="Green"
+                                    TargetName="Circle"/>
+                    <Setter Property="Stroke"
+                                    Value="Green"
+                                    TargetName="Arrow"/>
+                </Trigger>
+                <Trigger Property="IsPressed"
+                                 Value="true">
+                    <Setter Property="Stroke"
+                                    Value="#FF526C7B"
+                                    TargetName="Circle"/>
+                    <Setter Property="StrokeThickness"
+                                    Value="1.5"
+                                    TargetName="Circle"/>
+                    <Setter Property="Stroke"
+                                    Value="#FF003366"
+                                    TargetName="Arrow"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="StretchyExpanderTemp" TargetType="{x:Type Expander}">
+            <DockPanel Background="{TemplateBinding Background }">
+                <ToggleButton x:Name="ExpanderButton" 
+                              DockPanel.Dock="Left"
+                              Background="{StaticResource BackgroundBrush}"
+                              Template="{StaticResource AnimatedExpanderButtonTemp}"
+                              Content="{TemplateBinding Header}"
+                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                              OverridesDefaultStyle="True"
+                              Padding="1.5,0">
+                </ToggleButton>
+                <ContentPresenter x:Name="ExpanderContent"
+                                  ContentSource="Content"
+                                  DockPanel.Dock="Right"
+                                  >
+                    <ContentPresenter.LayoutTransform>
+                        <ScaleTransform ScaleX="0"/>
+                    </ContentPresenter.LayoutTransform>
+                </ContentPresenter>
+            </DockPanel>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsExpanded" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ExpanderContent"
+                                                 Storyboard.TargetProperty="(ContentPresenter.LayoutTransform).(ScaleTransform.ScaleX)"                                                 
+                                                 To="1"
+                                                 Duration="0:0:0.4"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ExpanderContent"
+                                                 Storyboard.TargetProperty="(ContentPresenter.LayoutTransform).(ScaleTransform.ScaleX)"
+                                                 To="0"
+                                                 Duration="0:0:0.4"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
         
         <DataTemplate x:Key="AddrT">
             <TextBlock x:Name="AddrDisplay"
@@ -174,7 +309,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Map:MapCanvas x:Name="tileCanvas" Grid.Column="0">
-            <Border x:Name="CursorDisplay" 
+            <!--<Border x:Name="CursorDisplay" 
                     Background="#33575B57"
                     Visibility="Visible"
                     CornerRadius="4"
@@ -195,7 +330,7 @@
                         <TextBlock Foreground="Lime" Text="{Binding Longitude}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Grid>
-            </Border>
+            </Border>-->
 
         </Map:MapCanvas>
         <Map:NavigationControls  Map="{Binding ElementName=tileCanvas}" Grid.Column="0"/>
@@ -207,94 +342,160 @@
             <Button x:Name="CenterButton" Height="80" Click="CenterClick" ToolTip="居中" Style="{StaticResource CenterButtonStyle}"/>
         </StackPanel>
         <!--数据信息显示-->
-        <Grid x:Name="InfoDisplayPanel" Grid.Column="1" Width="300" Visibility="Collapsed">
-            <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
+        <Expander Grid.Column="1" 
+                  Template="{StaticResource StretchyExpanderTemp}"
+                  RenderTransformOrigin="0.5,0.5"
+                  ExpandDirection="Right"
+                  VerticalAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  Background="{StaticResource BackgroundBrush}">
+
+            <Expander.Content>
+                <Grid x:Name="InfoDisplayPanel"  Width="300" Visibility="Collapsed">
+                    <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                   Style="{StaticResource ScrollViewerStyleKey}"
                                       Margin="5">
-                <StackPanel  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        <StackPanel  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                    <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                        <GroupBox.Header>
-                            <Label Foreground="White">节点信息</Label>
-                        </GroupBox.Header>
-                        <GroupBox.Content>
-                            <Nodes:NodeInfo DataContext="{Binding SelectedNode}" Visibility="Hidden" x:Name="NodeInfo"/>
-                        </GroupBox.Content>
-                    </GroupBox>
-                    <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                <GroupBox.Header>
+                                    <Label Foreground="White">节点信息</Label>
+                                </GroupBox.Header>
+                                <GroupBox.Content>
+                                    <Nodes:NodeInfo DataContext="{Binding SelectedNode}" Visibility="Hidden" x:Name="NodeInfo"/>
+                                </GroupBox.Content>
+                            </GroupBox>
+                            <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                        <GroupBox.Header>
-                            <Label Foreground="White">链路信息</Label>
-                        </GroupBox.Header>
-                        <GroupBox.Content>
-                            <Lines:LineInfo DataContext="{Binding SelectedLine}" Visibility="Hidden" x:Name="LineInfo"/>
-                        </GroupBox.Content>
-                    </GroupBox>
-                    <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                        <GroupBox.Header>
-                            <Label Foreground="White">下位机信息</Label>
-                        </GroupBox.Header>
-                        <GroupBox.Content>
-                            <ListBox x:Name="RouteInfo" ItemsSource="{Binding RoutInfoDecs}"
+                                <GroupBox.Header>
+                                    <Label Foreground="White">链路信息</Label>
+                                </GroupBox.Header>
+                                <GroupBox.Content>
+                                    <ListBox x:Name="LineInfo" ItemsSource="{Binding LineInfoOfNode}"
                                      MinHeight="200"
                             >
-                                <ListBox.Resources>
-                                    <Style TargetType="ListBox">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                    </Style>
-                                </ListBox.Resources>
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Expander>
-                                            <Expander.Header>
-                                                <Label Content="{Binding RoutName}" Foreground="White"/>
-                                            </Expander.Header>
-                                            <Expander.Content>
-                                                <Border Background="{x:Null}" BorderBrush="White" BorderThickness="2" CornerRadius="4">
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                            <RowDefinition Height="Auto"/>
-                                                        </Grid.RowDefinitions>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="0.6*"/>
-                                                            <ColumnDefinition Width="1*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Label Grid.Column="0" Grid.Row="0" Margin="5" Style="{StaticResource MLabel2Style}">目标地址</Label>
-                                                        <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" Text="{Binding DstAddr}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                        <Label Grid.Column="0" Grid.Row="1" Margin="5" Style="{StaticResource MLabel2Style}">接口地址</Label>
-                                                        <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding InterfaceAddr}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                        <Label Grid.Column="0" Grid.Row="2" Margin="5" Style="{StaticResource MLabel2Style}">下接口地址</Label>
-                                                        <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding NextIfaceAddr}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                        <Label Grid.Column="0" Grid.Row="3" Margin="5" Style="{StaticResource MLabel2Style}" VerticalAlignment="Top">接口地址s</Label>
-                                                        <TextBlock Grid.Column="1" Grid.Row="3" Margin="5" TextWrapping="Wrap" Text="{Binding NextAddr}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                        <Label Grid.Column="0" Grid.Row="4" Margin="5" Style="{StaticResource MLabel2Style}">路由跳数</Label>
-                                                        <TextBlock Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding Dist}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                        <Label Grid.Column="0" Grid.Row="5" Margin="5" Style="{StaticResource MLabel2Style}">系数</Label>
-                                                        <TextBlock Grid.Column="1" Grid.Row="5" Margin="5" Text="{Binding Weight}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                    </Grid>
-                                                </Border>
+                                        <ListBox.Resources>
+                                            <Style TargetType="ListBox">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                            </Style>
+                                        </ListBox.Resources>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Expander>
+                                                    <Expander.Header>
+                                                        <Label Content="{Binding LineDirection}" Foreground="White"/>
+                                                    </Expander.Header>
+                                                    <Expander.Content>
+                                                        <Border Background="{x:Null}" BorderBrush="White" BorderThickness="2" CornerRadius="4">
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                </Grid.RowDefinitions>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="0.6*"/>
+                                                                    <ColumnDefinition Width="1*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Label Grid.Column="0" Grid.Row="0" Margin="5" Style="{StaticResource MLabel2Style}">前向信号量</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" Text="{Binding PreInfoQuality}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="1" Margin="5" Style="{StaticResource MLabel2Style}">前向白噪声</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding PreWhiteInfoQuality}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="2" Margin="5" Style="{StaticResource MLabel2Style}">前向信噪比</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding PreSignalNoiseRatio}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="4" Margin="5" Style="{StaticResource MLabel2Style}">前向使用</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding PreIsUsed}" Foreground="Orange" VerticalAlignment="Center"/>
 
-                                            </Expander.Content>
-                                        </Expander>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </GroupBox.Content>
-                    </GroupBox>
-                </StackPanel>
-                
-                
-            </ScrollViewer>
-            <!--<TabControl>
+                                                                <Label Grid.Column="0" Grid.Row="0" Margin="5" Style="{StaticResource MLabel2Style}">后向信号量</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" Text="{Binding BacInfoQuality}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="1" Margin="5" Style="{StaticResource MLabel2Style}">后向白噪声</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding BacWhiteInfoQuality}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="2" Margin="5" Style="{StaticResource MLabel2Style}">后向信噪比</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding BacSignalNoiseRatio}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="4" Margin="5" Style="{StaticResource MLabel2Style}">后向使用</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding BacIsUsed}" Foreground="Orange" VerticalAlignment="Center"/>
+
+                                                            </Grid>
+                                                        </Border>
+
+                                                    </Expander.Content>
+                                                </Expander>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                    <!--<Lines:LineInfo DataContext="{Binding SelectedLine}" Visibility="Hidden" x:Name="LineInfo"/>-->
+                                </GroupBox.Content>
+                            </GroupBox>
+                            <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                <GroupBox.Header>
+                                    <Label Foreground="White">下位机信息</Label>
+                                </GroupBox.Header>
+                                <GroupBox.Content>
+                                    <ListBox x:Name="RouteInfo" ItemsSource="{Binding RoutInfoDecs}"
+                                     MinHeight="200"
+                            >
+                                        <ListBox.Resources>
+                                            <Style TargetType="ListBox">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                            </Style>
+                                        </ListBox.Resources>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Expander>
+                                                    <Expander.Header>
+                                                        <Label Content="{Binding RoutName}" Foreground="White"/>
+                                                    </Expander.Header>
+                                                    <Expander.Content>
+                                                        <Border Background="{x:Null}" BorderBrush="White" BorderThickness="2" CornerRadius="4">
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                </Grid.RowDefinitions>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="0.6*"/>
+                                                                    <ColumnDefinition Width="1*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Label Grid.Column="0" Grid.Row="0" Margin="5" Style="{StaticResource MLabel2Style}">目标地址</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" Text="{Binding DstAddr}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="1" Margin="5" Style="{StaticResource MLabel2Style}">接口地址</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding InterfaceAddr}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="2" Margin="5" Style="{StaticResource MLabel2Style}">下接口地址</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding NextIfaceAddr}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="3" Margin="5" Style="{StaticResource MLabel2Style}" VerticalAlignment="Top">接口地址s</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="3" Margin="5" TextWrapping="Wrap" Text="{Binding NextAddr}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="4" Margin="5" Style="{StaticResource MLabel2Style}">路由跳数</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding Dist}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="5" Margin="5" Style="{StaticResource MLabel2Style}">系数</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="5" Margin="5" Text="{Binding Weight}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Border>
+
+                                                    </Expander.Content>
+                                                </Expander>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </GroupBox.Content>
+                            </GroupBox>
+                        </StackPanel>
+
+
+                    </ScrollViewer>
+                    <!--<TabControl>
                 <TabItem Header="下位机信息">
                     <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -359,9 +560,12 @@
                 </TabItem>
                          
             </TabControl>-->
+
+
+
+                </Grid>
+            </Expander.Content>
             
-            
-            
-        </Grid>
+        </Expander>
     </Grid>
 </UserControl>

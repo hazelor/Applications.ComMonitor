@@ -1,0 +1,26 @@
+﻿<Node:NodeBase x:Class="Modules.InfosDisplay.Nodes.NodeDisplay"
+               xmlns:Node="clr-namespace:Modules.InfosDisplay.Nodes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" >
+    <Grid>
+        <StackPanel HorizontalAlignment="Center">
+            <Image Source="{Binding ImagePath}" Width="50" Height="50" Margin="-25,-25,0,0" Cursor="Hand">
+                <Image.Effect>
+                    <DropShadowEffect x:Name="Shadow"/>
+                </Image.Effect>
+            </Image>
+            <Border x:Name="CursorDisplay" 
+                    Background="#33575B57"
+                    Visibility="Visible"
+                    CornerRadius="4"
+                    BorderBrush="#FF464646"
+                    BorderThickness="1"
+                    >
+                <Label Foreground="White" Content="{Binding NodeName}"/>
+            </Border>
+        </StackPanel>
+    </Grid>
+</Node:NodeBase>

@@ -94,12 +94,22 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="converters\DistanceConverter.cs" />
     <Compile Include="converters\LineValueConverter.cs" />
     <Compile Include="converters\QuaulityConverter.cs" />
     <Compile Include="Lines\LineInfo.xaml.cs">
       <DependentUpon>LineInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Measure\MeasureLine.xaml.cs">
+      <DependentUpon>MeasureLine.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Measure\MeasureMark.xaml.cs">
+      <DependentUpon>MeasureMark.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Model\RoutInfoDecorator.cs" />
+    <Compile Include="Nodes\NodeDisplay.xaml.cs">
+      <DependentUpon>NodeDisplay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tool\Converters.cs" />
     <Compile Include="Tool\TreeValueTypeTemplateSelector.cs" />
     <Page Include="InfosPanel.xaml">
@@ -121,11 +131,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Measure\MeasureLine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Measure\MeasureMark.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Nodes\Aerocraft.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Nodes\Boat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Nodes\NodeDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -218,9 +240,16 @@
   <ItemGroup>
     <Resource Include="images\road.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Modules\" /Y</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Modules\" /Y
+
+copy "$(ProjectDir)\images\Airplane.png" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Images" /Y
+
+copy "$(ProjectDir)\images\Boat.png" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Images" /Y
+
+copy "$(ProjectDir)\images\Vehicle.png" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Images" /Y</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.98.1\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.98.1\build\net45\System.Data.SQLite.Core.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -102,9 +102,14 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Conf\NodeImagesConf.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Services\" /Y</PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Services\" /Y
+
+copy "$(ProjectDir)\Conf\NodeImagesConf.xml" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Conf" /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

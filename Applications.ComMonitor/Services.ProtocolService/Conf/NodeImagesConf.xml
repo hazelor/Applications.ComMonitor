@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<NodeImages>
+  <Item Name="Airplane.png" type="0"/>
+  <Item Name="Vehicle.png" type="1"/>
+  <Item Name="Boat.png" type="2"/>
+</NodeImages>

@@ -21,12 +21,24 @@
                 </TransformGroup>
             </Path.RenderTransform>
         </Path>-->
-
-        <Image Source="../images/Airplane.png" Width="50" Height="50" Margin="-25,-25,0,0" Cursor="Hand">
-            <Image.Effect>
-                <DropShadowEffect x:Name="Shadow"/>
-            </Image.Effect>
-        </Image>
+        <StackPanel HorizontalAlignment="Center">
+            <Image Source="../images/Airplane.png" Width="50" Height="50" Margin="-25,-25,0,0" Cursor="Hand">
+                <Image.Effect>
+                    <DropShadowEffect x:Name="Shadow"/>
+                </Image.Effect>
+            </Image>
+            <Border x:Name="CursorDisplay" 
+                    Background="#33575B57"
+                    Visibility="Visible"
+                    CornerRadius="4"
+                    BorderBrush="#FF464646"
+                    BorderThickness="1"
+                    >
+                <Label Foreground="White" Content="{Binding NodeName}"/>
+            </Border>
+        </StackPanel>
+        
+        
 
     </Grid>
 </Node:NodeBase>
