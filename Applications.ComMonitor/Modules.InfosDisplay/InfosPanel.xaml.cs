@@ -314,18 +314,18 @@ namespace Modules.InfosDisplay
 
         private void OnClearAll(bool sign)
         {
-            foreach (var item in _protocolService.CommunicationNet.CommNodes)
-            {
-                this.tileCanvas.DelSubObject(item.ToString());
-            }
+            //foreach (var item in _protocolService.CommunicationNet.CommNodes)
+            //{
+            //    this.tileCanvas.DelSubObject(item.ToString());
+            //}
 
-            foreach (var item in _protocolService.CommunicationNet.CommLines)
-            {
-                this.tileCanvas.DelSubObject(item.ToString());
-            }
+            //foreach (var item in _protocolService.CommunicationNet.CommLines)
+            //{
+            //    this.tileCanvas.DelSubObject(item.ToString());
+            //}
 
-            _protocolService.CommunicationNet.CommNodes.Clear();
-            _protocolService.CommunicationNet.CommLines.Clear();
+            //_protocolService.CommunicationNet.CommNodes.Clear();
+            //_protocolService.CommunicationNet.CommLines.Clear();
         }
     }
 }

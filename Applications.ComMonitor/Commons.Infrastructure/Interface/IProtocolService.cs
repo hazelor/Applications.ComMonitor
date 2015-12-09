@@ -23,6 +23,13 @@ namespace Commons.Infrastructure.Interface
 
         string GetName(MacAddr mac);
 
+        MacAddr TerminalMac
+        {
+            get;
+        }
+
+        CommLine FindLine(MacAddr startNodeMac, MacAddr endNodeMac);
+
         /// <summary>
         /// 过滤信息发送
         /// </summary>

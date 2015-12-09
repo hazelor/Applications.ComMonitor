@@ -55,6 +55,13 @@ namespace Modules.InfosDisplay.Lines
             }
         }
 
+        public double Radius
+        {
+            get
+            {
+                return 20;
+            }
+        }
         //public Arrow BacLineObject
         //{
         //    get

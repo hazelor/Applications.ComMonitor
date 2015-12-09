@@ -24,6 +24,16 @@ namespace Services.ProtocolService
     [PartCreationPolicy(CreationPolicy.Shared)]
     public  partial class ProtocolService : IProtocolService
     {
+        #region TerminalMac
+        private MacAddr _TerminalMac;
+        public MacAddr TerminalMac
+        {
+            get
+            {
+                return this._TerminalMac;
+            }
+        }
+        #endregion
         private Dictionary<ushort, MethodInfo> ParserDict = new Dictionary<ushort, MethodInfo>();
 
         private CommNet _CommNet = new CommNet();
@@ -39,6 +49,17 @@ namespace Services.ProtocolService
             }
         }
 
+        public CommLine FindLine(MacAddr startNodeMac, MacAddr endNodeMac)
+        {
+            foreach (var line in _CommNet.CommLines)
+            {
+                if (line.StartNode.MacAddr.Equals(startNodeMac) && line.EndNode.MacAddr.Equals(endNodeMac))
+                {
+                    return line;
+                }
+            }
+            return null;
+        }
         public string GetName(MacAddr mac)
         {
             foreach (var node in _CommNet.CommNodes)
@@ -199,6 +220,8 @@ namespace Services.ProtocolService
             _queryTimer.Interval = _configService.ConfigInfos.UpdateRate;
             _sendTimer.Interval = _configService.ConfigInfos.UpdateRate;
             InitializeChannel();
+
+            _TerminalMac = MacAddr.GetTerminalMac(_configService.ConfigInfos.DownTerminalIP, _configService.ConfigInfos.TermialIP);
             if (CanStartTimer)
             {
                 _queryTimer.Start();

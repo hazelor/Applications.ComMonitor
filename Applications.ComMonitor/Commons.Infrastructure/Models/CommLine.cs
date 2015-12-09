@@ -35,6 +35,19 @@ namespace Commons.Infrastructure.Models
     {
 
         public string Key { get { return string.Format("{0},{1}", StartNode.Index, EndNode.Index); } }
+
+        private bool _IsShow = true;
+        public bool IsShow
+        {
+            get
+            {
+                return this._IsShow;
+            }
+            set
+            {
+                SetProperty(ref this._IsShow, value);
+            }
+        }
         private CommNode _StartNode;
         public CommNode StartNode { 
             get 

@@ -14,6 +14,119 @@
              Loaded="OnLoadMap"
              mc:Ignorable="d">
     <UserControl.Resources>
+        <Style x:Key="CheckRadioFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="Green" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="NoCheckRadioFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="LightBlue" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SliderCheckBox" TargetType="{x:Type CheckBox}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Width"  Value="110"/>
+            <Setter Property="Margin" Value="1,2,1,2"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="StoryboardIsChecked">
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="CheckFlag">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="55"/>
+                                    <!--行程-->
+                                </DoubleAnimationUsingKeyFrames>
+                            
+                            </Storyboard>
+                            <Storyboard x:Key="StoryboardIsCheckedOff">
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="CheckFlag">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="55"/>
+                                    <!--行程-->
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                        
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <BulletDecorator Background="Transparent" SnapsToDevicePixels="true">
+                            <BulletDecorator.Bullet>
+                                <Border x:Name="ForegroundPanel" BorderThickness="1" Width="110" Height="35" CornerRadius="10">
+                                    <!--长度-->
+                                    <Canvas>
+                                        <Border Background="White" x:Name="CheckFlag" CornerRadius="10" VerticalAlignment="Center" BorderThickness="1" Width="55" Height="35" RenderTransformOrigin="0.5,0.5" Canvas.Top="-1">
+                                            <!--圆点宽度-->
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
+                                            <Border.Effect>
+                                                <DropShadowEffect ShadowDepth="5" Direction="180" />
+                                            </Border.Effect>
+                                        </Border>
+                                        <TextBlock x:Name="CheckTitleOn" Foreground="White" Text="全网" Canvas.Top="6" Canvas.Left="13" FontSize="15"/>
+                                        <TextBlock x:Name="CheckTitleOff" Foreground="White" Width="Auto" Canvas.Left="72.946" Canvas.Top="6" Text="路由" FontSize="15"/>
+                                    </Canvas>
+                                </Border>
+                            </BulletDecorator.Bullet>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+                        </BulletDecorator>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="false">
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource CheckRadioFocusVisual}"/>
+                                <Setter Property="Padding" Value="4,0,0,0"/>
+                            </Trigger>
+                            <Trigger Property="HasContent" Value="true">
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource NoCheckRadioFocusVisual}"/>
+                                <Setter Property="Padding" Value="4,0,0,0"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="Lime"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="true">
+                                <Setter Property="Foreground" Value="Red"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="ForegroundPanel" Property="Background" Value="Lime" />
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard x:Name="BeginStoryboardCheckedTrue" Storyboard="{StaticResource StoryboardIsChecked}" />
+                                    <RemoveStoryboard BeginStoryboardName="BeginStoryboardCheckedFalse" />
+                                </Trigger.EnterActions>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter TargetName="ForegroundPanel" Property="Background" >
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.MenuHighlightColorKey}}"/>
+                                    </Setter.Value>
+                                </Setter>
+
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard x:Name="BeginStoryboardCheckedFalse" Storyboard="{StaticResource StoryboardIsCheckedOff}" />
+                                    <RemoveStoryboard BeginStoryboardName="BeginStoryboardCheckedTrue" />
+                                </Trigger.EnterActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
         <tool:AddrConverter x:Key="AddrConverter"/>
         <tool:AddrListConverter x:Key="AddrListConverter"/>
         <converter:ItemVisibleConverter x:Key="ItemVisibleConverter"/>
@@ -401,8 +514,10 @@
                                 </GroupBox.Header>
                                 <GroupBox.Content>
                                     <StackPanel>
+                                        <CheckBox Style="{StaticResource SliderCheckBox}" IsChecked="{Binding IsAllShow}"/>
                                         <ComboBox x:Name="RouteInfo" ItemsSource="{Binding RoutInfoDecs}"
                                               DisplayMemberPath="RoutName"
+                                              
                                               SelectedItem="{Binding SelRoutInfo}"/>
                                         <Border Background="{x:Null}" BorderBrush="White" BorderThickness="2" CornerRadius="4" DataContext="{Binding SelRoutInfo}">
                                             <Grid>
@@ -427,10 +542,10 @@
                                                 <Label Grid.Column="0" Grid.Row="3" Margin="5" Style="{StaticResource MLabel2Style}" VerticalAlignment="Top">中继节点</Label>
                                                 <TextBlock Grid.Column="1" Grid.Row="3" Margin="5" TextWrapping="Wrap" Text="{Binding NextNames}" Foreground="Orange" VerticalAlignment="Center"/>
 
-                                                <Label Grid.Column="0" Grid.Row="8" Margin="5" Style="{StaticResource MLabel2Style}">路由跳数</Label>
-                                                <TextBlock Grid.Column="1" Grid.Row="8" Margin="5" Text="{Binding Dist}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                <Label Grid.Column="0" Grid.Row="9" Margin="5" Style="{StaticResource MLabel2Style}">系数</Label>
-                                                <TextBlock Grid.Column="1" Grid.Row="9" Margin="5" Text="{Binding Weight}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                <Label Grid.Column="0" Grid.Row="4" Margin="5" Style="{StaticResource MLabel2Style}">路由跳数</Label>
+                                                <TextBlock Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding Dist}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                <Label Grid.Column="0" Grid.Row="5" Margin="5" Style="{StaticResource MLabel2Style}">系数</Label>
+                                                <TextBlock Grid.Column="1" Grid.Row="5" Margin="5" Text="{Binding Weight}" Foreground="Orange" VerticalAlignment="Center"/>
                                             </Grid>
                                         </Border>
 

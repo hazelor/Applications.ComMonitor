@@ -27,7 +27,13 @@ namespace Modules.InfosDisplay.Measure
         {
             InitializeComponent();
         }
-
+        public double Radius
+        {
+            get
+            {
+                return 0;
+            }
+        }
         public Arrow PreLineObject
         {
             get

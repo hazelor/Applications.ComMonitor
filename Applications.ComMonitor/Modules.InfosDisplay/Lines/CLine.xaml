@@ -12,6 +12,7 @@
     <UserControl.Resources>
         <converter:QuaulityConverter x:Key="QuaulityConverter"/>
         <converter:LineVisibleConverter x:Key="LineVisibleConverter"/>
+        <converter:DashAvailableConverter x:Key="DashAvailableConverter"/>
     </UserControl.Resources>
     <Grid>
         <Grid>
@@ -19,6 +20,7 @@
             HeadHeight="4"
             HeadWidth="10"
             StrokeThickness="2"
+                        StrokeDashArray="{Binding IsShow, Converter={StaticResource DashAvailableConverter}}"
             Direct="False"
                         Visibility="{Binding PreIsUsed, Converter={StaticResource LineVisibleConverter}}"
                     Cursor="Hand"
@@ -36,9 +38,9 @@
             <tool:Arrow x:Name="BacTLine"
             HeadHeight="4"
             HeadWidth="10"
-                    Margin="10"
             StrokeThickness="2"
                     Cursor="Hand"
+                        StrokeDashArray="{Binding IsShow, Converter={StaticResource DashAvailableConverter}}"
                     Stroke="{Binding CommStatuBac, Converter={StaticResource QuaulityConverter}}"
             Direct="True"
                         Visibility="{Binding BacIsUsed, Converter={StaticResource LineVisibleConverter}}">

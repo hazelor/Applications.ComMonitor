@@ -10,19 +10,20 @@
         <converters:VisibleConverter x:Key="VisibleConverter"/>
     </Node:NodeBase.Resources>
     <Grid>
-        <StackPanel HorizontalAlignment="Center">
-            <Border Width="60" Height="60" Margin="-30,-30,0,0" CornerRadius="30" BorderBrush="Lime" BorderThickness="2" Visibility="{Binding IsSelf, Converter={StaticResource VisibleConverter}}">
-                <Border Width="55" Height="55"  CornerRadius="25.25" BorderBrush="Red" BorderThickness="2" Visibility="{Binding IsSelected, Converter={StaticResource VisibleConverter}}">
-                    <Image x:Name="Icon" Width="50" Height="50"  Cursor="Hand">
-                        <Image.Effect>
-                            <DropShadowEffect x:Name="Shadow"/>
-                        </Image.Effect>
-                    </Image>
+        <StackPanel HorizontalAlignment="Center" Cursor="Hand">
+            <Grid>
+                <Border Width="60" Height="60" Margin="-30,-30,0,0" CornerRadius="30" BorderBrush="Lime" BorderThickness="2" Visibility="{Binding IsSelf, Converter={StaticResource VisibleConverter}}">
                 </Border>
-
-            </Border>
-           
-            <Border x:Name="CursorDisplay" 
+                <Border Width="55" Height="55" Margin="-22.5,-22.5,0,0" CornerRadius="25.25" BorderBrush="Red" BorderThickness="2" Visibility="{Binding IsSelected, Converter={StaticResource VisibleConverter}}">
+                </Border>
+                <Image x:Name="Icon" Width="50" Height="50" Margin="-20,-20,0,0">
+                    <Image.Effect>
+                        <DropShadowEffect x:Name="Shadow"/>
+                    </Image.Effect>
+                </Image>
+            </Grid>
+            <Border x:Name="CursorDisplay"
+                    Margin="-20,5,0,0"
                     Background="#33575B57"
                     Visibility="Visible"
                     CornerRadius="4"

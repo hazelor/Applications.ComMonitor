@@ -42,6 +42,36 @@ namespace Modules.InfosDisplay.converters
         #endregion
     }
 
+    public class DashAvailableConverter : IValueConverter
+    {
+        #region IValueConverter Members
+        public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            DoubleCollection dc = new DoubleCollection();
+            dc.Add(2);
+            dc.Add(2);
+            var State = value as bool?;
+            if (State == null || State == false)
+            {
+
+                return dc;
+            }
+            else
+            {
+                dc[0] = 1;
+                dc[1] = 0;
+                return dc;
+            }
+
+        }
+        public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+    }
+
     public class ItemVisibleConverter : IValueConverter
     {
         #region IValueConverter Members
