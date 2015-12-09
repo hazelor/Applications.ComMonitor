@@ -118,6 +118,7 @@ namespace Services.ProtocolService
             //    mh.MsgLen = Endian.SwapUInt32(mh.MsgLen);
             //}
             byte[] res_mh = StructConverter.StructToBytes(mh);
+            
             return res_mh;
         }
 
@@ -146,6 +147,11 @@ namespace Services.ProtocolService
                 if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
                 {
                     Buffer.BlockCopy(BitConverter.GetBytes(Endian.SwapUInt16(msgs[i])),0,sendBuffer,index,2);
+                    index += 2;
+                }
+                else
+                {
+                    Buffer.BlockCopy(BitConverter.GetBytes(msgs[i]), 0, sendBuffer, index, 2);
                     index += 2;
                 }
             }

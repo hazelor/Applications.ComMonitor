@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Services.ProtocolService
 {
@@ -53,13 +54,17 @@ namespace Services.ProtocolService
 
         #region Parsers
         public event EventHandler<EventMsgArgs> RecieveMsgEvent;
+        public event EventHandler IPSettingSuccessMsgReceiveEvent;
+
         
         [Parser(ParseID = ConstIDs.O_TDMOM_IP_PORT_CNF, Description = "接收下位机接收上位机IP确认信息")]
         private void ParseIPPORTCNF(byte[] srcBuffer)
         {
             //通知界面下位机准备好，可以开始发送数据
             CanQueryRouteAndTopInfo = true;
+            IPSettingSuccessMsgReceiveEvent(this, new EventArgs());
         }
+
         
         private const int MAX_NODE_NUM = 10;
         
@@ -116,17 +121,43 @@ namespace Services.ProtocolService
             //}
         }
 
+        //用mac作为Key记录下来
+        
         private const double radiusGPS = 0.1;
         private const double deltaDeg = 5;
         private const int indexGPS = 0;
-        private void CaculateGPS(out double lat, out double lon, int index)
+        private void CaculateGPS(out double lat, out double lon, int index, MacAddr mac)
         {
-            lat = _configService.ConfigInfos.CenteredLatitude + radiusGPS * Math.Sin(index * deltaDeg / 180.0 * Math.PI);
-            lon = _configService.ConfigInfos.CenteredLongitude - radiusGPS * Math.Cos(index * deltaDeg / 180.0 * Math.PI);
+            CommNode cn = GetMacRecord(mac);
+            if (cn == null)
+            {
+                lat = _configService.ConfigInfos.CenteredLatitude + radiusGPS * Math.Sin(index * deltaDeg / 180.0 * Math.PI);
+                lon = _configService.ConfigInfos.CenteredLongitude - radiusGPS * Math.Cos(index * deltaDeg / 180.0 * Math.PI);
+            }
+            else
+            {
+                lat = cn.Latitude;
+                lon = cn.Longitude;
+            }
+
             //lat = _configService.ConfigInfos.CenteredLatitude;
             //lon = _configService.ConfigInfos.CenteredLongitude;
         
         }
+
+        private CommNode GetMacRecord(MacAddr mac)
+        {
+            foreach (var item in _recordNodeGPS)
+            {
+                if (item.MacAddr.Equals(mac))
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+        
 
         [Parser(ParseID = ConstIDs.O_TDMOM_TOP_INFO_RSP, Description = "接收拓扑信息")]
         private void ParseTOPINFORSP(byte[] srcBuffer)
@@ -182,7 +213,7 @@ namespace Services.ProtocolService
                 else if(isNull)
                 {
                     double lat,lon;
-                    CaculateGPS(out lat, out lon, cn.Index);
+                    CaculateGPS(out lat, out lon, cn.Index, cn.MacAddr);
                     index += 12;
                     cn.Longitude = lon;
                     cn.Latitude = lat;
@@ -204,8 +235,8 @@ namespace Services.ProtocolService
                 //节点名称
                 tmpbuffer = new byte[4];
                 Buffer.BlockCopy(srcBuffer,index,tmpbuffer,0,4);
-                cn.NodeName = System.Text.Encoding.UTF8.GetString(tmpbuffer);
-
+                cn.NodeName = System.Text.Encoding.UTF8.GetString(tmpbuffer).TrimEnd('\0');
+                index += 4;
                 if (isNull)
                 {
                     NodeChangeEvent(this, new NodeChangeEventArg { oper = Operations.ADD, Node = cn });
@@ -243,12 +274,12 @@ namespace Services.ProtocolService
                                                 LineInfoBac= TopInfo[j,i],
                                                 CommStatuPre = GetCommStatus(TopInfo[i, j].InfoQuality),
                                                 CommStatuBac = GetCommStatus(TopInfo[j, i].InfoQuality) };
-                            if (HasLine(cl.StartNode, cl))
+                            if (!HasLine(cl.StartNode, cl))
                             {
                                 cl.StartNode.LineInfoOfNode.Add(cl);
                             }
 
-                            if (HasLine(cl.EndNode, cl))
+                            if (!HasLine(cl.EndNode, cl))
                             {
                                 cl.EndNode.LineInfoOfNode.Add(cl);
                             }
@@ -267,6 +298,7 @@ namespace Services.ProtocolService
                             
                             if (cl.CommStatuBac == CommStatues.NON && cl.CommStatuPre == CommStatues.NON)
                             {
+                                
                                 LineChangeEvent(this, new LineChangeEventArg { oper = Operations.DEL, Line = cl });
                                 CommunicationNet.CommLines.Remove(cl);
                             }
@@ -276,6 +308,9 @@ namespace Services.ProtocolService
             }
             EndUpdateLine();
             EndUpdateNode();
+            //set sendtopcount
+            _TopSendCount = 0;
+            isClear = true;
         }
         
         [Parser(ParseID = ConstIDs.O_OMTDM_ALL_USER_IND, Description = "下位机通过本条消息将本节点的用户关联信息上报给终端软件")]
@@ -356,13 +391,19 @@ namespace Services.ProtocolService
                 item.IsUpdate = false;
             }
         }
-        
+
+        private List<CommNode> _recordNodeGPS = new List<CommNode>();
         private void EndUpdateNode()
         {
             for (int i = 0; i < CommunicationNet.CommNodes.Count; i++)
             {
                 if (!CommunicationNet.CommNodes[i].IsUpdate)
                 {
+                    if (!_configService.ConfigInfos.IsGPSShow)
+                    {
+                        RecordNodeGPS(CommunicationNet.CommNodes[i]);
+                    }
+                    
                     NodeChangeEvent(this, new NodeChangeEventArg { Node = CommunicationNet.CommNodes[i], oper = Operations.DEL });
                     CommunicationNet.CommNodes[i].LineInfoOfNode.Clear();
                     CommunicationNet.CommNodes[i] = null;
@@ -372,12 +413,31 @@ namespace Services.ProtocolService
             }
         }
         
+        private void RecordNodeGPS(CommNode n)
+        {
+            foreach (var item in _recordNodeGPS)
+            {
+
+                if (item.MacAddr.Equals(n.MacAddr))
+                {
+                    item.Longitude = n.Longitude;
+                    item.Latitude = n.Latitude;
+                    item.Altitude = n.Altitude;
+                }
+            }
+
+            _recordNodeGPS.Add(new CommNode { MacAddr = new MacAddr(n.MacAddr.Src), Latitude = n.Latitude, Longitude = n.Longitude, Altitude = n.Altitude });
+        }
+
         private void BeginUpdateLine()
         {
             for (int i = 0; i < CommunicationNet.CommLines.Count; i++)
             {
                 if (CommunicationNet.CommLines[i].StartNode.IsUpdate == false || CommunicationNet.CommLines[i].EndNode.IsUpdate == false)
                 {
+                    CommunicationNet.CommLines[i].StartNode.LineInfoOfNode.Remove(CommunicationNet.CommLines[i]);
+                    CommunicationNet.CommLines[i].EndNode.LineInfoOfNode.Remove(CommunicationNet.CommLines[i]);
+
                     LineChangeEvent(this, new LineChangeEventArg { Line = CommunicationNet.CommLines[i], oper = Operations.DEL });
                     CommunicationNet.CommLines.RemoveAt(i);
                     i--;
@@ -416,23 +476,24 @@ namespace Services.ProtocolService
             return res;
         }
         
-        private CommStatues GetCommStatus(byte InfoQuality)
+        private CommStatues GetCommStatus(sbyte InfoQuality)
         {
-            if (InfoQuality<=_configService.ConfigInfos.BadUpper)
+            //if (InfoQuality<=_configService.ConfigInfos.BadUpper)
+            //{
+            //    return CommStatues.BAD;
+            //}
+            //else 
+            if (InfoQuality>=_configService.ConfigInfos.GoodUpper)
             {
-                return CommStatues.BAD;
+                return CommStatues.EXCELLENT;
             }
-            else if (InfoQuality<=_configService.ConfigInfos.MedianUpper)
-            {
-                return CommStatues.NORMAL;
-            }
-            else if (InfoQuality<=_configService.ConfigInfos.GoodUpper)
+            else if (InfoQuality>=_configService.ConfigInfos.MedianUpper)
             {
                 return CommStatues.GOOD;
             }
             else
             {
-                return CommStatues.EXCELLENT;
+                return CommStatues.NORMAL;
             }
         }
         private int ParseMsgHeader(byte[] srcBuffer)

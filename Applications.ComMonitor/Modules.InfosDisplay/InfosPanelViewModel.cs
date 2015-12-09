@@ -57,6 +57,7 @@ namespace Modules.InfosDisplay
             for (i = 0; i < Math.Min(RoutInfoDecs.Count,TerminalInfo.numRouteInfo); i++)
             {
                 RoutInfoDecs[i].info = TerminalInfo.RouteInfo[i];
+                RoutInfoDecs[i].GetNames(this._protocolService);
 
             }
             for (; i< RoutInfoDecs.Count; i++)
@@ -66,7 +67,10 @@ namespace Modules.InfosDisplay
 			}
             for(;i<TerminalInfo.numRouteInfo;i++)
             {
-                RoutInfoDecs.Add(new RoutInfoDecorator { RoutName = string.Format("路由信息{0}", i), info = TerminalInfo.RouteInfo[i] });
+                RoutInfoDecorator rd = new RoutInfoDecorator { info = TerminalInfo.RouteInfo[i] };
+                rd.GetNames(this._protocolService);
+                rd.RoutName = string.Format("本节点-->{0}", rd.DstName);
+                RoutInfoDecs.Add(rd);
             }
             //if (RoutInfoDecs.Count == 0)
             //{
@@ -98,6 +102,19 @@ namespace Modules.InfosDisplay
             
         }
 
+        private RoutInfoDecorator _SelRoutInfo;
+        public RoutInfoDecorator SelRoutInfo
+        {
+            get
+            {
+                return this._SelRoutInfo;
+            }
+            set
+            {
+                SetProperty(ref this._SelRoutInfo, value);
+            }
+        }
+
         public ObservableCollection<CommLine> LineInfoOfNode
         {
             get
@@ -108,6 +125,17 @@ namespace Modules.InfosDisplay
         private void NodeSelectChanged(CommNode cn)
         {
             this.SelectedNode = cn;
+            foreach (var node in this._protocolService.CommunicationNet.CommNodes)
+            {
+                if (node.MacAddr.Equals(cn.MacAddr))
+                {
+                    node.IsSelected = true;
+                }
+                else
+                {
+                    node.IsSelected = false;
+                }
+            }
         }
 
         private void LineSelectedChanged(CommLine cl)
@@ -115,6 +143,19 @@ namespace Modules.InfosDisplay
             this.SelectedLine = cl;
         }
         #region public properties
+
+        private bool _IsSelf = true;
+        public bool IsSelf
+        {
+            get
+            {
+                return this._IsSelf;
+            }
+            set
+            {
+                SetProperty(ref this._IsSelf, value);
+            }
+        }
         public DownTerminalInfo TerminalInfo
         {
             get

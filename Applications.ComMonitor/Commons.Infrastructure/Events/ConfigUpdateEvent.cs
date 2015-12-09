@@ -10,4 +10,9 @@ namespace Commons.Infrastructure.Events
     public class ConfigUpdateEvent : PubSubEvent<bool>
     {
     }
+
+    public class ClearAllEvent : PubSubEvent<bool>
+    {
+
+    }
 }

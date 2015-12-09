@@ -74,6 +74,12 @@ namespace Commons.Infrastructure.Models
         信道10 = 10,
         [Description("Channel 11: 2.462GHz")]
         信道11 = 11,
+        [Description("Channel 12: 2.467GHz")]
+        信道12 = 12,
+        [Description("Channel 13: 2.472GHz")]
+        信道13 = 13,
+        [Description("Channel 14: 2.477GHz")]
+        信道14 = 14,
 
         [Description("Channel 36: 5.18GHz")]
         信道36 = 36,
@@ -221,5 +227,19 @@ namespace Commons.Infrastructure.Models
         O_DEBUG_RTE_INTERFACE_TABLE = 108,
         [Description("RTE_NODE_INFORMATION")]
         O_DEBUG_RTE_NODE_INFORMATION = 109
+    }
+
+    public enum EnumNodeType
+    {
+        [Description("驾校（车载）")]
+        DriverSchool_Car = 1,
+        [Description("驾校（基站）")]
+        DriverSchool_Base = 2,
+        [Description("单兵")]
+        Singler = 3,
+        [Description("车载")]
+        Car = 4,
+        [Description("舰载")]
+        Boat = 5,
     }
 }

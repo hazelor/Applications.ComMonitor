@@ -151,7 +151,7 @@ namespace Modules.ConfigDisplay.Tool
 	                    }
 
                         string tmp = "";
-                        tmp = System.Text.Encoding.UTF8.GetString(srcArray);
+                        tmp = System.Text.Encoding.ASCII.GetString(srcArray);
                         tmp = tmp.TrimEnd((char)0);
                         return tmp;
                     case FieldTypeEnum.Byte:
@@ -183,7 +183,7 @@ namespace Modules.ConfigDisplay.Tool
             switch (FieldDescription.FieldType)
             {
                 case FieldTypeEnum.String:
-                    byte[] src = System.Text.Encoding.Unicode.GetBytes(v);
+                    byte[] src = System.Text.Encoding.ASCII.GetBytes(v);
                     byte[] dststr = new byte[FieldDescription.Size];
                     Buffer.BlockCopy(src, 0, dststr, 0, src.Length < FieldDescription.Size ? src.Length : FieldDescription.Size);
                         Info.SetValue(obj, dststr);

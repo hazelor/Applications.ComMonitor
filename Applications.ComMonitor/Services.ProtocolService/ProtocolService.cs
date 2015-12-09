@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Timers;
 using Commons.Infrastructure;
 using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
@@ -25,11 +26,40 @@ namespace Services.ProtocolService
     {
         private Dictionary<ushort, MethodInfo> ParserDict = new Dictionary<ushort, MethodInfo>();
 
-        private CommNet _CommNet= new CommNet();
-        public CommNet CommunicationNet { get { return this._CommNet; } }
+        private CommNet _CommNet = new CommNet();
+
+        private int _TopSendCount = 0;
+        private const int MAX_TOPSEND_COUNT = 20;
+
+        public CommNet CommunicationNet
+        {
+            get
+            {
+                return this._CommNet;
+            }
+        }
+
+        public string GetName(MacAddr mac)
+        {
+            foreach (var node in _CommNet.CommNodes)
+            {
+                if (node.MacAddr.Equals(mac))
+                {
+                    return node.NodeName;
+                }
+            }
+            return "";
+        }
 
         private DownTerminalInfo _downTerminalInfo = new DownTerminalInfo();
-        public DownTerminalInfo DTerminalInfo { get { return this._downTerminalInfo; } }
+
+        public DownTerminalInfo DTerminalInfo
+        {
+            get
+            {
+                return this._downTerminalInfo;
+            }
+        }
 
         public event EventHandler<bool> IsStartChannelChangeEvent;
 
@@ -48,14 +78,18 @@ namespace Services.ProtocolService
             }
         }
 
-        PreciseTimer _queryTimer = new PreciseTimer();
-        PreciseTimer _sendTimer = new PreciseTimer(20);
+        //PreciseTimer _queryTimer = new PreciseTimer();
+        //PreciseTimer _sendTimer = new PreciseTimer(20);
+        Timer _queryTimer = new Timer(); 
+        Timer _sendTimer = new Timer(20);
         private ushort MsgID;
         private ushort SrcID;
         private ushort DstID;
         private uint DataLen;
         private uint MsgLen;
+        
         #region Service
+        
         private IConfigService _configService;
         private IUdpClientService _udpClientService;
         private ITcpListenerService _tcpListenerService;
@@ -64,18 +98,19 @@ namespace Services.ProtocolService
         //private DataProcessService _dataProcessService;
 
         #endregion
-
+        
         //private bool IsLittle = BitConverter.IsLittleEndian;
         private bool CanStartTimer = false;
         private bool CanQueryRouteAndTopInfo = false;
         private string ChannelServiceType = "";
-
-
-        private const int COLCOUNT = 19;
+        
+        private const int COLCOUNT = 23;
         private const int LATLONCOUNT = 4;
-
+        
         public event EventHandler<NodeChangeEventArg> NodeChangeEvent;
         public event EventHandler<LineChangeEventArg> LineChangeEvent;
+        //public event EventHandler IPSettingSuccessMsgReceiveEvent;
+        
         [ImportingConstructor]
         public ProtocolService(IConfigService configService, IEventAggregator eventAggregator)
         {
@@ -89,7 +124,6 @@ namespace Services.ProtocolService
             _CommNet.CommNodes = new ObservableCollection<CommNode>();
             _CommNet.UserDevs = new ObservableCollection<UserDev>();
             DTerminalInfo.RouteInfo = new ObservableCollection<RouteInfo>();
-
             
             //获取基础数据收发服务的实例
             _tcpClientService = new TcpClientService(_configService.ConfigInfos.TerminalPort);
@@ -99,17 +133,16 @@ namespace Services.ProtocolService
                 _configService.ConfigInfos.TerminalPort);
             _tcpListenerService = new TcpListenerService(_configService.ConfigInfos.TerminalPort);
             //获取该类下面对应的处理方法的反射，用以与ID对应并方便扩展调用，如需新的处理方法可定义一个method并辅以ParserAttribute
-            var info  = typeof(ProtocolService);
-            foreach (var item in info.GetMethods(BindingFlags.NonPublic|BindingFlags.Instance))
+            var info = typeof(ProtocolService);
+            foreach (var item in info.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance))
             {
-                ParserAttribute ma= null;
+                ParserAttribute ma = null;
                 try
                 {
-                     ma = (ParserAttribute)Attribute.GetCustomAttribute(item, typeof(ParserAttribute));
+                    ma = (ParserAttribute)Attribute.GetCustomAttribute(item, typeof(ParserAttribute));
                 }
                 catch (ArgumentNullException)
                 {
-
                     continue;
                 }
                 finally
@@ -118,50 +151,45 @@ namespace Services.ProtocolService
                     {
                         ParserDict.Add(ma.ParseID, item);
                     }
-                    
-                } 
-                
+                }
             }
             //Parse conf for nodeImage
             LoadNodeImagesConf();
-
+            
             //register event
             _eventAggregator.GetEvent<ConfigUpdateEvent>().Subscribe(OnConfigUpdated);
             _eventAggregator.GetEvent<RecievedEvent>().Subscribe(ParserDatas, ThreadOption.UIThread);
-
         }
 
         Dictionary<int, string> _NodeImageDict = new Dictionary<int, string>();
+        
         private void LoadNodeImagesConf()
         {
             try
             {
-                XDocument doc = XDocument.Load("./Conf/NodeImagesConf.xml");
+                XDocument doc = XDocument.Load("./conf/NodeImagesConf.xml");
                 XElement root = doc.Element("NodeImages");
                 foreach (var item in root.Elements("Item"))
                 {
-                    _NodeImageDict[int.Parse(item.Attribute("Type").Value)] = string.Format(@".\Images\{0}", item.Attribute("Path").Value);
+                    _NodeImageDict[int.Parse(item.Attribute("type").Value)] = string.Format(@".\images\{0}", item.Attribute("Name").Value);
                 }
             }
             catch (Exception)
             {
-                
-                
             }
-            
         }
-       
+        
         private void OnConfigUpdated(bool sign)
         {
             if (IsStartChannel)
             {
                 StopChannel();
                 //SLEEP FOR DISCONNECT
-                //System.Threading.Thread.Sleep(30000);
+                //System.Threading.Thread.Sleep(3000);
                 StartChannel();
             }
-            
         }
+        
         /// <summary>
         /// 开始定时数据发送
         /// </summary>
@@ -169,16 +197,16 @@ namespace Services.ProtocolService
         {
             //设置定时器的时间间隔
             _queryTimer.Interval = _configService.ConfigInfos.UpdateRate;
+            _sendTimer.Interval = _configService.ConfigInfos.UpdateRate;
             InitializeChannel();
             if (CanStartTimer)
             {
                 _queryTimer.Start();
                 _sendTimer.Start();
-                
             }
             IsStartChannel = true;
-            
         }
+        
         /// <summary>
         /// 结束数据定时发送
         /// </summary>
@@ -188,9 +216,8 @@ namespace Services.ProtocolService
             _queryTimer.Stop();
             ResetChannel();
             IsStartChannel = false;
-            
         }
-
+        
         ///// <summary>
         ///// 通过TcpClient向下位机发送数据
         ///// </summary>
@@ -208,7 +235,7 @@ namespace Services.ProtocolService
         //        _tcpClientService.SendData(SendIpInfo());
         //    }
         //}
-
+        
         ///// <summary>
         ///// 通过TcpListener向下位机发送数据
         ///// </summary>
@@ -226,7 +253,7 @@ namespace Services.ProtocolService
         //        _tcpListenerService.SendDataToALL(SendIpInfo());
         //    }
         //}
-
+        private bool isClear = true;
         /// <summary>
         /// 通过UdpClient向下位机发送数据
         /// </summary>
@@ -238,6 +265,19 @@ namespace Services.ProtocolService
             {
                 AddSendData(QueryRouteInfo());
                 AddSendData(QueryTopInfo());
+
+                //发送计数，如果超过阈值将清空top信息
+                _TopSendCount++;
+                if (_TopSendCount > MAX_TOPSEND_COUNT && isClear)
+                {
+                    isClear = false;
+
+                    ClearAll();
+                    //BeginUpdateNode();
+                    //BeginUpdateLine();
+                    //EndUpdateLine();
+                    //EndUpdateNode();
+                }
             }
             else
             {
@@ -245,25 +285,35 @@ namespace Services.ProtocolService
                 AddSendData(SendIpInfo());
             }
         }
+        private void ClearAll()
+        {
+            this._eventAggregator.GetEvent<ClearAllEvent>().Publish(true);
+            //this._CommNet.CommLines.Clear();
+            //this._CommNet.CommNodes.Clear();
+
+            
+        }
 
         private Queue<byte[]> _sendBuffer = new Queue<byte[]>();
+        
         private void OnSendTimer(object sender, EventArgs e)
         {
-            
             if (_sendBuffer.Count == 0)
-	        {
-		        return;
-	        }
-            else{
+            {
+                return;
+            }
+            else
+            {
                 byte[] b = _sendBuffer.Dequeue();
                 this.SendData(b);
             }
-            
         }
+        
         private void AddSendData(byte[] addsb)
         {
-            this._sendBuffer.Enqueue(addsb);
+            this.SendData(addsb);
         }
+        
         private void SendData(byte[] sendBuffer)
         {
             if (_configService.ConfigInfos.CommProtocol == ConfigItems.UDP)
@@ -271,7 +321,7 @@ namespace Services.ProtocolService
                 _udpClientService.SendData(sendBuffer);
                 return;
             }
-
+            
             if (_configService.ConfigInfos.CommProtocol == ConfigItems.TCP)
             {
                 if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
@@ -284,9 +334,9 @@ namespace Services.ProtocolService
                     _tcpListenerService.SendDataToALL(sendBuffer);
                     return;
                 }
-
             }
         }
+        
         //private void OnQueryTimmer(object sender, EventArgs e)
         //{
         //    //_queryTimmer.Stop();
@@ -295,7 +345,7 @@ namespace Services.ProtocolService
         //    QueryRouteInfo();
         //    //_queryTimmer.Start();
         //}
-
+        
         /// <summary>
         /// 初始化基础数据收发服务
         /// </summary>
@@ -307,11 +357,22 @@ namespace Services.ProtocolService
             {
                 if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
                 {
+                    //实例化Tcp数据接受缓存
+                    DataLink = new LinkedList<byte[]>();
+                    //用于组包的缓冲区
+                    DataBuffer = new BufferBytes();
+                    //设置组包线程标志位
+                    IsStopReceive = false;
+                    //实例化组包线程
+                    ReceivedDataProcessThread = new System.Threading.Thread(ConstrcutPackage);
+                    ReceivedDataProcessThread.IsBackground = true;
+                    ReceivedDataProcessThread.Start();
+                    //配置TcpClient
                     ChannelServiceType = "TcpClient";
                     _tcpClientService.InitializeConfiguration(_configService.ConfigInfos.TerminalPort);
                     _tcpClientService.Register(OnTcpDiagramReceived);
                     _tcpClientService.ErrorHappenedEvent += OnChannelErrorHappened;
-                    
+                    //连接
                     CanStartTimer = _tcpClientService.Connect(_configService.ConfigInfos.DownTerminalIP, _configService.ConfigInfos.DownTerminalPort);
                 }
                 if (_configService.ConfigInfos.CommType == ConfigItems.SERVER)
@@ -329,7 +390,7 @@ namespace Services.ProtocolService
             {
                 ChannelServiceType = "UdpClient";
                 _udpClientService.InitializeConfiguration(_configService.ConfigInfos.DownTerminalIP,
-            _configService.ConfigInfos.DownTerminalPort, _configService.ConfigInfos.TerminalPort);
+                    _configService.ConfigInfos.DownTerminalPort, _configService.ConfigInfos.TerminalPort);
                 _udpClientService.Register(OnUdpDiagramReceived);
                 _udpClientService.ErrorHappenedEvent += OnChannelErrorHappened;
                 
@@ -337,14 +398,13 @@ namespace Services.ProtocolService
                 CanStartTimer = true;
                 //if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
                 //{
-                   
                 //}
                 //if (_configService.ConfigInfos.CommType == ConfigItems.SERVER)
                 //{
                 //}
             }
         }
-
+        
         /// <summary>
         /// 重置基础数据收发服务
         /// </summary>
@@ -356,7 +416,21 @@ namespace Services.ProtocolService
                 CanQueryRouteAndTopInfo = false;
                 _tcpClientService.Unregister(OnTcpDiagramReceived);
                 _tcpClientService.ErrorHappenedEvent -= OnChannelErrorHappened;
+                IsStopReceive = true;
+                
                 _tcpClientService.Disconnect();
+                if (ReceivedDataProcessThread != null && ReceivedDataProcessThread.IsAlive)
+                {
+                    ReceivedDataProcessThread.Abort();
+                    ReceivedDataProcessThread = null;
+                }
+                if (DataLink != null)
+                {
+                    DataLink.Clear();
+                    DataLink = null;
+                }
+
+                DataBuffer = null;
                 return;
             }
             if (ChannelServiceType == "UdpClient")
@@ -382,13 +456,12 @@ namespace Services.ProtocolService
                 return;
             }
         }
-
+        
         private void OnChannelErrorHappened(object sender, EventArgs e)
         {
-            
             StopChannel();
         }
-
+        
         /// <summary>
         /// Tcp类型下接收到报文之后的处理函数
         /// </summary>
@@ -396,15 +469,23 @@ namespace Services.ProtocolService
         /// <param name="e">e中包含收到的数据通过e.datagram来获取数据类型为byte[]的报文</param>
         private void OnTcpDiagramReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
         {
-            byte[] srcBuffer = e.datagram;
+            if (e.datagram.Length > 0)
+            {
+                LinkedListNode<byte[]> tmpNode = new LinkedListNode<byte[]>(e.datagram);
+                if (DataLink != null)
+                {
+                    DataLink.AddLast(tmpNode);
+                }
+            }
+            //byte[] srcBuffer = e.datagram;
             //string str = System.Text.Encoding.Default.GetString(content);
-            ParserDatas(srcBuffer);
+            //ParserDatas(srcBuffer);
             //Encoding encoding = Encoding.UTF8;
             //string contentstring = encoding.GetString(content, 0, content.Length);
             //this.receivetext = str;
             //byte[] sendbackdata = new byte[] { 0xeb, 0x90 };
         }
-
+        
         /// <summary>
         /// Udp类型下接收到报文之后的处理函数
         /// </summary>
@@ -412,9 +493,13 @@ namespace Services.ProtocolService
         /// <param name="e">e中包含收到的数据通过e.Content来获取数据类型为byte[]的报文</param>
         private void OnUdpDiagramReceived(object sender, DataReceivedEventArgs e)
         {
-            byte[] srcBuffer = e.Content;
+            if (e.Content.Length > 20)
+            {
+                //LinkedListNode<byte[]> tempNode = new LinkedListNode<byte[]>(e.Content);
+                //DataLink.AddLast(tempNode);
+                _eventAggregator.GetEvent<RecievedEvent>().Publish(e.Content);
+            }
             //string str = System.Text.Encoding.Default.GetString(content);
-            _eventAggregator.GetEvent<RecievedEvent>().Publish(srcBuffer);
             //ParserDatas(srcBuffer);
             //Encoding encoding = Encoding.UTF8;
             //string contentstring = encoding.GetString(content, 0, content.Length);

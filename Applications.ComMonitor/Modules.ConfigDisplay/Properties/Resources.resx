@@ -120,7 +120,19 @@
   <data name="MsgConfPath" xml:space="preserve">
     <value>./conf/msgs.conf</value>
   </data>
-  <data name="ParamSettingFilePath" xml:space="preserve">
-    <value>./conf/settingParams.conf</value>
+  <data name="OLSRParamSettingFilePath" xml:space="preserve">
+    <value>./conf/OLSRsettingParams.conf</value>
+  </data>
+  <data name="WIFI1ParamSettingFilePath" xml:space="preserve">
+    <value>./conf/WIFI1settingParams.conf</value>
+  </data>
+  <data name="WIFI2ParamSettingFilePath" xml:space="preserve">
+    <value>./conf/WIFI2settingParams.conf</value>
+  </data>
+  <data name="WIFI3ParamSettingFilePath" xml:space="preserve">
+    <value>./conf/WIFI3settingParams.conf</value>
+  </data>
+  <data name="WIFI4ParamSettingFilePath" xml:space="preserve">
+    <value>./conf/WIFI4settingParams.conf</value>
   </data>
 </root>

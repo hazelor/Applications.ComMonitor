@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -141,6 +142,7 @@ namespace Applications.ComMonitor
             if (_StartName == "开始")
             {
                 StartName = "结束";
+                //Thread.Sleep(3000);
                 _protocolService.StartChannel();
                 _eventAggregator.GetEvent<SystemInfoEvent>().Publish(new SystemInfos { Info = "与下位机通信开始!", Time = DateTime.Now });
             }

@@ -4,14 +4,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+               xmlns:converters="clr-namespace:Commons.Infrastructure.Converters;assembly=Commons.Infrastructure"
              mc:Ignorable="d" >
+    <Node:NodeBase.Resources>
+        <converters:VisibleConverter x:Key="VisibleConverter"/>
+    </Node:NodeBase.Resources>
     <Grid>
         <StackPanel HorizontalAlignment="Center">
-            <Image Source="{Binding ImagePath}" Width="50" Height="50" Margin="-25,-25,0,0" Cursor="Hand">
-                <Image.Effect>
-                    <DropShadowEffect x:Name="Shadow"/>
-                </Image.Effect>
-            </Image>
+            <Border Width="60" Height="60" Margin="-30,-30,0,0" CornerRadius="30" BorderBrush="Lime" BorderThickness="2" Visibility="{Binding IsSelf, Converter={StaticResource VisibleConverter}}">
+                <Border Width="55" Height="55"  CornerRadius="25.25" BorderBrush="Red" BorderThickness="2" Visibility="{Binding IsSelected, Converter={StaticResource VisibleConverter}}">
+                    <Image x:Name="Icon" Width="50" Height="50"  Cursor="Hand">
+                        <Image.Effect>
+                            <DropShadowEffect x:Name="Shadow"/>
+                        </Image.Effect>
+                    </Image>
+                </Border>
+
+            </Border>
+           
             <Border x:Name="CursorDisplay" 
                     Background="#33575B57"
                     Visibility="Visible"
@@ -19,7 +29,7 @@
                     BorderBrush="#FF464646"
                     BorderThickness="1"
                     >
-                <Label Foreground="White" Content="{Binding NodeName}"/>
+                <Label Content="{Binding NodeName}" Foreground="Red"/>
             </Border>
         </StackPanel>
     </Grid>

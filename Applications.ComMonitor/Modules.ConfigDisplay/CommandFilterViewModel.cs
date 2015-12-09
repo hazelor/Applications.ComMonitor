@@ -1,7 +1,9 @@
-﻿using Commons.Infrastructure.Interface;
+﻿using Commons.Infrastructure.Events;
+using Commons.Infrastructure.Interface;
 using Commons.Infrastructure.Models;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Modules.ConfigDisplay.Interface;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Services.ProtocolService;
 
 namespace Modules.ConfigDisplay
 {
@@ -23,6 +26,7 @@ namespace Modules.ConfigDisplay
         public CommandFilterViewModel(IProtocolService protocolService)
         {
             _protocolService = protocolService;
+            ((ProtocolService)_protocolService).IPSettingSuccessMsgReceiveEvent += OnIPSettingSuccessMsgReceiveEvent;
             ApplyCommand = new DelegateCommand(ApplyExecuted);
             Uri = PanelNames.MsgFilterSettingPanel;
             Name = "消息过滤";
@@ -141,22 +145,26 @@ namespace Modules.ConfigDisplay
                 item.Filter = false;
             }
         }
-
         private void FilterExecuted()
         {
             List<ushort> msgids = new List<ushort>();
             foreach (var item in _BaseNameCollection)
-	        {
+            {
                 foreach (var msgitem in item.MsgItems)
-	            {
+                {
                     if (msgitem.Filter)
                     {
                         msgids.Add(msgitem.ID);
                     }
-                    
-	            }
-	        }
+
+                }
+            }
             this._protocolService.FilterMsg(msgids.ToArray());
+        }
+
+        private void OnIPSettingSuccessMsgReceiveEvent(object sender, EventArgs e)
+        {
+            FilterExecuted();
         }
     }
 

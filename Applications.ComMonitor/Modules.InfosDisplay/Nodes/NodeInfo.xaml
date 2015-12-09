@@ -9,12 +9,13 @@
     <UserControl.Resources>
         <converter:LatLonConverter x:Key="LatLonConverter"/>
         <converter:AltConverter x:Key="AltConverter"/>
+        <converter:NodeTypeConverter x:Key="NodeTypeConverter"/>
         <!--Label Style-->
         <Style TargetType="{x:Type Label}" x:Key="MLabel2Style">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Label}">
-                        <Grid Height="30">
+                        <Grid Height="20">
                             <Image Source="../images/LabelBackGround2.png"/>
                             <TextBlock Text="{TemplateBinding Content}"
                                    FontSize="{TemplateBinding FontSize}"
@@ -34,9 +35,9 @@
             
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="TextAlignment" Value="Center"/>
-            <Setter Property="Height" Value="30"/>
+            <Setter Property="Height" Value="20"/>
             <Setter Property="Margin" Value="5"/>
-            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontSize" Value="10"/>
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -53,32 +54,32 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Column="0" Grid.Row="0" Style="{StaticResource MLabel2Style}">纬度</Label>
-        <TextBlock Grid.Column="1" Grid.Row="0" MinWidth="150"
+        <TextBlock Grid.Column="1" Grid.Row="0" MinWidth="160"
                    Text="{Binding Latitude, Converter={StaticResource LatLonConverter}}"
                    Style="{StaticResource MTextBox2Style}"/>
 
         <Label Grid.Column="0" Grid.Row="1" Style="{StaticResource MLabel2Style}" >经度</Label>
-        <TextBlock Grid.Column="1" Grid.Row="1" MinWidth="150"
+        <TextBlock Grid.Column="1" Grid.Row="1" MinWidth="160"
                    VerticalAlignment="Center"
                    Text="{Binding Longitude,Converter={StaticResource LatLonConverter}}"
                    Style="{StaticResource MTextBox2Style}"/>
 
         <Label Grid.Column="0" Grid.Row="2" Style="{StaticResource MLabel2Style}">高度</Label>
-        <TextBlock Grid.Column="1" Grid.Row="2" MinWidth="150" 
+        <TextBlock Grid.Column="1" Grid.Row="2" MinWidth="160" 
                    VerticalAlignment="Center"
                    Text="{Binding Altitude,Converter={StaticResource AltConverter}}"
                    Style="{StaticResource MTextBox2Style}"/>
 
         <Label Grid.Column="0" Grid.Row="3" Style="{StaticResource MLabel2Style}">类型</Label>
-        <TextBlock Grid.Column="1" Grid.Row="3" MinWidth="150" Text="{Binding NodeType}"
+        <TextBlock Grid.Column="1" Grid.Row="3" MinWidth="160" Text="{Binding NodeType, Converter={StaticResource NodeTypeConverter}}"
                    VerticalAlignment="Center"
                    Style="{StaticResource MTextBox2Style}"/>
         <Label Grid.Column="0" Grid.Row="4" Style="{StaticResource MLabel2Style}">名称</Label>
-        <TextBlock Grid.Column="1" Grid.Row="4" MinWidth="150"
+        <TextBlock Grid.Column="1" Grid.Row="4" MinWidth="160"
                    Text="{Binding NodeName}"
                    Style="{StaticResource MTextBox2Style}"/>
         <Label Grid.Column="0" Grid.Row="5" Style="{StaticResource MLabel2Style}">MAC</Label>
-        <TextBlock Grid.Column="1" Grid.Row="5" MinWidth="150"
+        <TextBlock Grid.Column="1" Grid.Row="5" MinWidth="160"
                    Text="{Binding MacAddr}"
                    Style="{StaticResource MTextBox2Style}"/>
 

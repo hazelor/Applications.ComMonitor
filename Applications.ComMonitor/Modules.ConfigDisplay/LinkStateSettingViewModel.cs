@@ -36,7 +36,7 @@ namespace Modules.ConfigDisplay
             _configService.SaveConfigCommand.Execute(null);
             IsAvaibleApply = false;
             BaseApplyAvailableUpdate(IsAvaibleApply);
-            _eventAggregator.GetEvent<ConfigUpdateEvent>().Publish(true);
+            //_eventAggregator.GetEvent<ConfigUpdateEvent>().Publish(true);
         }
 
         #region Perperties

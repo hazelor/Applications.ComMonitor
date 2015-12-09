@@ -61,13 +61,15 @@ namespace Modules.InfosDisplay
 
         private IEventAggregator _eventAggregator;
         private IConfigService _configService;
+        private IProtocolService _protocolService;
         [ImportingConstructor]
-        public InfosPanel(IEventAggregator eventAggregator, IConfigService configService)
+        public InfosPanel(IEventAggregator eventAggregator, IConfigService configService, IProtocolService protocolService)
         {
             _eventAggregator = eventAggregator;
             _configService = configService;
-            TileGenerator.CacheFolder = "Maps.db";
-            TileGenerator.IsDBCaches = true;
+            _protocolService = protocolService;
+            TileGenerator.CacheFolder = "Maps";
+            TileGenerator.IsDBCaches = false;
             TileGenerator.DownloadCountChanged += this.OnDownloadCountChanged;
             TileGenerator.DownloadError += this.OnDownloadError;
             InitializeComponent();
@@ -78,6 +80,7 @@ namespace Modules.InfosDisplay
             //按配置文件更新
             OnConfigUpdated(true);
             _eventAggregator.GetEvent<ConfigUpdateEvent>().Subscribe(OnConfigUpdated);
+            _eventAggregator.GetEvent<ClearAllEvent>().Subscribe(OnClearAll, ThreadOption.UIThread);
         }
 
         private void OnSelectedNodeEvent(object sender, EventArgs e)
@@ -126,6 +129,23 @@ namespace Modules.InfosDisplay
             this.tileCanvas.ShowRoad(RoadShowButton.IsChecked == true);
         }
 
+        private void NodeClick(object sender, RoutedEventArgs e)
+        {
+            //if (this.NodeButton.IsChecked == true)
+            //{
+            //    //set map drag false
+                
+            //    //set node drag true
+            //    this.tileCanvas.IsCanDrag = false;
+
+            //}
+            //else
+            //{
+            //    //set map drag true
+            //    //set node drag false
+            //    this.tileCanvas.IsCanDrag = true;
+            //}
+        }
         private List<MeasureNode> MeasureItemsKey = new List<MeasureNode>();
         private void ClearMeasureInfo()
         {
@@ -194,7 +214,7 @@ namespace Modules.InfosDisplay
                 double dist= 0;
                 if (MeasureItemsKey.Count>0)
 	            {
-                    dist+= this.tileCanvas.GetDistance(MeasureItemsKey.Last().Longitude,MeasureItemsKey.Last().Latitude,pos.X,pos.Y );
+                    dist=MeasureItemsKey.Last().Distance + Math.Abs(this.tileCanvas.GetDistance(MeasureItemsKey.Last().Longitude,MeasureItemsKey.Last().Latitude,pos.X,pos.Y ));
 	            }
                 MeasureNode mn = new MeasureNode
                 {
@@ -268,6 +288,7 @@ namespace Modules.InfosDisplay
             {
                 MapFrameElement obj;
                 obj = new NodeDisplay();
+                
 
                 this.tileCanvas.AddSingleObject(e.Node.ToString(), obj, e.Node);
             }
@@ -289,6 +310,22 @@ namespace Modules.InfosDisplay
             {
                 this.tileCanvas.DelSubObject(e.Line.ToString());
             }
+        }
+
+        private void OnClearAll(bool sign)
+        {
+            foreach (var item in _protocolService.CommunicationNet.CommNodes)
+            {
+                this.tileCanvas.DelSubObject(item.ToString());
+            }
+
+            foreach (var item in _protocolService.CommunicationNet.CommLines)
+            {
+                this.tileCanvas.DelSubObject(item.ToString());
+            }
+
+            _protocolService.CommunicationNet.CommNodes.Clear();
+            _protocolService.CommunicationNet.CommLines.Clear();
         }
     }
 }

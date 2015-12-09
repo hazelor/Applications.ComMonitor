@@ -36,6 +36,7 @@ namespace Modules.InfosDisplay.Nodes
 
         public NodeBase()
         {
+            this.IsCanDrag = false;
             _eventAggregator= ServiceLocator.Current.GetInstance<IEventAggregator>();
             _eventAggregator.GetEvent<SelNodeEvent>().Subscribe(OnSelectedNodeChanged);
         }
@@ -109,12 +110,28 @@ namespace Modules.InfosDisplay.Nodes
             base.OnMouseMove(e);
             if (_mouseCaptured)
             {
-                Point position = e.GetPosition(this.Parent as FrameworkElement);
-                _previousMouse = position;
-                MapCanvas mc = this.Parent as MapCanvas;
-                position = mc.GetLocation(position);
-                MapCanvas.SetLatitude(this, position.Y);
-                MapCanvas.SetLongitude(this, position.X);
+                try
+                {
+                    FrameworkElement f = this.Parent as FrameworkElement;
+                    if (f!= null)
+                    {
+                        Point position = e.GetPosition(f);
+                        _previousMouse = position;
+                        MapCanvas mc = this.Parent as MapCanvas;
+                        if (mc!= null)
+                        {
+                            position = mc.GetLocation(position);
+                            MapCanvas.SetLatitude(this, position.Y);
+                            MapCanvas.SetLongitude(this, position.X);
+                        }
+                        
+                    }
+                    
+                }
+                catch(Exception m)
+                {
+
+                }
                 //this.SetValue(MapCanvas.LongitudeProperty, (object)position.X);
                 //this.Longitude = position.X;
                 //this.Latitude = position.Y;

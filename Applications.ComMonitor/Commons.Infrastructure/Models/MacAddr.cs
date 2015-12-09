@@ -26,7 +26,7 @@ namespace Commons.Infrastructure.Models
                 Addr += b.ToString("X2");
                 //Addr += '';
             }
-            Addr = Addr.Remove(Addr.Length - 1);
+            //Addr = Addr.Remove(Addr.Length - 1);
         }
 
         public override string ToString()
@@ -45,7 +45,7 @@ namespace Commons.Infrastructure.Models
                 Addr += b.ToString("X2");
                 //Addr += '';
             }
-            Addr = Addr.Remove(Addr.Length - 1);
+            //Addr = Addr.Remove(Addr.Length - 1);
 
         }
 

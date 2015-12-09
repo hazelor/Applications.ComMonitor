@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Practices.Prism.Mvvm;
@@ -12,6 +13,8 @@ using Modules.ConfigDisplay.Tool;
 using Commons.Infrastructure.Models;
 using Hazelor.Infrastructure.Tools;
 using System.Collections.ObjectModel;
+using Commons.Infrastructure;
+using System.IO;
 
 namespace Modules.ConfigDisplay
 {
@@ -20,10 +23,12 @@ namespace Modules.ConfigDisplay
     class ConfigurationSettingViewModel : SubConfViewModelBase
     {
         private IProtocolService _protocolService;
+        private IConfigService _configService;
         [ImportingConstructor]
-        public ConfigurationSettingViewModel( IProtocolService protocolService)
+        public ConfigurationSettingViewModel( IProtocolService protocolService, IConfigService configService)
         {
             _protocolService = protocolService;
+            _configService = configService;
             ApplyCommand = new DelegateCommand(ApplyExecuted);
             Uri = PanelNames.ConfigurationSettingPanel;
             Name = "参数设置";
@@ -77,22 +82,21 @@ namespace Modules.ConfigDisplay
         { get; set; }
 
         private const int WIFISettingSize = 4;
-        private Serializer _serializer = new Serializer();
+        //private Serializer _serializer = new Serializer();
         private void InitDataStruct()
         {
             
             
-            _settingInfoConf = new SettingInfoConf { FilePath = Properties.Resources.ParamSettingFilePath };
+            _settingInfoConf = new SettingInfoConf();
             //如果没有配置文件存在，填写默认值
-            if (!System.IO.File.Exists(Properties.Resources.ParamSettingFilePath))
-            {
-                
+            if (!System.IO.File.Exists(Properties.Resources.OLSRParamSettingFilePath))
+            {            
                 InitDefault();
             }
-            //如果有配置文件存在，序列化文件
+            //如果有配置文件存在，反序列化文件
             else
             {
-                _serializer.DeSerialize(Properties.Resources.ParamSettingFilePath, typeof(SettingInfoConf));
+                DeSerializeStruct();
             }
 
             //初始化shell
@@ -153,7 +157,7 @@ namespace Modules.ConfigDisplay
 
         }
         private SettingInfoConf _settingInfoConf { get; set; }
-        internal class SettingInfoConf : ISerializeModel
+        internal class SettingInfoConf
         {
             public string FilePath { get; set; }
             
@@ -172,6 +176,8 @@ namespace Modules.ConfigDisplay
         #region Commands
         private void ConfSettingExecuted()
         {
+            OLSESettingInfo.Instance= CheckEndianolsr(OLSESettingInfo.Instance);
+            WIFISettingInfos[0].Instance = CheckEndianwifis(WIFISettingInfos[0].Instance);
             byte[] osels = StructConverter.StructToBytes(OLSESettingInfo.Instance);
             byte[] wifis = StructConverter.StructToBytes(WIFISettingInfos[0].Instance);
             byte[] sendbuffer = new byte[osels.Length + wifis.Length * WIFISettingSize];
@@ -182,6 +188,7 @@ namespace Modules.ConfigDisplay
             index += wifis.Length;
             for (int i = 1; i < WIFISettingSize; i++)
             {
+                WIFISettingInfos[i].Instance = CheckEndianwifis(WIFISettingInfos[i].Instance);
                 wifis = StructConverter.StructToBytes(WIFISettingInfos[i].Instance);
                 Buffer.BlockCopy(wifis, 0, sendbuffer, index, wifis.Length);
                 index += wifis.Length;
@@ -189,6 +196,34 @@ namespace Modules.ConfigDisplay
             ParamSettingMsg = "参数设置发送";
             this._protocolService.ParamSetting(sendbuffer);
         }
+
+        private STRU_OLSR_PARAME CheckEndianolsr(STRU_OLSR_PARAME SOLS)
+        {
+            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
+            {
+                SOLS.u16HelloInterval = Endian.SwapUInt16(SOLS.u16HelloInterval);
+                SOLS.U16TCInterval = Endian.SwapUInt16(SOLS.U16TCInterval);
+                SOLS.u16MIDInterval = Endian.SwapUInt16(SOLS.u16MIDInterval);
+                
+                
+            }
+            return SOLS;
+            
+        }
+
+        private STRU_WIFI_PARAME CheckEndianwifis(STRU_WIFI_PARAME SWP)
+        {
+            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
+            {
+                SWP.s32RtsThr = Endian.SwapInt32(SWP.s32RtsThr);
+                SWP.s32FragThr = Endian.SwapInt32(SWP.s32FragThr);
+                
+                
+            }
+            return SWP;
+            
+        }
+
         private void FreQueryExecuted()
         {
             this._protocolService.FreQuery();
@@ -196,7 +231,7 @@ namespace Modules.ConfigDisplay
 
         private void SaveConfExecuted()
         {
-            //_serializer.Serialize(_settingInfoConf, typeof(SettingInfoConf));
+            SerializeStruct();
         }
 
         private void OnRecieveMsgEvent(object sender, EventMsgArgs e)
@@ -218,6 +253,66 @@ namespace Modules.ConfigDisplay
                     FrecInfos[i] = c[i];
                 }
             }
+        }
+        #endregion
+        #region SerializeStruct
+        public void SerializeStruct()
+        {
+            BinaryFormatter formate = new BinaryFormatter();
+
+            FileStream fs = new FileStream(Properties.Resources.OLSRParamSettingFilePath, FileMode.OpenOrCreate);
+            formate.Serialize(fs, OLSESettingInfo.Instance);
+            fs.Close();
+
+            fs = new FileStream(Properties.Resources.WIFI1ParamSettingFilePath, FileMode.OpenOrCreate);
+            formate.Serialize(fs, WIFISettingInfos[0].Instance);
+            fs.Close();
+
+            fs = new FileStream(Properties.Resources.WIFI2ParamSettingFilePath, FileMode.OpenOrCreate);
+            formate.Serialize(fs, WIFISettingInfos[1].Instance);
+            fs.Close();
+
+            fs = new FileStream(Properties.Resources.WIFI3ParamSettingFilePath, FileMode.OpenOrCreate);
+            formate.Serialize(fs, WIFISettingInfos[2].Instance);
+            fs.Close();
+
+            fs = new FileStream(Properties.Resources.WIFI4ParamSettingFilePath, FileMode.OpenOrCreate);
+            formate.Serialize(fs, WIFISettingInfos[3].Instance);
+            fs.Close();
+
+        }
+
+        public void DeSerializeStruct()
+        {
+            BinaryFormatter formate = new BinaryFormatter();
+
+            _settingInfoConf.olsrParams = new STRU_OLSR_PARAME();
+            FileStream fs = new FileStream(Properties.Resources.OLSRParamSettingFilePath, FileMode.Open);
+            _settingInfoConf.olsrParams = (STRU_OLSR_PARAME)formate.Deserialize(fs);
+            fs.Close();
+
+            _settingInfoConf.wifiParams = new STRU_WIFI_PARAME[WIFISettingSize];
+
+            _settingInfoConf.wifiParams[0] = new STRU_WIFI_PARAME();
+            fs = new FileStream(Properties.Resources.WIFI1ParamSettingFilePath, FileMode.Open);
+            _settingInfoConf.wifiParams[0] = (STRU_WIFI_PARAME)formate.Deserialize(fs);
+            fs.Close();
+
+            _settingInfoConf.wifiParams[1] = new STRU_WIFI_PARAME();
+            fs = new FileStream(Properties.Resources.WIFI2ParamSettingFilePath, FileMode.Open);
+            _settingInfoConf.wifiParams[1] = (STRU_WIFI_PARAME)formate.Deserialize(fs);
+            fs.Close();
+
+            _settingInfoConf.wifiParams[2] = new STRU_WIFI_PARAME();
+            fs = new FileStream(Properties.Resources.WIFI3ParamSettingFilePath, FileMode.Open);
+            _settingInfoConf.wifiParams[2] = (STRU_WIFI_PARAME)formate.Deserialize(fs);
+            fs.Close();
+
+            _settingInfoConf.wifiParams[3] = new STRU_WIFI_PARAME();
+            fs = new FileStream(Properties.Resources.WIFI4ParamSettingFilePath, FileMode.Open);
+            _settingInfoConf.wifiParams[3] = (STRU_WIFI_PARAME)formate.Deserialize(fs);
+            fs.Close();
+
         }
         #endregion
     }

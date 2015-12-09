@@ -7,6 +7,7 @@
              xmlns:Inf="clr-namespace:Commons.Infrastructure.Layout;assembly=Commons.Infrastructure"
              xmlns:tool="clr-namespace:Modules.InfosDisplay.Tool"
              xmlns:converter="clr-namespace:Modules.InfosDisplay.converters"
+             xmlns:infconv ="clr-namespace:Commons.Infrastructure.Converters;assembly=Commons.Infrastructure"
              xmlns:Map="clr-namespace:Hazelor.MapCtrl;assembly=Hazelor.MapCtrl"
              xmlns:Nodes="clr-namespace:Modules.InfosDisplay.Nodes"
              xmlns:Lines="clr-namespace:Modules.InfosDisplay.Lines"
@@ -16,7 +17,8 @@
         <tool:AddrConverter x:Key="AddrConverter"/>
         <tool:AddrListConverter x:Key="AddrListConverter"/>
         <converter:ItemVisibleConverter x:Key="ItemVisibleConverter"/>
-        
+        <converter:DBConverter x:Key="DBConverter"/>
+        <infconv:VisibleConverter x:Key="VisibleConverter"/>
         <SolidColorBrush x:Key="BackgroundBrush" Color="#C222" />
         <PathGeometry x:Key="FlightMonitor1">
             M3.658,0.284L23.656,0.284C25.514,0.284,27.032,1.802,27.032,3.658L27.032,23.656C27.032,25.514,25.514,27.032,23.656,27.032L3.658,27.032C1.802,27.032,0.283,25.514,0.283,23.656L0.283,3.658C0.283,1.802,1.802,0.284,3.658,0.284
@@ -255,6 +257,26 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="NodeButtonStyle" TargetType="CheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid>
+                            <Image x:Name="signback" Source="./images/node.png"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style TargetType="RadioButton" 
                x:Key="SatelliteStyle"
                >
@@ -339,6 +361,8 @@
             <RadioButton Style="{StaticResource NormalStyle}" x:Name="NormalShowButton" Height="80" Click="NormalClick" IsChecked="False"/>
             <CheckBox x:Name="RoadShowButton" Height="80" Click="RoadClick" IsChecked="False" Style="{StaticResource RoadButtonStyle}"/>
             <CheckBox x:Name="MeasureButton" Height="80" Click="MeasureClick" IsChecked="False" ToolTip="测距" Style="{StaticResource MeasureButtonStyle}"/>
+            <!--<CheckBox x:Name="NodeButton" Height="80" Click="NodeClick" IsChecked="False" ToolTip="选中节点" Style="{StaticResource NodeButtonStyle}"/>-->
+
             <Button x:Name="CenterButton" Height="80" Click="CenterClick" ToolTip="居中" Style="{StaticResource CenterButtonStyle}"/>
         </StackPanel>
         <!--数据信息显示-->
@@ -351,7 +375,7 @@
                   Background="{StaticResource BackgroundBrush}">
 
             <Expander.Content>
-                <Grid x:Name="InfoDisplayPanel"  Width="300" Visibility="Collapsed">
+                <Grid x:Name="InfoDisplayPanel"  Width="340" Visibility="Collapsed">
                     <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -368,79 +392,53 @@
                                     <Nodes:NodeInfo DataContext="{Binding SelectedNode}" Visibility="Hidden" x:Name="NodeInfo"/>
                                 </GroupBox.Content>
                             </GroupBox>
+                            
                             <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                       Visibility="{Binding IsSelf,Converter={StaticResource VisibleConverter}}">
                                 <GroupBox.Header>
-                                    <Label Foreground="White">链路信息</Label>
+                                    <Label Foreground="White">路由信息</Label>
                                 </GroupBox.Header>
                                 <GroupBox.Content>
-                                    <ListBox x:Name="LineInfo" ItemsSource="{Binding LineInfoOfNode}"
-                                     MinHeight="200"
-                            >
-                                        <ListBox.Resources>
-                                            <Style TargetType="ListBox">
-                                                <Setter Property="Background" Value="Transparent"/>
-                                            </Style>
-                                        </ListBox.Resources>
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <Expander>
-                                                    <Expander.Header>
-                                                        <Label Content="{Binding LineDirection}" Foreground="White"/>
-                                                    </Expander.Header>
-                                                    <Expander.Content>
-                                                        <Border Background="{x:Null}" BorderBrush="White" BorderThickness="2" CornerRadius="4">
-                                                            <Grid>
-                                                                <Grid.RowDefinitions>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                </Grid.RowDefinitions>
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="0.6*"/>
-                                                                    <ColumnDefinition Width="1*"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Label Grid.Column="0" Grid.Row="0" Margin="5" Style="{StaticResource MLabel2Style}">前向信号量</Label>
-                                                                <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" Text="{Binding PreInfoQuality}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                                <Label Grid.Column="0" Grid.Row="1" Margin="5" Style="{StaticResource MLabel2Style}">前向白噪声</Label>
-                                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding PreWhiteInfoQuality}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                                <Label Grid.Column="0" Grid.Row="2" Margin="5" Style="{StaticResource MLabel2Style}">前向信噪比</Label>
-                                                                <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding PreSignalNoiseRatio}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                                <Label Grid.Column="0" Grid.Row="4" Margin="5" Style="{StaticResource MLabel2Style}">前向使用</Label>
-                                                                <TextBlock Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding PreIsUsed}" Foreground="Orange" VerticalAlignment="Center"/>
+                                    <StackPanel>
+                                        <ComboBox x:Name="RouteInfo" ItemsSource="{Binding RoutInfoDecs}"
+                                              DisplayMemberPath="RoutName"
+                                              SelectedItem="{Binding SelRoutInfo}"/>
+                                        <Border Background="{x:Null}" BorderBrush="White" BorderThickness="2" CornerRadius="4" DataContext="{Binding SelRoutInfo}">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="0.6*"/>
+                                                    <ColumnDefinition Width="1*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Label Grid.Column="0" Grid.Row="0" Margin="5" Style="{StaticResource MLabel2Style}">目标节点</Label>
+                                                <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" Text="{Binding DstName}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                <Label Grid.Column="0" Grid.Row="1" Margin="5" Style="{StaticResource MLabel2Style}">接口地址</Label>
+                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding InterfaceAddr}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                <Label Grid.Column="0" Grid.Row="2" Margin="5" Style="{StaticResource MLabel2Style}">下接口地址</Label>
+                                                <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding NextIfaceAddr}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                <Label Grid.Column="0" Grid.Row="3" Margin="5" Style="{StaticResource MLabel2Style}" VerticalAlignment="Top">中继节点</Label>
+                                                <TextBlock Grid.Column="1" Grid.Row="3" Margin="5" TextWrapping="Wrap" Text="{Binding NextNames}" Foreground="Orange" VerticalAlignment="Center"/>
 
-                                                                <Label Grid.Column="0" Grid.Row="0" Margin="5" Style="{StaticResource MLabel2Style}">后向信号量</Label>
-                                                                <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" Text="{Binding BacInfoQuality}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                                <Label Grid.Column="0" Grid.Row="1" Margin="5" Style="{StaticResource MLabel2Style}">后向白噪声</Label>
-                                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding BacWhiteInfoQuality}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                                <Label Grid.Column="0" Grid.Row="2" Margin="5" Style="{StaticResource MLabel2Style}">后向信噪比</Label>
-                                                                <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding BacSignalNoiseRatio}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                                <Label Grid.Column="0" Grid.Row="4" Margin="5" Style="{StaticResource MLabel2Style}">后向使用</Label>
-                                                                <TextBlock Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding BacIsUsed}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                <Label Grid.Column="0" Grid.Row="8" Margin="5" Style="{StaticResource MLabel2Style}">路由跳数</Label>
+                                                <TextBlock Grid.Column="1" Grid.Row="8" Margin="5" Text="{Binding Dist}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                <Label Grid.Column="0" Grid.Row="9" Margin="5" Style="{StaticResource MLabel2Style}">系数</Label>
+                                                <TextBlock Grid.Column="1" Grid.Row="9" Margin="5" Text="{Binding Weight}" Foreground="Orange" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
 
-                                                            </Grid>
-                                                        </Border>
+                                    </StackPanel>
+                                    
 
-                                                    </Expander.Content>
-                                                </Expander>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
-                                    <!--<Lines:LineInfo DataContext="{Binding SelectedLine}" Visibility="Hidden" x:Name="LineInfo"/>-->
-                                </GroupBox.Content>
-                            </GroupBox>
-                            <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                                <GroupBox.Header>
-                                    <Label Foreground="White">下位机信息</Label>
-                                </GroupBox.Header>
-                                <GroupBox.Content>
-                                    <ListBox x:Name="RouteInfo" ItemsSource="{Binding RoutInfoDecs}"
+
+                                    <!--<ListBox x:Name="RouteInfo" ItemsSource="{Binding RoutInfoDecs}"
                                      MinHeight="200"
                             >
                                         <ListBox.Resources>
@@ -464,6 +462,10 @@
                                                                     <RowDefinition Height="Auto"/>
                                                                     <RowDefinition Height="Auto"/>
                                                                     <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
                                                                 </Grid.RowDefinitions>
                                                                 <Grid.ColumnDefinitions>
                                                                     <ColumnDefinition Width="0.6*"/>
@@ -477,10 +479,85 @@
                                                                 <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding NextIfaceAddr}" Foreground="Orange" VerticalAlignment="Center"/>
                                                                 <Label Grid.Column="0" Grid.Row="3" Margin="5" Style="{StaticResource MLabel2Style}" VerticalAlignment="Top">接口地址s</Label>
                                                                 <TextBlock Grid.Column="1" Grid.Row="3" Margin="5" TextWrapping="Wrap" Text="{Binding NextAddr}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                                <Label Grid.Column="0" Grid.Row="4" Margin="5" Style="{StaticResource MLabel2Style}">路由跳数</Label>
-                                                                <TextBlock Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding Dist}" Foreground="Orange" VerticalAlignment="Center"/>
-                                                                <Label Grid.Column="0" Grid.Row="5" Margin="5" Style="{StaticResource MLabel2Style}">系数</Label>
-                                                                <TextBlock Grid.Column="1" Grid.Row="5" Margin="5" Text="{Binding Weight}" Foreground="Orange" VerticalAlignment="Center"/>
+
+                                                                <Label Grid.Column="0" Grid.Row="4" Margin="5" Style="{StaticResource MLabel2Style}">目标名称</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="4" Margin="5" Text="{Binding DstName}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                --><!--<Label Grid.Column="0" Grid.Row="5" Margin="5" Style="{StaticResource MLabel2Style}">接口名称</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="5" Margin="5" Text="{Binding InterfaceName}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="6" Margin="5" Style="{StaticResource MLabel2Style}">下接口名称</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="6" Margin="5" Text="{Binding NextIfaceName}" Foreground="Orange" VerticalAlignment="Center"/>--><!--
+                                                                <Label Grid.Column="0" Grid.Row="7" Margin="5" Style="{StaticResource MLabel2Style}" VerticalAlignment="Top">接口名称s</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="7" Margin="5" TextWrapping="Wrap" Text="{Binding NextNames}" Foreground="Orange" VerticalAlignment="Center"/>
+
+                                                                
+                                                                <Label Grid.Column="0" Grid.Row="8" Margin="5" Style="{StaticResource MLabel2Style}">路由跳数</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="8" Margin="5" Text="{Binding Dist}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="9" Margin="5" Style="{StaticResource MLabel2Style}">系数</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="9" Margin="5" Text="{Binding Weight}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                        </Border>
+
+                                                    </Expander.Content>
+                                                </Expander>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>-->
+                                </GroupBox.Content>
+                            </GroupBox>
+                            <GroupBox  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                <GroupBox.Header>
+                                    <Label Foreground="White">链路信息</Label>
+                                </GroupBox.Header>
+                                <GroupBox.Content>
+                                    <ListBox x:Name="LineInfo" DataContext="{Binding SelectedNode}" ItemsSource="{Binding LineInfoOfNode}"
+                                     MinHeight="200"
+                            >
+                                        <ListBox.Resources>
+                                            <Style TargetType="ListBox">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                            </Style>
+                                        </ListBox.Resources>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Expander>
+                                                    <Expander.Header>
+                                                        <Label Content="{Binding LineDirection}" Foreground="White"/>
+                                                    </Expander.Header>
+                                                    <Expander.Content>
+                                                        <Border Background="{x:Null}" BorderBrush="White" BorderThickness="2" CornerRadius="4">
+                                                            <Grid>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+
+                                                                </Grid.RowDefinitions>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="0.6*"/>
+                                                                    <ColumnDefinition Width="1*"/>
+                                                                    <ColumnDefinition Width="0.6*"/>
+                                                                    <ColumnDefinition Width="1*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Label Grid.Column="0" Grid.Row="0" Margin="5" Style="{StaticResource MLabel2Style}">前向信号量</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" Text="{Binding PreInfoQuality,Converter={StaticResource DBConverter}}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="1" Margin="5" Style="{StaticResource MLabel2Style}">前向白噪声</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" Text="{Binding PreWhiteInfoQuality}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="2" Margin="5" Style="{StaticResource MLabel2Style}">前向信噪比</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="2" Margin="5" Text="{Binding PreSignalNoiseRatio}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="0" Grid.Row="3" Margin="5" Style="{StaticResource MLabel2Style}">前向使用</Label>
+                                                                <TextBlock Grid.Column="1" Grid.Row="3" Margin="5" Text="{Binding PreIsUsed}" Foreground="Orange" VerticalAlignment="Center"/>
+
+                                                                <Label Grid.Column="2" Grid.Row="0" Margin="5" Style="{StaticResource MLabel2Style}">后向信号量</Label>
+                                                                <TextBlock Grid.Column="3" Grid.Row="0" Margin="5" Text="{Binding BacInfoQuality,Converter={StaticResource DBConverter}}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="2" Grid.Row="1" Margin="5" Style="{StaticResource MLabel2Style}">后向白噪声</Label>
+                                                                <TextBlock Grid.Column="3" Grid.Row="1" Margin="5" Text="{Binding BacWhiteInfoQuality}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="2" Grid.Row="2" Margin="5" Style="{StaticResource MLabel2Style}">后向信噪比</Label>
+                                                                <TextBlock Grid.Column="3" Grid.Row="2" Margin="5" Text="{Binding BacSignalNoiseRatio}" Foreground="Orange" VerticalAlignment="Center"/>
+                                                                <Label Grid.Column="2" Grid.Row="3" Margin="5" Style="{StaticResource MLabel2Style}">后向使用</Label>
+                                                                <TextBlock Grid.Column="3" Grid.Row="3" Margin="5" Text="{Binding BacIsUsed}" Foreground="Orange" VerticalAlignment="Center"/>
+
                                                             </Grid>
                                                         </Border>
 
@@ -489,6 +566,7 @@
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
                                     </ListBox>
+                                    <!--<Lines:LineInfo DataContext="{Binding SelectedLine}" Visibility="Hidden" x:Name="LineInfo"/>-->
                                 </GroupBox.Content>
                             </GroupBox>
                         </StackPanel>

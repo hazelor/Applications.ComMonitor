@@ -71,7 +71,7 @@ namespace Modules.ConfigDisplay
             IsAvaibleApply = false;
             BaseApplyAvailableUpdate(IsAvaibleApply);
 
-            _eventAggregator.GetEvent<ConfigUpdateEvent>().Publish(true);
+            //_eventAggregator.GetEvent<ConfigUpdateEvent>().Publish(true);
         }
 
        

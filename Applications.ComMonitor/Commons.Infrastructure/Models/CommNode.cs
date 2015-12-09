@@ -27,6 +27,8 @@ namespace Commons.Infrastructure.Models
         private double _Latitude = double.PositiveInfinity;
         private double _Altitude = double.PositiveInfinity;
         private int _NodeType = 0;
+        private bool _IsSelected = false;
+        private bool _IsSelf = false;
 
         public event EventHandler<EventArgs> GPSChangedEvent;
         public double Longitude { 
@@ -68,6 +70,9 @@ namespace Commons.Infrastructure.Models
         public double Altitude { get { return this._Altitude; } set { SetProperty(ref this._Altitude, value); } }
 
         public int NodeType { get { return this._NodeType; } set { SetProperty(ref this._NodeType, value);} }
+
+        public bool IsSelected { get { return this._IsSelected; } set { SetProperty(ref this._IsSelected, value); } }
+        public bool IsSelf { get { return this._IsSelf; } set { SetProperty(ref this._IsSelf, value); } }
 
         public bool IsUpdate { get; set; }
 

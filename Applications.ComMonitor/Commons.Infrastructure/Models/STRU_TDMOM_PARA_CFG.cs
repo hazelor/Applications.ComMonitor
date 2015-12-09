@@ -23,6 +23,7 @@ namespace Commons.Infrastructure.Models
     }
 
     // STRU_OLSR_PARAME
+    [Serializable]
     [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 1)]
     public struct STRU_OLSR_PARAME
     {
@@ -85,15 +86,15 @@ namespace Commons.Infrastructure.Models
         public byte ratio_HopSNR;
 
         [Description("节点类型")]
-        [DescriptionField(Size = 1, FieldType = FieldTypeEnum.Byte, Description = "节点类型")]
+        [DescriptionField(Size = 1, FieldType = FieldTypeEnum.Enum, Description = "节点类型", EnumType = typeof(EnumNodeType))]
         public byte nodeType;
 
         [Description("保留")]
         public byte au8Rsv2;
 
         [Description("节点名称")]
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         [DescriptionField(Size = 4, FieldType = FieldTypeEnum.String, Description = "节点名称")]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] nodeName;
         //     [Description("信道质量参数Ch_quality计算过程中，链路信噪比SNR的权重系数a")]
         //public byte  ratio_SNR;
@@ -114,6 +115,7 @@ namespace Commons.Infrastructure.Models
     };
 
     // STRU_WIFI_PARAME
+    [Serializable]
     [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 1)]
     public struct STRU_WIFI_PARAME
     {
@@ -130,7 +132,6 @@ namespace Commons.Infrastructure.Models
         [Description("信道带宽")]
         [DescriptionField(Size = 1, FieldType = FieldTypeEnum.Enum, Description = "信道带宽", EnumType = typeof(EnumChanWid))]
         public byte u8ChanWid;
-
 
         [Description("发射功率")]
         [DescriptionField(Size = 1, FieldType = FieldTypeEnum.Byte, Description = "发射功率")]

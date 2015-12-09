@@ -23,13 +23,13 @@ namespace Commons.Infrastructure.Models
     public struct LINE_INFO
     {
         [Description("信号质量")]
-        public byte InfoQuality;
+        public sbyte InfoQuality;
         [Description("白噪声信号质量")]
-        public byte WhiteInfoQuality;
+        public sbyte WhiteInfoQuality;
         [Description("信噪比")]
-        public byte SignalNoiseRatio;
+        public sbyte SignalNoiseRatio;
         [Description("使用情况，0未使用，1使用")]
-        public byte IsUsed;
+        public sbyte IsUsed;
     }
     public class CommLine : BindableBase, ILineOjbectContext
     {

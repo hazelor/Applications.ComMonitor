@@ -1,8 +1,10 @@
 ﻿using Commons.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -59,14 +61,26 @@ namespace Commons.Infrastructure.Converters
 
         public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
         {
-            var result = value as int?;
+            var result = value as byte?;
 
             if (result == null)
                 return "不存在";
 
-            int res = (int)result;
+            byte res = (byte)result;
             EnumFreq ef = (EnumFreq)res;
-            return Enum.GetName(typeof(EnumFreq), res);
+            FieldInfo fi = typeof(EnumFreq).GetField(Enum.GetName(typeof(EnumFreq), res));
+            DescriptionAttribute da = (DescriptionAttribute)fi.GetCustomAttribute(typeof(DescriptionAttribute));
+            if(da == null)
+            {
+                return Enum.GetName(typeof(EnumFreq), res);
+            }
+            else
+            {
+                return da.Description;
+            }
+
+
+            
             
         }
 

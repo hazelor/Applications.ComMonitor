@@ -29,4 +29,26 @@ namespace Modules.InfosDisplay.converters
 
         #endregion
     }
+
+    class DBConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            var result = value as int?;
+
+            if (result == null)
+                return "无信号";
+
+            return System.String.Format(CultureInfo.CurrentUICulture, "{0}db", result.Value);
+        }
+
+        public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+    }
 }

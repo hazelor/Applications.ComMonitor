@@ -1,4 +1,7 @@
 ﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Events;
+using Commons.Infrastructure.Interface;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Prism.Regions;
 using System;
 using System.Collections.Generic;
@@ -30,9 +33,10 @@ namespace Applications.ComMonitor
         [Import]
         private IRegionManager regionManager;
 
+        //[Import]
+        //private IProtocolService _protocolService;
         public Shell()
         {
-
             InitializeComponent();
         }
 
@@ -44,6 +48,7 @@ namespace Applications.ComMonitor
                 this.DataContext = value;
             }
         }
+
         void IPartImportsSatisfiedNotification.OnImportsSatisfied()
         {
             //IRegion mainContentRegion = this.regionManager.Regions[RegionNames.BottomRegion];
@@ -71,7 +76,17 @@ namespace Applications.ComMonitor
 
         private void OnExit(object sender, RoutedEventArgs e)
         {
+            //_protocolService.StopChannel();
             Application.Current.Shutdown();
+        }
+
+        //private void OnMinimize(object sender, RoutedEventArgs e)
+        //{
+        //    ((Window)this).WindowState = WindowState.Minimized; 
+        //}
+        private void OnMinimize(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
         }
     }
 }

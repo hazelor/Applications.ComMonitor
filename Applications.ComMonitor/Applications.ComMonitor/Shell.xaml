@@ -49,10 +49,10 @@
                     节点显示
                 </RadioButton>
                 <!--<RadioButton x:Name="TopoloyDisplayButton" Style="{StaticResource MRadioButtonStyle}" Click="OnTopoloyDisplayClick">
-                    拓扑显示
+                    拓扑显示 IsEnabled="{Binding IsEnableConf}"
                 </RadioButton>-->
                 <Button x:Name="ConfigDisplayButton" 
-                        IsEnabled="{Binding IsEnableConf}"
+                        
                         Style="{StaticResource MRButtonStyle}"
                         Command="{Binding ConfigDisplayCommand}">
                     系统配置
@@ -62,9 +62,37 @@
                 </Button>
                 <Label Style="{StaticResource MLabelStyle}" Margin="10,10,5,10">系统信息:</Label>
                 <TextBlock x:Name="SystemInfo" Foreground="White" VerticalAlignment="Center" Text="{Binding SystemInfo}" />
-                
+                <!--<Button Style="{StaticResource MButtonStyle}" HorizontalAlignment="Right" Margin="0,0,0,0" Click="OnMinimize">最小化</Button>-->
+
             </StackPanel>
-            <Button Style="{StaticResource MButtonStyle}" Grid.Row="0" HorizontalAlignment="Right" Margin="0,0,10,0" Click="OnExit">退出</Button>
+            <!--<StackPanel Grid.Row="0" HorizontalAlignment="Right" Margin="0,0,10,0">
+                <Button x:Name="MinimizeButton"
+                        Height="32" Width="32" HorizontalAlignment="Left">
+                    <Button.Background>
+                        <ImageBrush ImageSource="./theme/images/minimize.png"/>
+                    </Button.Background>
+                </Button>
+                <Button x:Name="ExitButton"
+                        Height="32" Width="32">
+                    <Button.Background>
+                        <ImageBrush ImageSource="./theme/images/delete.png"/>
+                    </Button.Background>
+                </Button>
+            </StackPanel>-->
+            <Button x:Name="MinimizeButton"
+                        Height="32" Width="32" HorizontalAlignment="Right" Margin="0,0,35,0"
+                    Click="OnMinimize">
+                <Button.Background>
+                    <ImageBrush ImageSource="./theme/images/minimize.png"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="ExitButton"
+                        Height="32" Width="32" HorizontalAlignment="Right"
+                    Click="OnExit">
+                <Button.Background>
+                    <ImageBrush ImageSource="./theme/images/delete.png"/>
+                </Button.Background>
+            </Button>
             <Border Grid.Row="1" Margin="10" BorderBrush="Gray" CornerRadius="5" BorderThickness="2">
                 <ContentControl HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"
                     prism:RegionManager.RegionName="{x:Static Inf:RegionNames.MainRegion}"
