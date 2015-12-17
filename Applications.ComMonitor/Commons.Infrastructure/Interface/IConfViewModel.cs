@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Modules.ConfigDisplay.Interface
+namespace Commons.Infrastructure.Interface
 {
     public interface IConfViewModel
     {

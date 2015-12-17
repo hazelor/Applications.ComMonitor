@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.ProtocolService
+namespace Commons.Infrastructure.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
-    class ParserAttribute : Attribute
+    public class ParserAttribute : Attribute
     {
         public ushort ParseID { get; set; }
         public string Description { get; set; }

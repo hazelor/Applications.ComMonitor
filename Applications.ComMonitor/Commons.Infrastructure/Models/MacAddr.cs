@@ -16,27 +16,33 @@ namespace Commons.Infrastructure.Models
         [DllImport("Ws2_32.dll")]
         private static extern Int32 inet_addr(string ip);
 
+        public static MacAddr SelfMacAddr = null;
         public static MacAddr GetTerminalMac(string Terminalip, string Selfip)
         {
-            return new MacAddr(new byte[] { 0xdc, 0xdc, 0xdc, 0xdc, 0xdc, 0 });
-            //Int32 ldest = inet_addr(Terminalip);
-            //Int32 lhost = inet_addr(Selfip);
+            if (SelfMacAddr!=null)
+            {
+                return SelfMacAddr;
+            }
+            //return new MacAddr(new byte[] { 0xdc, 0xdc, 0xdc, 0xdc, 0xdc, 0 });
 
-            //try
-            //{
-            //    Byte[] macinfo=new Byte[6];  
-            //    Int32 length=6;
-            //    IntPtr mac = new IntPtr(macinfo[0]);
-            //    IntPtr len = new IntPtr(length);
-            //    int ii = SendARP(ldest, lhost, ref mac, ref len);
+            Int32 ldest = inet_addr(Terminalip);
+            Int32 lhost = inet_addr(Selfip);
 
-            //    return new MacAddr(macinfo);
-            //}
-            //catch (Exception)
-            //{
+            try
+            {
+                Byte[] macinfo = new Byte[6];
+                Int32 length = 6;
+                IntPtr mac = new IntPtr(macinfo[0]);
+                IntPtr len = new IntPtr(length);
+                int ii = SendARP(ldest, lhost, ref mac, ref len);
 
-            //    return null;
-            //}
+                return new MacAddr(macinfo);
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
         }
 
         public static int MACADDRLEN = 8;

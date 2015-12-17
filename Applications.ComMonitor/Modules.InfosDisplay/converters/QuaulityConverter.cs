@@ -24,9 +24,9 @@ namespace Modules.InfosDisplay.converters
                 case CommStatues.BAD:
                     return Brushes.Red;
                 case CommStatues.NORMAL:
-                    return Brushes.Yellow;
+                    return Brushes.Red;
                 case CommStatues.GOOD:
-                    return Brushes.Orange;
+                    return Brushes.Yellow;
                 case CommStatues.EXCELLENT:
                     return Brushes.Lime;
                 default:

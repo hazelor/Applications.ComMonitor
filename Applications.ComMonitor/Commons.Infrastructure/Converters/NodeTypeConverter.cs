@@ -18,7 +18,7 @@ namespace Commons.Infrastructure.Converters
         #region IValueConverter Members
         public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
         {
-            var nodetype = value as byte?;
+            var nodetype = value as int?;
             string typestr = "未知";
             if (nodetype == null)
             {

@@ -247,6 +247,9 @@
   <ItemGroup>
     <Resource Include="theme\images\minimize.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="theme\images\normalize.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>IF NOT EXIST "$(TargetDir)\Modules" mkdir "$(TargetDir)\Modules";

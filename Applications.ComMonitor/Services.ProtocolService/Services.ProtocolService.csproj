@@ -76,7 +76,7 @@
     <Compile Include="ConstructPackage.cs" />
     <Compile Include="DataReceiveProcess.cs" />
     <Compile Include="DataSendProcess.cs" />
-    <Compile Include="ParserAttribute.cs" />
+    <Compile Include="DataTrans\DataTransService.cs" />
     <Compile Include="ProtocolService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Event\RecievedEvent.cs" />
@@ -106,14 +106,10 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Conf\NodeImagesConf.xml" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Services\" /Y
-
-copy "$(ProjectDir)\Conf\NodeImagesConf.xml" "$(SolutionDir)$(SolutionName)\bin\$(ConfigurationName)\Conf" /Y</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

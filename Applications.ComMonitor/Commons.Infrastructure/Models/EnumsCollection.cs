@@ -241,5 +241,7 @@ namespace Commons.Infrastructure.Models
         Car = 4,
         [Description("舰载")]
         Boat = 5,
+        [Description("卫星")]
+        Satellite = 6,
     }
 }

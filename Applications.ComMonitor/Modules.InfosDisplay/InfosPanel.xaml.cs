@@ -68,6 +68,7 @@ namespace Modules.InfosDisplay
             _eventAggregator = eventAggregator;
             _configService = configService;
             _protocolService = protocolService;
+            //TileGenerator.CacheFolder = "MapsLiteDB{0}.db";
             TileGenerator.CacheFolder = "Maps";
             TileGenerator.IsDBCaches = false;
             TileGenerator.DownloadCountChanged += this.OnDownloadCountChanged;
@@ -131,20 +132,20 @@ namespace Modules.InfosDisplay
 
         private void NodeClick(object sender, RoutedEventArgs e)
         {
-            //if (this.NodeButton.IsChecked == true)
-            //{
-            //    //set map drag false
-                
-            //    //set node drag true
-            //    this.tileCanvas.IsCanDrag = false;
+            if (this.NodeButton.IsChecked == true)
+            {
+                //set map drag false
 
-            //}
-            //else
-            //{
-            //    //set map drag true
-            //    //set node drag false
-            //    this.tileCanvas.IsCanDrag = true;
-            //}
+                //set node drag true
+                this.tileCanvas.IsCanDrag = false;
+
+            }
+            else
+            {
+                //set map drag true
+                //set node drag false
+                this.tileCanvas.IsCanDrag = true;
+            }
         }
         private List<MeasureNode> MeasureItemsKey = new List<MeasureNode>();
         private void ClearMeasureInfo()
@@ -304,6 +305,7 @@ namespace Modules.InfosDisplay
             {
                 MapFrameElement obj = new CLine();
                 this.tileCanvas.AddLineObject(e.Line.ToString(), obj, e.Line);
+                ((InfosPanelViewModel)this.DataContext).ShowRouteLines();
                 
             }
             else if (e.oper == Operations.DEL)

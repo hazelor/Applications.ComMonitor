@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
 namespace Modules.InfosDisplay.Tool
@@ -70,4 +71,30 @@ namespace Modules.InfosDisplay.Tool
 
         #endregion
     }
+
+    public class LinkInfoVisiableConverter : IValueConverter
+    {
+        #region IValueConverter Members
+        public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            bool? res = value as bool?;
+
+            if (res== true)
+            {
+                return Visibility.Visible;
+            }
+            else
+            {
+                return Visibility.Collapsed;
+            }
+
+        }
+        public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+    }
+
 }

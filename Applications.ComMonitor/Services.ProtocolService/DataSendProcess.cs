@@ -61,7 +61,10 @@ namespace Services.ProtocolService
             System.Buffer.BlockCopy(res_IpPort, 0, sendBytes, res_mh.Length, res_IpPort.Length);
             //if (BitConverter.IsLittleEndian)
             //    Array.Reverse(sendBytes);
-
+            //if (IPSettingSuccessMsgReceiveEvent != null)
+            //{
+            //    IPSettingSuccessMsgReceiveEvent(this, new EventArgs());
+            //}
             return sendBytes;
             //发送
 
@@ -208,6 +211,10 @@ namespace Services.ProtocolService
             AddSendData(sendBuffer);
         }
 
+        /// <summary>
+        /// wifi 控制
+        /// </summary>
+        /// <param name="datas"></param>
         public void WIFICtrl(byte[] datas)
         {
             MsgHeader mh = new MsgHeader();

@@ -1,4 +1,6 @@
-﻿using Hazelor.MapCtrl;
+﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Interface;
+using Hazelor.MapCtrl;
 using Microsoft.Practices.Prism.Commands;
 using Modules.ConfigDisplay.Interface;
 using System;

@@ -53,6 +53,8 @@ namespace Modules.InfosDisplay
 
         private void OnRoutInfoChanged(object sender, EventArgs e)
         {
+            string nodeName = "";
+            nodeName = _protocolService.GetName(MacAddr.SelfMacAddr);
             bool IsReInit = false;
             if (RoutInfoDecs.Count == 0)
             {
@@ -63,6 +65,8 @@ namespace Modules.InfosDisplay
             {
                 RoutInfoDecs[i].info = TerminalInfo.RouteInfo[i];
                 RoutInfoDecs[i].GetNames(this._protocolService);
+                
+                RoutInfoDecs[i].RoutName = string.Format("{0}-->{1}",nodeName, RoutInfoDecs[i].DstName);
 
             }
             for (; i< RoutInfoDecs.Count; i++)
@@ -74,7 +78,7 @@ namespace Modules.InfosDisplay
             {
                 RoutInfoDecorator rd = new RoutInfoDecorator { info = TerminalInfo.RouteInfo[i] };
                 rd.GetNames(this._protocolService);
-                rd.RoutName = string.Format("本节点-->{0}", rd.DstName);
+                rd.RoutName = string.Format("{0}-->{1}",nodeName, rd.DstName);
                 RoutInfoDecs.Add(rd);
             }
 
@@ -82,6 +86,8 @@ namespace Modules.InfosDisplay
             {
                 this.SelRoutInfo = RoutInfoDecs[0];
             }
+
+            ShowRouteLines();
             //if (RoutInfoDecs.Count == 0)
             //{
             //    int index = 0;
@@ -218,7 +224,8 @@ namespace Modules.InfosDisplay
                 {
                     foreach (var line in _protocolService.CommunicationNet.CommLines)
                     {
-                        line.IsShow = true;
+                        line.IsPreShow = true;
+                        line.IsBacShow = true;
                     }
                 }
                 else
@@ -228,13 +235,13 @@ namespace Modules.InfosDisplay
             }
         }
 
-        private void ShowRouteLines()
+        public void ShowRouteLines()
         {
             
             if (!_IsAllShow && _SelRoutInfo != null)
             {
                 List<MacAddr> tmpMacList = new List<MacAddr>();
-                tmpMacList.Add(_protocolService.TerminalMac);
+                tmpMacList.Add(MacAddr.SelfMacAddr);
                 //显示初始mac
                 if (_SelRoutInfo.info.NextAddr.Length < 240)
                 {
@@ -251,15 +258,25 @@ namespace Modules.InfosDisplay
                 CommLine cl;
                 foreach (var line in _protocolService.CommunicationNet.CommLines)
                 {
-                    line.IsShow = true;
+                    line.IsPreShow = true;
+                    line.IsBacShow = true;
                 }
                 for (int i = 0; i < tmpMacList.Count - 1; i++)
                 {
                     cl = _protocolService.FindLine(tmpMacList[i], tmpMacList[i + 1]);
-                    if (cl != null)
+                    if (cl!= null)
                     {
-                        cl.IsShow = false;
+                        cl.IsPreShow = false;
                     }
+                    else
+                    {
+                        cl = _protocolService.FindLine(tmpMacList[i+1], tmpMacList[i]);
+                        if (cl != null)
+                        {
+                            cl.IsBacShow = false;
+                        }
+                    }
+                    
                 }
             }
         }

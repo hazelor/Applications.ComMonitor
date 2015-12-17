@@ -1,4 +1,5 @@
 ﻿using Applications.ComMonitor.Notification;
+using Commons.Infrastructure;
 using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Commons.Infrastructure.Models;
@@ -8,6 +9,7 @@ using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
+using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -39,7 +41,13 @@ namespace Applications.ComMonitor
             this.ConfigRequest.Raise(notification, GetConfigCallBack, CancelConfigCallBack);
         }
 
-
+        public DelegateCommand DataTransCommand { get; set; }
+        private void DataTransExecuted()
+        {
+            _DataTransPanel.ShowWnd(Application.Current.MainWindow);
+            //ServiceLocator.Current.GetInstance<IDataTransPanel>().ShowWnd(Application.Current.MainWindow);
+            //DataTransPanel.ShowWnd(Application.Current.MainWindow);
+        }
         #endregion
 
         #region notification
@@ -77,22 +85,30 @@ namespace Applications.ComMonitor
         private IEventAggregator _eventAggregator;
         private IConfigService _configService;
         private IProtocolService _protocolService;
+        private IDataTransPanel _DataTransPanel;
         private AdminInfo _adminInfo;
         [ImportingConstructor]
-        public ShellViewModel(IEventAggregator eventAggregator, IConfigService configService, IProtocolService protocolService)
+        public ShellViewModel(IEventAggregator eventAggregator, IConfigService configService, IProtocolService protocolService,
+            IDataTransPanel dataTransPanel)
         {
             _eventAggregator = eventAggregator;
             _configService = configService;
             _protocolService = protocolService;
+            _DataTransPanel = dataTransPanel;
             _protocolService.IsStartChannelChangeEvent += OnIsStartChannelUpdate;
             //_protocolService.StartChannel();
             _adminInfo = _configService.AdminInfos;
             ConfigDisplayCommand = new DelegateCommand(ConfigDisplayExecuted);
+            DataTransCommand = new DelegateCommand(DataTransExecuted);
+
             AdminLoginRequest = new GenericInteractionRequest<AdminLoginNotification>();
             ConfigRequest = new GenericInteractionRequest<ConfigNotification>();
             //注册消息
             _eventAggregator.GetEvent<SystemInfoEvent>().Subscribe(OnSystemInfoUpdate);
             StartCommand = new DelegateCommand(StartExecuted);
+
+            //init Filter ViewModel
+            ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MsgFilterSetting);
 
 
         }

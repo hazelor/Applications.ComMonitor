@@ -1,4 +1,5 @@
-﻿using Commons.Infrastructure.Command;
+﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Command;
 using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Microsoft.Practices.Prism.Commands;
@@ -64,25 +65,31 @@ namespace Modules.ConfigDisplay
         {
             IConfViewModel vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.ConnectSetting);
             _confController.AddSubConfPanel(vm);
+            vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.LinkStateSetting);
+            _confController.AddSubConfPanel(vm);
+
+            vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MapSetting);
+            _confController.AddSubConfPanel(vm);
+
+            vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MsgFilterSetting);
+            _confController.AddSubConfPanel(vm);
+
+            vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.WIFICtrlSetting);
+            _confController.AddSubConfPanel(vm);
+
+            vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MapDownload);
+            _confController.AddSubConfPanel(vm);
+
             //添加各个subViewModel
             if (_configService.IsAdminLogin)
             {
-                vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.LinkStateSetting);
-                _confController.AddSubConfPanel(vm);
-
-                vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MapSetting);
-                _confController.AddSubConfPanel(vm);
-
                 vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.ConfigurationSetting);
                 _confController.AddSubConfPanel(vm);
 
-                vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MsgFilterSetting);
-                _confController.AddSubConfPanel(vm);
-
-                vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.WIFICtrlSetting);
-                _confController.AddSubConfPanel(vm);
-
-                vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MapDownload);
+            }
+            else
+            {
+                vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.UserSetting);
                 _confController.AddSubConfPanel(vm);
             }
             

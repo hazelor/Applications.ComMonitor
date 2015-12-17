@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Modules.ConfigDisplay
+namespace Commons.Infrastructure
 {
     public static class PanelNames
     {
@@ -16,12 +16,14 @@ namespace Modules.ConfigDisplay
         public const string WIFICtrlPanel = "WIFICtrlPanel";
         public const string AdminSettingPanel = "AdminSettingPanel";
         public const string MapDownloadPanel = "MapDownloadPanel";
+        public const string UserSettingPanel = "UserSettingPanel";
         //public const string
 
         public const string MapSetting = "MapSetting";
         public const string ConnectSetting = "ConnectSetting";
         public const string LinkStateSetting = "LinkStateSetting";
         public const string ConfigurationSetting = "ConfigurationSetting";
+        public const string UserSetting = "UserSetting";
         public const string MsgFilterSetting = "MsgFilterSetting";
         public const string WIFICtrlSetting = "WIFICtrlSetting";
         public const string AdminSetting = "AdminSetting";

@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Services.ProtocolService;
+using Commons.Infrastructure;
 
 namespace Modules.ConfigDisplay
 {

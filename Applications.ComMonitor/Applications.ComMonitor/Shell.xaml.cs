@@ -80,6 +80,11 @@ namespace Applications.ComMonitor
             Application.Current.Shutdown();
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            Application.Current.Shutdown();
+            base.OnClosed(e);
+        }
         //private void OnMinimize(object sender, RoutedEventArgs e)
         //{
         //    ((Window)this).WindowState = WindowState.Minimized; 
@@ -87,6 +92,26 @@ namespace Applications.ComMonitor
         private void OnMinimize(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
+        }
+
+        private void OnNormal(object sender, RoutedEventArgs e)
+        {
+            if (this.WindowState == WindowState.Maximized)
+            {
+                this.WindowState = WindowState.Normal;
+            }
+            else
+            {
+                this.WindowState = WindowState.Maximized;
+            }
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
         }
     }
 }

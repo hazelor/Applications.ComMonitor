@@ -65,6 +65,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -79,16 +80,16 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="TopologyPanel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="TopologyPanel.xaml.cs">
-      <DependentUpon>TopologyPanel.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <Compile Include="DataTransPanel.xaml.cs">
+      <DependentUpon>DataTransPanel.xaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="DataTransTemplateSelector.cs" />
+    <Compile Include="DataTransViewModel.cs" />
+    <Compile Include="Events\NewTaskEvent.cs" />
+    <Compile Include="NewTaskPanel.xaml.cs">
+      <DependentUpon>NewTaskPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NewTaskViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -115,6 +116,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Hazelor.Infrastructure\Hazelor.Infrastructure.Communications\Hazelor.Infrastructure.Communications.csproj">
+      <Project>{9ac4011a-f9aa-46ef-bd64-c3406c60b0a1}</Project>
+      <Name>Hazelor.Infrastructure.Communications</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Infrastructure\Hazelor.Infrastructure\Hazelor.Infrastructure.Tools\Hazelor.Infrastructure.Tools.csproj">
       <Project>{a4b2dc73-fd2b-445b-ad31-df899349659e}</Project>
       <Name>Hazelor.Infrastructure.Tools</Name>
@@ -123,6 +128,42 @@
       <Project>{343c92ca-cb0e-4e90-a0be-44c876b6852d}</Project>
       <Name>Commons.Infrastructure</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="DataTransPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NewTaskPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ConfigBox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\minimize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\download.png" />
+    <Resource Include="images\finish.png" />
+    <Resource Include="images\upload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\new.png" />
+    <Resource Include="images\pause.png" />
+    <Resource Include="images\remove.png" />
+    <Resource Include="images\start.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Conf\TaskConf.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

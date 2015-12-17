@@ -32,6 +32,7 @@ namespace Modules.InfosDisplay.Model
                 this.OnPropertyChanged("NextNames");
                 this.OnPropertyChanged("Dist");
                 this.OnPropertyChanged("Weight");
+                this.OnPropertyChanged("RoutName");
                 
             }
         }
@@ -142,9 +143,12 @@ namespace Modules.InfosDisplay.Model
             {
                 Buffer.BlockCopy(info.NextAddr, i * 8, tmp, 0, 6);
                 NextNames += ps.GetName(new MacAddr(tmp));
-                NextNames += '\n';
+                if (i < (info.Dist < 30 ? info.Dist-1 : 29))
+                {
+                    NextNames += "-->";
+                }
+                
             }
-
         }
         
     }

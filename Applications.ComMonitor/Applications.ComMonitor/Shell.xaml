@@ -8,17 +8,22 @@
         xmlns:Layout="clr-namespace:Commons.Infrastructure.Layout;assembly=Commons.Infrastructure"
         xmlns:interactions="clr-namespace:Applications.ComMonitor.Interactions"
         Title="Monitor" WindowStyle="None"
-        WindowState="Maximized" WindowStartupLocation="CenterScreen" Height="1080" Width="1920"
+        MouseLeftButtonDown ="Window_MouseLeftButtonDown"
+        WindowState="Maximized" WindowStartupLocation="CenterScreen" Height="768" Width="1366"
         Loaded="OnLoaded">
     <Window.Background>
         <ImageBrush ImageSource="theme\images\FrameWork.png"  Stretch="UniformToFill"/>
     </Window.Background>
-    <!--Notification-->
-    <Grid>
-        <i:Interaction.Triggers>
-            <!--<prism:InteractionRequestTrigger SourceObject="{Binding AdminLoginRequest, Mode=OneWay}">
-                --><!-- This PopupWindowAction has a custom view defined. When this action is executed the view will be shown inside a new window -->
-                <!-- Take into account that the view is created only once and will be reused each time the action is executed --><!--
+    
+    <Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0">
+            <i:Interaction.Triggers>
+                <!--<prism:InteractionRequestTrigger SourceObject="{Binding AdminLoginRequest, Mode=OneWay}">
+                -->
+                <!-- This PopupWindowAction has a custom view defined. When this action is executed the view will be shown inside a new window -->
+                <!-- Take into account that the view is created only once and will be reused each time the action is executed -->
+                <!--
                 <interactions:AdminLoginInterationAction>
                     <interactions:AdminLoginInterationAction.Dialog>
                         <local:AdminLoginPanel/>
@@ -26,46 +31,96 @@
                 </interactions:AdminLoginInterationAction>
             </prism:InteractionRequestTrigger>-->
 
-            <prism:InteractionRequestTrigger SourceObject="{Binding ConfigRequest, Mode=OneWay}">
+                <prism:InteractionRequestTrigger SourceObject="{Binding ConfigRequest, Mode=OneWay}">
 
-                <!--This PopupWindowAction has a custom view defined. When this action is executed the view will be shown inside a new window 
+                    <!--This PopupWindowAction has a custom view defined. When this action is executed the view will be shown inside a new window 
              Take into account that the view is created only once and will be reused each time the action is executed-->
 
-                <interactions:ConfigInterationAction>
-                    <interactions:ConfigInterationAction.Dialog>
-                        <local:ConfigPanel/>
-                    </interactions:ConfigInterationAction.Dialog>
-                </interactions:ConfigInterationAction>
-            </prism:InteractionRequestTrigger>
-        </i:Interaction.Triggers>
+                    <interactions:ConfigInterationAction>
+                        <interactions:ConfigInterationAction.Dialog>
+                            <local:ConfigPanel/>
+                        </interactions:ConfigInterationAction.Dialog>
+                    </interactions:ConfigInterationAction>
+                </prism:InteractionRequestTrigger>
+            </i:Interaction.Triggers>
 
-        <Grid Margin="80,50,60,60">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="80*"/>
-                <RowDefinition Height="1000*"/>
-            </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Row="0">
-                <RadioButton x:Name="NodeDisplayButton" Style="{StaticResource MRadioButtonStyle}" Click="OnNodesDisplayClick">
-                    节点显示
-                </RadioButton>
-                <!--<RadioButton x:Name="TopoloyDisplayButton" Style="{StaticResource MRadioButtonStyle}" Click="OnTopoloyDisplayClick">
+            <Grid Margin="40,50,30,40">
+                
+                <!--Notification-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="68*"/>
+                    <RowDefinition Height="700*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="6">
+                        <RadioButton Grid.Column="0" x:Name="NodeDisplayButton" Style="{StaticResource MRadioButtonStyle}" Click="OnNodesDisplayClick" Height="50">
+                            节点显示
+                        </RadioButton>
+                        <!--<RadioButton x:Name="TopoloyDisplayButton" Style="{StaticResource MRadioButtonStyle}" Click="OnTopoloyDisplayClick">
                     拓扑显示 IsEnabled="{Binding IsEnableConf}"
                 </RadioButton>-->
-                <Button x:Name="ConfigDisplayButton" 
-                        
+                        <Button x:Name="ConfigDisplayButton" 
+                            Grid.Column="1"
+                        Height="50"
                         Style="{StaticResource MRButtonStyle}"
                         Command="{Binding ConfigDisplayCommand}">
-                    系统配置
-                </Button>
-                <Button x:Name="StartButton" Style="{StaticResource MRButtonStyle}" Command="{Binding StartCommand}" Content="{Binding StartName}">
-                    
-                </Button>
-                <Label Style="{StaticResource MLabelStyle}" Margin="10,10,5,10">系统信息:</Label>
-                <TextBlock x:Name="SystemInfo" Foreground="White" VerticalAlignment="Center" Text="{Binding SystemInfo}" />
-                <!--<Button Style="{StaticResource MButtonStyle}" HorizontalAlignment="Right" Margin="0,0,0,0" Click="OnMinimize">最小化</Button>-->
+                            系统配置
+                        </Button>
+                        <Button x:Name="DataTransButton"
+                            Grid.Column="2"
+                            Height="50"
+                        Style="{StaticResource MRButtonStyle}"
+                        Command="{Binding DataTransCommand}">
+                            数据传输
+                        </Button>
+                        <Button x:Name="StartButton" Grid.Column="3" Height="50" Style="{StaticResource MRButtonStyle}" Command="{Binding StartCommand}" Content="{Binding StartName}">
 
-            </StackPanel>
-            <!--<StackPanel Grid.Row="0" HorizontalAlignment="Right" Margin="0,0,10,0">
+                        </Button>
+                        <Label Style="{StaticResource MLabelStyle}" Margin="10,10,5,10" Grid.Column="4" Height="50">系统信息:</Label>
+                        <TextBlock x:Name="SystemInfo" Grid.Column="5" MinWidth="200" Foreground="White" VerticalAlignment="Center" Text="{Binding SystemInfo}" />
+                    </StackPanel>
+                    
+                    
+                    
+                    <!--<Button Style="{StaticResource MButtonStyle}" HorizontalAlignment="Right" Margin="0,0,0,0" Click="OnMinimize">最小化</Button>-->
+                    <Button x:Name="MinimizeButton"
+                            Grid.Column="6"
+                        Height="32" Width="32" HorizontalAlignment="Right" Margin="5"
+                    Click="OnMinimize">
+                        <Button.Background>
+                            <ImageBrush ImageSource="./theme/images/minimize.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button x:Name="NormalizeButton"
+                            Grid.Column="7"
+                        Height="32" Width="32" HorizontalAlignment="Right" Margin="5"
+                    Click="OnNormal">
+                        <Button.Background>
+                            <ImageBrush ImageSource="./theme/images/normalize.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button x:Name="ExitButton"
+                            Grid.Column="8"
+                            Margin="5"
+                        Height="32" Width="32" HorizontalAlignment="Right"
+                    Click="OnExit">
+                        <Button.Background>
+                            <ImageBrush ImageSource="./theme/images/delete.png"/>
+                        </Button.Background>
+                    </Button>
+                </Grid>
+                <!--<StackPanel Grid.Row="0" HorizontalAlignment="Right" Margin="0,0,10,0">
                 <Button x:Name="MinimizeButton"
                         Height="32" Width="32" HorizontalAlignment="Left">
                     <Button.Background>
@@ -79,27 +134,17 @@
                     </Button.Background>
                 </Button>
             </StackPanel>-->
-            <Button x:Name="MinimizeButton"
-                        Height="32" Width="32" HorizontalAlignment="Right" Margin="0,0,35,0"
-                    Click="OnMinimize">
-                <Button.Background>
-                    <ImageBrush ImageSource="./theme/images/minimize.png"/>
-                </Button.Background>
-            </Button>
-            <Button x:Name="ExitButton"
-                        Height="32" Width="32" HorizontalAlignment="Right"
-                    Click="OnExit">
-                <Button.Background>
-                    <ImageBrush ImageSource="./theme/images/delete.png"/>
-                </Button.Background>
-            </Button>
-            <Border Grid.Row="1" Margin="10" BorderBrush="Gray" CornerRadius="5" BorderThickness="2">
-                <ContentControl HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"
+                
+                <Border Grid.Row="1" Margin="5" BorderBrush="Gray" CornerRadius="5" BorderThickness="2"
+                        Width="1366" Height="700"
+                        >
+                    <ContentControl HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"
                     prism:RegionManager.RegionName="{x:Static Inf:RegionNames.MainRegion}"
                     RenderTransformOrigin="0.5,0.5"
                     />
-            </Border>
+                </Border>
+            </Grid>
         </Grid>
-    </Grid>
+    </Viewbox>
     
 </Window>

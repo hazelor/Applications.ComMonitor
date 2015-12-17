@@ -1,4 +1,5 @@
-﻿using Modules.ConfigDisplay.Interface;
+﻿using Commons.Infrastructure.Interface;
+using Modules.ConfigDisplay.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;

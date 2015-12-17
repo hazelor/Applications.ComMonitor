@@ -1,4 +1,5 @@
 ﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Attributes;
 using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Commons.Infrastructure.Models;
@@ -57,12 +58,35 @@ namespace Services.ProtocolService
         public event EventHandler IPSettingSuccessMsgReceiveEvent;
 
         
+        //[Parser(ParseID = ConstIDs.O_TDMOM_TRANSFER_TEST, Description = "接收下位机接收上位机IP确认信息")]
+        //private void ParseTRANSFER_TEST(byte[] srcBuffer)
+        //{
+        //    //处理消息头
+        //    int index = ParseMsgHeader(srcBuffer);
+            
+            
+
+        //}
+        
         [Parser(ParseID = ConstIDs.O_TDMOM_IP_PORT_CNF, Description = "接收下位机接收上位机IP确认信息")]
         private void ParseIPPORTCNF(byte[] srcBuffer)
         {
             //通知界面下位机准备好，可以开始发送数据
             CanQueryRouteAndTopInfo = true;
-            IPSettingSuccessMsgReceiveEvent(this, new EventArgs());
+            int index = ParseMsgHeader(srcBuffer);
+            
+            //处理数据
+            if (srcBuffer.Length > index + 6)
+            {
+                byte[] macbuffer = new byte[6];
+                Buffer.BlockCopy(srcBuffer, index, macbuffer, 0, 6);
+                MacAddr.SelfMacAddr = new MacAddr(macbuffer);
+            }
+            if (IPSettingSuccessMsgReceiveEvent!=null)
+            {
+                IPSettingSuccessMsgReceiveEvent(this, new EventArgs());
+            }
+            
         }
 
         
@@ -194,7 +218,11 @@ namespace Services.ProtocolService
                 if (isNull)
                 {
                     cn = new CommNode { MacAddr = ma, Index = i, IsUpdate = true, LineInfoOfNode = new System.Collections.ObjectModel.ObservableCollection<CommLine>() };
-
+                    MacAddr tma = MacAddr.GetTerminalMac(_configService.ConfigInfos.DownTerminalIP,_configService.ConfigInfos.TermialIP);
+                    if (tma.Equals(cn.MacAddr))
+                    {
+                        cn.IsSelf = true;
+                    }
                     CommunicationNet.CommNodes.Add(cn);
 
                 }
@@ -351,7 +379,7 @@ namespace Services.ProtocolService
         private void ParsePARAREQ(byte[] srcBuffer)
         {
             //接收参数成功
-            RecieveMsgEvent(this, new EventMsgArgs { MsgID = ConstIDs.O_TDMOM_PARA_REQ });
+            RecieveMsgEvent(this, new EventMsgArgs { MsgID = ConstIDs.O_TDMOM_PARA_CFG });
 
         }
 
@@ -469,6 +497,10 @@ namespace Services.ProtocolService
             foreach (var item in CommunicationNet.CommLines)
             {
                 if (string.Format("{0},{1}", startIndex, endIndex) == item.Key)
+                {
+                    return item;
+                }
+                if (string.Format("{1},{0}", startIndex, endIndex) == item.Key)
                 {
                     return item;
                 }

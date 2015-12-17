@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.Practices.Prism.PubSubEvents;
 using System.Xml.Linq;
+using Commons.Infrastructure.Attributes;
 
 namespace Services.ProtocolService
 {
@@ -39,7 +40,7 @@ namespace Services.ProtocolService
         private CommNet _CommNet = new CommNet();
 
         private int _TopSendCount = 0;
-        private const int MAX_TOPSEND_COUNT = 20;
+        private const int MAX_TOPSEND_COUNT = 100;
 
         public CommNet CommunicationNet
         {
@@ -289,6 +290,11 @@ namespace Services.ProtocolService
                 AddSendData(QueryRouteInfo());
                 AddSendData(QueryTopInfo());
 
+                if (MacAddr.SelfMacAddr == null)
+                {
+                    AddSendData(SendIpInfo());
+                }
+
                 //发送计数，如果超过阈值将清空top信息
                 _TopSendCount++;
                 if (_TopSendCount > MAX_TOPSEND_COUNT && isClear)
@@ -305,6 +311,11 @@ namespace Services.ProtocolService
             else
             {
                 CanQueryRouteAndTopInfo = true;
+                if (IPSettingSuccessMsgReceiveEvent!=null)
+                {
+                    IPSettingSuccessMsgReceiveEvent(this, new EventArgs());
+                }
+                
                 AddSendData(SendIpInfo());
             }
         }
@@ -331,10 +342,14 @@ namespace Services.ProtocolService
                 this.SendData(b);
             }
         }
-        
+        private object locker = new object();
         private void AddSendData(byte[] addsb)
         {
-            this.SendData(addsb);
+            lock(locker)
+            {
+                this.SendData(addsb);
+            }
+            
         }
         
         private void SendData(byte[] sendBuffer)

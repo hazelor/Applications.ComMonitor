@@ -1,6 +1,7 @@
 ﻿using Commons.Infrastructure;
 using Commons.Infrastructure.Command;
 using Commons.Infrastructure.Events;
+using Commons.Infrastructure.Interface;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Prism.Regions;

@@ -128,6 +128,7 @@
         </Style>
         
         <tool:AddrConverter x:Key="AddrConverter"/>
+        <tool:LinkInfoVisiableConverter x:Key="LinkInfoVisiableConverter"/>
         <tool:AddrListConverter x:Key="AddrListConverter"/>
         <converter:ItemVisibleConverter x:Key="ItemVisibleConverter"/>
         <converter:DBConverter x:Key="DBConverter"/>
@@ -474,12 +475,13 @@
             <RadioButton Style="{StaticResource NormalStyle}" x:Name="NormalShowButton" Height="80" Click="NormalClick" IsChecked="False"/>
             <CheckBox x:Name="RoadShowButton" Height="80" Click="RoadClick" IsChecked="False" Style="{StaticResource RoadButtonStyle}"/>
             <CheckBox x:Name="MeasureButton" Height="80" Click="MeasureClick" IsChecked="False" ToolTip="测距" Style="{StaticResource MeasureButtonStyle}"/>
-            <!--<CheckBox x:Name="NodeButton" Height="80" Click="NodeClick" IsChecked="False" ToolTip="选中节点" Style="{StaticResource NodeButtonStyle}"/>-->
+            <CheckBox x:Name="NodeButton" Height="80" Click="NodeClick" IsChecked="False" ToolTip="选中节点" Style="{StaticResource NodeButtonStyle}"/>
 
             <Button x:Name="CenterButton" Height="80" Click="CenterClick" ToolTip="居中" Style="{StaticResource CenterButtonStyle}"/>
         </StackPanel>
         <!--数据信息显示-->
         <Expander Grid.Column="1" 
+                  
                   Template="{StaticResource StretchyExpanderTemp}"
                   RenderTransformOrigin="0.5,0.5"
                   ExpandDirection="Right"
@@ -488,7 +490,7 @@
                   Background="{StaticResource BackgroundBrush}">
 
             <Expander.Content>
-                <Grid x:Name="InfoDisplayPanel"  Width="340" Visibility="Collapsed">
+                <Grid Width="340" Visibility="Collapsed" x:Name="InfoDisplayPanel">
                     <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -627,7 +629,7 @@
                                 <GroupBox.Content>
                                     <ListBox x:Name="LineInfo" DataContext="{Binding SelectedNode}" ItemsSource="{Binding LineInfoOfNode}"
                                      MinHeight="200"
-                            >
+                                    ScrollViewer.VerticalScrollBarVisibility="Auto">
                                         <ListBox.Resources>
                                             <Style TargetType="ListBox">
                                                 <Setter Property="Background" Value="Transparent"/>
@@ -635,7 +637,7 @@
                                         </ListBox.Resources>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <Expander>
+                                                <Expander Visibility="{Binding IsVisible, Converter={StaticResource LinkInfoVisiableConverter}}">
                                                     <Expander.Header>
                                                         <Label Content="{Binding LineDirection}" Foreground="White"/>
                                                     </Expander.Header>

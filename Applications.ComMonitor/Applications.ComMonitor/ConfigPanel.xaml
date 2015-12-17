@@ -10,7 +10,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:commands="clr-namespace:Commons.Infrastructure.Command"
              mc:Ignorable="d" 
-             d:DesignHeight="1080" d:DesignWidth="1920">
+             >
 
     <Grid x:Name="Layout" Background="#A9CECECE">
         

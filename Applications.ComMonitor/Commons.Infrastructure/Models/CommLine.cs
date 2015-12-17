@@ -36,16 +36,29 @@ namespace Commons.Infrastructure.Models
 
         public string Key { get { return string.Format("{0},{1}", StartNode.Index, EndNode.Index); } }
 
-        private bool _IsShow = true;
-        public bool IsShow
+        private bool _IsPreShow = true;
+        public bool IsPreShow
         {
             get
             {
-                return this._IsShow;
+                return this._IsPreShow;
             }
             set
             {
-                SetProperty(ref this._IsShow, value);
+                SetProperty(ref this._IsPreShow, value);
+            }
+        }
+
+        private bool _IsBacShow = true;
+        public bool IsBacShow
+        {
+            get
+            {
+                return this._IsBacShow;
+            }
+            set
+            {
+                SetProperty(ref this._IsBacShow, value);
             }
         }
         private CommNode _StartNode;
@@ -159,7 +172,7 @@ namespace Commons.Infrastructure.Models
         public int PreIsUsed { get { return this.LineInfoPre.IsUsed; } }
         public int BacIsUsed { get { return this.LineInfoBac.IsUsed; } }
 
-        public bool IsVisible { get { return (int)CommStatuPre + (int)CommStatuBac > 0; } }
+        public bool IsVisible { get { return (int)PreIsUsed + (int)BacIsUsed > 0; } }
 
         public override string ToString()
         {

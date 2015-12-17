@@ -11,27 +11,31 @@
     </Node:NodeBase.Resources>
     <Grid>
         <StackPanel HorizontalAlignment="Center" Cursor="Hand">
+            <Label Content="本节点" Foreground="Red" FontWeight="Bold" HorizontalAlignment="Center"
+                   Margin="-20,-50,0,0"
+                   Visibility="{Binding IsSelf, Converter={StaticResource VisibleConverter}}"/>
             <Grid>
-                <Border Width="60" Height="60" Margin="-30,-30,0,0" CornerRadius="30" BorderBrush="Lime" BorderThickness="2" Visibility="{Binding IsSelf, Converter={StaticResource VisibleConverter}}">
+                <!--<Border Width="60" Height="60" Margin="-25,-25,0,0" CornerRadius="30" BorderBrush="Yellow" BorderThickness="2">
+                </Border>-->
+                <Border Width="50" Height="50" Margin="-25,-25,0,0" CornerRadius="25" BorderBrush="Red" BorderThickness="2" Visibility="{Binding IsSelected, Converter={StaticResource VisibleConverter}}">
                 </Border>
-                <Border Width="55" Height="55" Margin="-22.5,-22.5,0,0" CornerRadius="25.25" BorderBrush="Red" BorderThickness="2" Visibility="{Binding IsSelected, Converter={StaticResource VisibleConverter}}">
-                </Border>
-                <Image x:Name="Icon" Width="50" Height="50" Margin="-20,-20,0,0">
+                <Image x:Name="Icon" Width="40" Height="40" Margin="-20,-20,0,0">
                     <Image.Effect>
                         <DropShadowEffect x:Name="Shadow"/>
                     </Image.Effect>
                 </Image>
             </Grid>
             <Border x:Name="CursorDisplay"
-                    Margin="-20,5,0,0"
+                    Margin="-25,5,0,0"
                     Background="#33575B57"
                     Visibility="Visible"
                     CornerRadius="4"
                     BorderBrush="#FF464646"
                     BorderThickness="1"
                     >
-                <Label Content="{Binding NodeName}" Foreground="Red"/>
+                <Label Content="{Binding NodeName}" Foreground="Red" HorizontalAlignment="Center"/>
             </Border>
+           
         </StackPanel>
     </Grid>
 </Node:NodeBase>

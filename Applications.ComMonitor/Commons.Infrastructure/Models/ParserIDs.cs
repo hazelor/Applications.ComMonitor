@@ -31,5 +31,15 @@ namespace Commons.Infrastructure.Models
 
         public const ushort SRC_ID = 0x2000;
         public const ushort DST_ID = 0x1000;
+
+        public const ushort O_TDMOM_TRANSFER_TEST = 0x10a0;
+
+
+
+        public const ushort DATA_TRANS_START_ASK = 0x1001;
+        public const ushort DATA_TRANS_START_REQ = 0x2001;
+        public const ushort DATA_TRANS_PROG_ASK = 0x1002;
+        public const ushort DATA_TRANS_PROG_REQ = 0x2002;
+        
     }
 }

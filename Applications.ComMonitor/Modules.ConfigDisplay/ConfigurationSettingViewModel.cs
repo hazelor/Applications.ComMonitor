@@ -174,7 +174,7 @@ namespace Modules.ConfigDisplay
 
 
         #region Commands
-        private void ConfSettingExecuted()
+        public void ConfSettingExecuted()
         {
             OLSESettingInfo.Instance= CheckEndianolsr(OLSESettingInfo.Instance);
             WIFISettingInfos[0].Instance = CheckEndianwifis(WIFISettingInfos[0].Instance);
@@ -236,7 +236,7 @@ namespace Modules.ConfigDisplay
 
         private void OnRecieveMsgEvent(object sender, EventMsgArgs e)
         {
-            if (e.MsgID == ConstIDs.O_TDMOM_PARA_REQ)
+            if (e.MsgID == ConstIDs.O_TDMOM_PARA_CFG)
             {
                 ParamSettingMsg = "参数设置成功！";
             }

@@ -33,12 +33,39 @@ namespace Modules.InfosDisplay.Nodes
             base.OnMouseDoubleClick(e);
 
         }
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            CommNode cn = this.DataContext as CommNode;
+            _eventAggregator.GetEvent<SelNodeEvent>().Publish(cn);
+            _mouseCaptured = true;
+            base.OnMouseDown(e);
+        }
 
+        
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonUp(e);
+            _mouseCaptured = false;
+        }
+        
+        //protected override void OnMouseUp(MouseButtonEventArgs e)
+        //{
+        //    base.OnMouseUp(e);
+        //    this.ReleaseMouseCapture();
+        //    _mouseCaptured = false;
+            
+        //}
+        //protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        //{
+            
+        //    base.OnMouseLeftButtonUp(e);
+        //}
         public NodeBase()
         {
             this.IsCanDrag = false;
             _eventAggregator= ServiceLocator.Current.GetInstance<IEventAggregator>();
             _eventAggregator.GetEvent<SelNodeEvent>().Subscribe(OnSelectedNodeChanged);
+            //this.AddHandler(UserControl.MouseLeftButtonUpEvent, new MouseButtonEventHandler(SelfMouseLeftButtonUp), true);
         }
 
         protected virtual void OnSelectedNodeChanged(CommNode cn)
@@ -118,7 +145,7 @@ namespace Modules.InfosDisplay.Nodes
                         Point position = e.GetPosition(f);
                         _previousMouse = position;
                         MapCanvas mc = this.Parent as MapCanvas;
-                        if (mc!= null)
+                        if (mc != null && mc.IsCanDrag == false)
                         {
                             position = mc.GetLocation(position);
                             MapCanvas.SetLatitude(this, position.Y);

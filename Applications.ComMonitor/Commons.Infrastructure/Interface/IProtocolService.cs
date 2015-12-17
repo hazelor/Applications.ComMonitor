@@ -16,7 +16,7 @@ namespace Commons.Infrastructure.Interface
         event EventHandler<LineChangeEventArg> LineChangeEvent;
         event EventHandler<bool> IsStartChannelChangeEvent;
         event EventHandler<EventMsgArgs> RecieveMsgEvent;
-        //event EventHandler IPSettingSuccessMsgReceiveEvent;
+        event EventHandler IPSettingSuccessMsgReceiveEvent;
 
         void StartChannel();
         void StopChannel();

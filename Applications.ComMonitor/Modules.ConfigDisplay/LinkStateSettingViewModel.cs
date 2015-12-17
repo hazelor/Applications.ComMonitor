@@ -1,4 +1,5 @@
-﻿using Commons.Infrastructure.Events;
+﻿using Commons.Infrastructure;
+using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
