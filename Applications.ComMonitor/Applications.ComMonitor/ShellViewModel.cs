@@ -10,6 +10,7 @@ using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.ServiceLocation;
+using Modules.TopologyDisplay;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -44,9 +45,9 @@ namespace Applications.ComMonitor
         public DelegateCommand DataTransCommand { get; set; }
         private void DataTransExecuted()
         {
-            _DataTransPanel.ShowWnd(Application.Current.MainWindow);
+            //_DataTransPanel.ShowWnd(Application.Current.MainWindow);
             //ServiceLocator.Current.GetInstance<IDataTransPanel>().ShowWnd(Application.Current.MainWindow);
-            //DataTransPanel.ShowWnd(Application.Current.MainWindow);
+            DataTransPanel.ShowWnd(Application.Current.MainWindow);
         }
         #endregion
 
@@ -85,16 +86,15 @@ namespace Applications.ComMonitor
         private IEventAggregator _eventAggregator;
         private IConfigService _configService;
         private IProtocolService _protocolService;
-        private IDataTransPanel _DataTransPanel;
+        //private IDataTransPanel _DataTransPanel;
         private AdminInfo _adminInfo;
         [ImportingConstructor]
-        public ShellViewModel(IEventAggregator eventAggregator, IConfigService configService, IProtocolService protocolService,
-            IDataTransPanel dataTransPanel)
+        public ShellViewModel(IEventAggregator eventAggregator, IConfigService configService, IProtocolService protocolService)
         {
             _eventAggregator = eventAggregator;
             _configService = configService;
             _protocolService = protocolService;
-            _DataTransPanel = dataTransPanel;
+           // _DataTransPanel = dataTransPanel;
             _protocolService.IsStartChannelChangeEvent += OnIsStartChannelUpdate;
             //_protocolService.StartChannel();
             _adminInfo = _configService.AdminInfos;

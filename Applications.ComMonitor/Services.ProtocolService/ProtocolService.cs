@@ -103,7 +103,7 @@ namespace Services.ProtocolService
         //PreciseTimer _queryTimer = new PreciseTimer();
         //PreciseTimer _sendTimer = new PreciseTimer(20);
         Timer _queryTimer = new Timer(); 
-        Timer _sendTimer = new Timer(20);
+        //Timer _sendTimer = new Timer(100);
         private ushort MsgID;
         private ushort SrcID;
         private ushort DstID;
@@ -219,14 +219,14 @@ namespace Services.ProtocolService
         {
             //设置定时器的时间间隔
             _queryTimer.Interval = _configService.ConfigInfos.UpdateRate;
-            _sendTimer.Interval = _configService.ConfigInfos.UpdateRate;
+            //_sendTimer.Interval = _configService.ConfigInfos.UpdateRate;
             InitializeChannel();
 
             _TerminalMac = MacAddr.GetTerminalMac(_configService.ConfigInfos.DownTerminalIP, _configService.ConfigInfos.TermialIP);
             if (CanStartTimer)
             {
                 _queryTimer.Start();
-                _sendTimer.Start();
+                //_sendTimer.Start();
             }
             IsStartChannel = true;
         }
@@ -236,7 +236,7 @@ namespace Services.ProtocolService
         /// </summary>
         public void StopChannel()
         {
-            _sendTimer.Stop();
+            //_sendTimer.Stop();
             _queryTimer.Stop();
             ResetChannel();
             IsStartChannel = false;
@@ -389,7 +389,7 @@ namespace Services.ProtocolService
         /// </summary>
         private void InitializeChannel()
         {
-            _sendTimer.Elapsed += OnSendTimer;
+            //_sendTimer.Elapsed += OnSendTimer;
             _queryTimer.Elapsed += OnQueryTimer;
             if (_configService.ConfigInfos.CommProtocol == ConfigItems.TCP)
             {

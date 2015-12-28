@@ -41,5 +41,10 @@ namespace Commons.Infrastructure.Models
         public const ushort DATA_TRANS_PROG_ASK = 0x1002;
         public const ushort DATA_TRANS_PROG_REQ = 0x2002;
         
+        public const ushort DATA_TRANS_END_ASK = 0x1004;
+        public const ushort DATA_TRANS_END_REQ = 0x2004;
+
+        public const ushort DATA_TRANS_PAUSE_ASK = 0x1003;
+        
     }
 }

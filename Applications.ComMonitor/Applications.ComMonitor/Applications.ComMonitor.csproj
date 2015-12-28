@@ -212,6 +212,10 @@
       <Project>{343c92ca-cb0e-4e90-a0be-44c876b6852d}</Project>
       <Name>Commons.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Modules.TopologyDisplay\Modules.TopologyDisplay.csproj">
+      <Project>{e314eb29-55d3-442b-81d5-c36e2a476a33}</Project>
+      <Name>Modules.TopologyDisplay</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="theme\images\BackGround.png" />
@@ -256,7 +260,8 @@
 IF NOT EXIST "$(TargetDir)\Services" mkdir "$(TargetDir)\Services";
 IF NOT EXIST "$(TargetDir)\Commons" mkdir "$(TargetDir)\Commons";
 IF NOT EXIST "$(TargetDir)\Images" mkdir "$(TargetDir)\Images";
-IF NOT EXIST "$(TargetDir)\conf" mkdir "$(TargetDir)\conf";</PreBuildEvent>
+IF NOT EXIST "$(TargetDir)\conf" mkdir "$(TargetDir)\conf";
+IF NOT EXIST "$(TargetDir)\DownloadDir" mkdir "$(TargetDir)\DownloadDir";</PreBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.98.1\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.98.1\build\net45\System.Data.SQLite.Core.targets')" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

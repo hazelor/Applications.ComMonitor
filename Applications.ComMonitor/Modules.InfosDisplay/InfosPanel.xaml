@@ -490,7 +490,7 @@
                   Background="{StaticResource BackgroundBrush}">
 
             <Expander.Content>
-                <Grid Width="340" Visibility="Collapsed" x:Name="InfoDisplayPanel">
+                <Grid Width="340" Visibility="Visible">
                     <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                                   ScrollViewer.HorizontalScrollBarVisibility="Auto"

@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="DataTransTemplateSelector.cs" />
     <Compile Include="DataTransViewModel.cs" />
+    <Compile Include="DownloadProgress.cs" />
     <Compile Include="Events\NewTaskEvent.cs" />
     <Compile Include="NewTaskPanel.xaml.cs">
       <DependentUpon>NewTaskPanel.xaml</DependentUpon>
@@ -103,6 +104,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="UploadProgress.cs" />
+    <Compile Include="ValidationRules\FilePathValidationRule.cs" />
+    <Compile Include="ValidationRules\IPValidationRule.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -164,6 +168,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Conf\TaskConf.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\save.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

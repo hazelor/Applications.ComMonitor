@@ -27,6 +27,10 @@ namespace Commons.Infrastructure.Converters
             else
             {
                 EnumNodeType ent = (EnumNodeType)nodetype;
+                if (ent == null)
+                {
+                    return typestr;
+                }
                 FieldInfo fieldinfo = typeof(EnumNodeType).GetField(ent.ToString());
                 Object[] objs = fieldinfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
                 if (objs == null || objs.Length == 0)
@@ -36,6 +40,10 @@ namespace Commons.Infrastructure.Converters
                 else
                 {
                     DescriptionAttribute da = (DescriptionAttribute)objs[0];
+                    if (da == null)
+                    {
+                        return typestr;
+                    }
                     return da.Description;
                 }
             }

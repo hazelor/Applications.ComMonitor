@@ -74,8 +74,8 @@ namespace Modules.ConfigDisplay
             vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MsgFilterSetting);
             _confController.AddSubConfPanel(vm);
 
-            vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.WIFICtrlSetting);
-            _confController.AddSubConfPanel(vm);
+            //vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.WIFICtrlSetting);
+            //_confController.AddSubConfPanel(vm);
 
             vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MapDownload);
             _confController.AddSubConfPanel(vm);

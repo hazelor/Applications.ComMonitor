@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Windows.Input;
 
@@ -92,8 +93,9 @@ namespace Services.ConfigService
                 _configInfos = (ConfigInfo)_serializer.DeSerialize(Properties.Resource.ConfigFilePath, typeof(ConfigInfo));
             }
 
+            IPAddress hostIP = Dns.Resolve(Dns.GetHostName()).AddressList[0];
+            _configInfos.TermialIP = hostIP.ToString();
             SaveConfig();
-           
         }
 
         private void SaveConfig()

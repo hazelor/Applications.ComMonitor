@@ -74,10 +74,10 @@ namespace Modules.InfosDisplay
             TileGenerator.DownloadCountChanged += this.OnDownloadCountChanged;
             TileGenerator.DownloadError += this.OnDownloadError;
             InitializeComponent();
-            if (_configService.IsAdminLogin)
-            {
-                InfoDisplayPanel.Visibility = Visibility.Visible;
-            }
+            //if (_configService.IsAdminLogin)
+            //{
+            //    InfoDisplayPanel.Visibility = Visibility.Visible;
+            //}
             //按配置文件更新
             OnConfigUpdated(true);
             _eventAggregator.GetEvent<ConfigUpdateEvent>().Subscribe(OnConfigUpdated);
@@ -316,18 +316,18 @@ namespace Modules.InfosDisplay
 
         private void OnClearAll(bool sign)
         {
-            //foreach (var item in _protocolService.CommunicationNet.CommNodes)
-            //{
-            //    this.tileCanvas.DelSubObject(item.ToString());
-            //}
+            foreach (var item in _protocolService.CommunicationNet.CommNodes)
+            {
+                this.tileCanvas.DelSubObject(item.ToString());
+            }
 
-            //foreach (var item in _protocolService.CommunicationNet.CommLines)
-            //{
-            //    this.tileCanvas.DelSubObject(item.ToString());
-            //}
+            foreach (var item in _protocolService.CommunicationNet.CommLines)
+            {
+                this.tileCanvas.DelSubObject(item.ToString());
+            }
 
-            //_protocolService.CommunicationNet.CommNodes.Clear();
-            //_protocolService.CommunicationNet.CommLines.Clear();
+            _protocolService.CommunicationNet.CommNodes.Clear();
+            _protocolService.CommunicationNet.CommLines.Clear();
         }
     }
 }

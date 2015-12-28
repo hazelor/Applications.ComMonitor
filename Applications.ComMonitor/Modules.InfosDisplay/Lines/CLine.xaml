@@ -20,7 +20,7 @@
             HeadHeight="4"
             HeadWidth="10"
             StrokeThickness="2"
-                        StrokeDashArray="{Binding IsPreShow, Converter={StaticResource DashAvailableConverter}}"
+                        StrokeDashArray="{Binding IsBacShow, Converter={StaticResource DashAvailableConverter}}"
             Direct="False"
                         Visibility="{Binding PreIsUsed, Converter={StaticResource LineVisibleConverter}}"
                     Cursor="Hand"
@@ -40,7 +40,7 @@
             HeadWidth="10"
             StrokeThickness="2"
                     Cursor="Hand"
-                        StrokeDashArray="{Binding IsBacShow, Converter={StaticResource DashAvailableConverter}}"
+                        StrokeDashArray="{Binding IsPreShow, Converter={StaticResource DashAvailableConverter}}"
                     Stroke="{Binding CommStatuBac, Converter={StaticResource QuaulityConverter}}"
             Direct="True"
                         Visibility="{Binding BacIsUsed, Converter={StaticResource LineVisibleConverter}}">
