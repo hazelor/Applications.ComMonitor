@@ -40,7 +40,7 @@ namespace Services.ProtocolService
         private CommNet _CommNet = new CommNet();
 
         private int _TopSendCount = 0;
-        private const int MAX_TOPSEND_COUNT = 100;
+        private const int MAX_TOPSEND_COUNT = 5000;
 
         public CommNet CommunicationNet
         {
@@ -140,6 +140,7 @@ namespace Services.ProtocolService
             _configService = configService;
             //_dataProcessService = dataProcessService;
             //_queryTimer.Elapsed = OnQueryTimmer;
+            _queryTimer.Elapsed += OnQueryTimer;
             //初始化net
             _CommNet.NodeNum = 0;
             _CommNet.CommLines = new ObservableCollection<CommLine>();
@@ -218,6 +219,7 @@ namespace Services.ProtocolService
         public void StartChannel()
         {
             //设置定时器的时间间隔
+            _recordNodeGPS.Clear();
             _queryTimer.Interval = _configService.ConfigInfos.UpdateRate;
             //_sendTimer.Interval = _configService.ConfigInfos.UpdateRate;
             InitializeChannel();
@@ -297,10 +299,10 @@ namespace Services.ProtocolService
 
                 //发送计数，如果超过阈值将清空top信息
                 _TopSendCount++;
-                if (_TopSendCount > MAX_TOPSEND_COUNT && isClear)
+                if (_TopSendCount > (MAX_TOPSEND_COUNT/_configService.ConfigInfos.UpdateRate) && isClear)
                 {
                     isClear = false;
-
+                    _TopSendCount = 0;
                     ClearAll();
                     //BeginUpdateNode();
                     //BeginUpdateLine();
@@ -390,7 +392,7 @@ namespace Services.ProtocolService
         private void InitializeChannel()
         {
             //_sendTimer.Elapsed += OnSendTimer;
-            _queryTimer.Elapsed += OnQueryTimer;
+            
             if (_configService.ConfigInfos.CommProtocol == ConfigItems.TCP)
             {
                 if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
@@ -531,7 +533,7 @@ namespace Services.ProtocolService
         /// <param name="e">e中包含收到的数据通过e.Content来获取数据类型为byte[]的报文</param>
         private void OnUdpDiagramReceived(object sender, DataReceivedEventArgs e)
         {
-            if (e.Content.Length > 20)
+            if (e.Content.Length >= 20)
             {
                 //LinkedListNode<byte[]> tempNode = new LinkedListNode<byte[]>(e.Content);
                 //DataLink.AddLast(tempNode);

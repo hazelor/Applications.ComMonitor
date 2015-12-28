@@ -38,6 +38,7 @@ namespace Modules.InfosDisplay.Nodes
             CommNode cn = this.DataContext as CommNode;
             _eventAggregator.GetEvent<SelNodeEvent>().Publish(cn);
             _mouseCaptured = true;
+            this.CaptureMouse();
             base.OnMouseDown(e);
         }
 
@@ -45,6 +46,7 @@ namespace Modules.InfosDisplay.Nodes
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonUp(e);
+            this.ReleaseMouseCapture();
             _mouseCaptured = false;
         }
         

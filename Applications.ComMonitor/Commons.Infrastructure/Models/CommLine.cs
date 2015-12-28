@@ -169,8 +169,28 @@ namespace Commons.Infrastructure.Models
         public int PreWhiteInfoQuality { get { return this.LineInfoPre.WhiteInfoQuality; } }
         public int BacWhiteInfoQuality { get { return this.LineInfoBac.WhiteInfoQuality; } }
 
-        public int PreIsUsed { get { return this.LineInfoPre.IsUsed; } }
-        public int BacIsUsed { get { return this.LineInfoBac.IsUsed; } }
+        public int PreIsUsed { 
+            get 
+            { 
+                if(this.LineInfoPre.InfoQuality==0) 
+                    return 0;
+                else{
+                    return this.LineInfoPre.IsUsed;
+                };
+            }
+        }
+        public int BacIsUsed { 
+            get
+            {
+                if (this.LineInfoBac.InfoQuality == 0)
+                    return 0;
+                else
+                {
+                    return this.LineInfoBac.IsUsed;
+                }
+                
+            }
+        }
 
         public bool IsVisible { get { return (int)PreIsUsed + (int)BacIsUsed > 0; } }
 

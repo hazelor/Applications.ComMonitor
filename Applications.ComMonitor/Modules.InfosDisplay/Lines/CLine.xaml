@@ -21,7 +21,7 @@
             HeadWidth="10"
             StrokeThickness="2"
                         StrokeDashArray="{Binding IsBacShow, Converter={StaticResource DashAvailableConverter}}"
-            Direct="False"
+            Direct="True"
                         Visibility="{Binding PreIsUsed, Converter={StaticResource LineVisibleConverter}}"
                     Cursor="Hand"
                     Stroke="{Binding CommStatuPre, Converter={StaticResource QuaulityConverter}}">
@@ -42,7 +42,7 @@
                     Cursor="Hand"
                         StrokeDashArray="{Binding IsPreShow, Converter={StaticResource DashAvailableConverter}}"
                     Stroke="{Binding CommStatuBac, Converter={StaticResource QuaulityConverter}}"
-            Direct="True"
+            Direct="False"
                         Visibility="{Binding BacIsUsed, Converter={StaticResource LineVisibleConverter}}">
                 <tool:Arrow.Effect>
                     <DropShadowEffect/>
