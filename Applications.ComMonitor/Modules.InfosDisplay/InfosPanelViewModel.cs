@@ -88,23 +88,7 @@ namespace Modules.InfosDisplay
             }
 
             ShowRouteLines();
-            //if (RoutInfoDecs.Count == 0)
-            //{
-            //    int index = 0;
-            //    foreach (var info in TerminalInfo.RouteInfo)
-            //    {
-            //        index++;
-            //        RoutInfoDecs.Add(new RoutInfoDecorator { RoutName = string.Format("路由信息{0}", index), info = info });
-            //    }
-            //}
-            //else
-            //{
-            //    for (int i = 0; i < 10; i++)
-            //    {
-            //        RoutInfoDecs[i].info = TerminalInfo.RouteInfo[i];
-            //    }
-            //}
-            
+          
         }
 
         private ObservableCollection<RoutInfoDecorator> _routInfoDecs = new ObservableCollection<RoutInfoDecorator>();

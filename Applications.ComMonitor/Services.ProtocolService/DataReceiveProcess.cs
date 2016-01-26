@@ -300,8 +300,9 @@ namespace Services.ProtocolService
                                                 EndNode = FindNode(j),
                                                 LineInfoPre = TopInfo[i, j],
                                                 LineInfoBac= TopInfo[j,i],
-                                                CommStatuPre = GetCommStatus(TopInfo[i, j].InfoQuality),
-                                                CommStatuBac = GetCommStatus(TopInfo[j, i].InfoQuality) };
+                                                CommStatuPre = GetCommStatus(TopInfo[i, j].SignalNoiseRatio),
+                                                CommStatuBac = GetCommStatus(TopInfo[j, i].SignalNoiseRatio)
+                            };
                             if (!HasLine(cl.StartNode, cl))
                             {
                                 cl.StartNode.LineInfoOfNode.Add(cl);
@@ -321,8 +322,8 @@ namespace Services.ProtocolService
 
                             cl.LineInfoPre = TopInfo[i, j];
                             cl.LineInfoBac = TopInfo[j, i];
-                            cl.CommStatuPre = GetCommStatus(TopInfo[i, j].InfoQuality);
-                            cl.CommStatuBac = GetCommStatus(TopInfo[j, i].InfoQuality);
+                            cl.CommStatuPre = GetCommStatus(TopInfo[i, j].SignalNoiseRatio);
+                            cl.CommStatuBac = GetCommStatus(TopInfo[j, i].SignalNoiseRatio);
                             
                             if (cl.CommStatuBac == CommStatues.NON && cl.CommStatuPre == CommStatues.NON)
                             {
@@ -380,6 +381,16 @@ namespace Services.ProtocolService
         {
             //接收参数成功
             RecieveMsgEvent(this, new EventMsgArgs { MsgID = ConstIDs.O_TDMOM_PARA_CFG });
+
+        }
+
+        [Parser(ParseID = ConstIDs.STRU_TDMOM_READPARA_RSP, Description = "接下位机参数消息")]
+        private void ParseREADPARAREQ(byte[]srcBuffer)
+        {
+
+            STRU_TDMOM_PARA_CFG par = (STRU_TDMOM_PARA_CFG)StructConverter.BytesToStruct(srcBuffer, typeof(STRU_TDMOM_PARA_CFG));
+            this._eventAggregator.GetEvent<ParamUpdatedEvent>().Publish(par);
+            isReadPara = true;
 
         }
 
@@ -515,17 +526,21 @@ namespace Services.ProtocolService
             //    return CommStatues.BAD;
             //}
             //else 
-            if (InfoQuality>=_configService.ConfigInfos.GoodUpper)
+            if (InfoQuality< _configService.ConfigInfos.BadUpper )
+            {
+                return CommStatues.BAD;
+            }
+            else if (InfoQuality<_configService.ConfigInfos.MedianUpper)
+            {
+                return CommStatues.NORMAL;
+            }
+            else if (InfoQuality < _configService.ConfigInfos.GoodUpper)
             {
                 return CommStatues.EXCELLENT;
             }
-            else if (InfoQuality>=_configService.ConfigInfos.MedianUpper)
-            {
-                return CommStatues.GOOD;
-            }
             else
             {
-                return CommStatues.NORMAL;
+                return CommStatues.GOOD;
             }
         }
         private int ParseMsgHeader(byte[] srcBuffer)

@@ -74,7 +74,7 @@ namespace Commons.Infrastructure.Models
         /// <summary>
         /// 信号坏的上限，下限为0, <=BadUpper
         /// </summary>
-        //public int BadUpper { get; set; }
+        public int BadUpper { get; set; }
 
         /// <summary>
         /// 信号中的上限，下限为BadUpper <=MedianUpper

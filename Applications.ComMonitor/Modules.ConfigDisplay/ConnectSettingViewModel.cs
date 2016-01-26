@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -92,8 +93,23 @@ namespace Modules.ConfigDisplay
             _IsUdp = _configService.ConfigInfos.CommProtocol == ConfigItems.UDP;
             _IsTcp = !_IsUdp;
 
+            IPAddress[] hostIPs = Dns.Resolve(Dns.GetHostName()).AddressList;
+            foreach (var ip in hostIPs)
+            {
+                HostIPs.Add(ip.ToString());
+            }
+            HostIPs.Add("127.0.0.1");
+
         }
         #region properties
+        private List<string> _HostIPs = new List<string>();
+        public List<string> HostIPs
+        {
+            get
+            {
+                return this._HostIPs;
+            }
+        }
 
         private bool _IsTcp;
         public bool IsTcp

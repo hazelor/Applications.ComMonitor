@@ -22,7 +22,13 @@ namespace Modules.ConfigDisplay.Tool
                 return this._SubField;
             }
         }
-
+        public void NotifySubFieldChanged()
+        {
+            foreach (var f in SubField)
+            {
+                f.NotifyChanged();
+            }
+        }
         public void ParseStruct()
         {
             Type t = typeof(T);
@@ -50,13 +56,24 @@ namespace Modules.ConfigDisplay.Tool
         public string Description { get; set; }
         public string Value { get; set; }
     }
-    public class FieldShell<T>
+    public class FieldShell<T> : INotifyPropertyChanged
     {
         public DescriptionFieldAttribute FieldDescription{get;set;}
 
         public StructShell<T> ParantStruct { get; set; }
 
         public FieldInfo Info { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged; 
+        public void NotifyChanged()
+        {
+            if (PropertyChanged!=null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("Description"));
+                PropertyChanged(this, new PropertyChangedEventArgs("Value")); 
+            }
+            
+        }
 
         public string Description
         {

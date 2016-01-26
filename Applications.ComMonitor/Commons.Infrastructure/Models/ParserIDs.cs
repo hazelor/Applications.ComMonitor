@@ -29,6 +29,9 @@ namespace Commons.Infrastructure.Models
         public const ushort STRU_OMTDM_FREQ_RSP = 0x2008;
         public const ushort STRU_TDMOM_FREQ_REQ = 0x1012;
 
+        public const ushort STRU_TDMOM_READPARA_REQ = 0x1014;
+        public const ushort STRU_TDMOM_READPARA_RSP = 0x200A;
+
         public const ushort SRC_ID = 0x2000;
         public const ushort DST_ID = 0x1000;
 

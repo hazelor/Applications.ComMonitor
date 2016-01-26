@@ -5,6 +5,61 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="420">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="ComboBoxTextBox" TargetType="{x:Type TextBox}">
+            <Border x:Name="PART_ContentHost" Focusable="False" Background="{TemplateBinding Background}"/>
+        </ControlTemplate>
+        <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+            <Border BorderThickness="1" BorderBrush ="White">
+                <Grid>
+                    <Grid.Background>
+                        <ImageBrush ImageSource=".\images\TextBoxBackGround.png"  Stretch="UniformToFill"/>
+                    </Grid.Background>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="40" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" BorderThickness="2" BorderBrush="{x:Null}"/>
+                    <Border Grid.Column="1" Background="{x:Null}"/>
+                </Grid>
+            </Border>
+
+        </ControlTemplate>
+
+        <Style TargetType="{x:Type ComboBox}">
+            <Setter Property ="Height" Value="20"/>
+            <Setter Property= "Foreground" Value ="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBox}">
+                        <Grid>
+                            <!-- ToggleButton 已数据绑定到 ComboBox 本身以切换 IsDropDownOpen -->
+                            <ToggleButton Grid.Column="2" Template="{DynamicResource ComboBoxToggleButton}" x:Name="ToggleButton" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
+                            <ContentPresenter HorizontalAlignment="Left" Margin="3,3,23,3" x:Name="ContentSite" VerticalAlignment="Center" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" IsHitTestVisible="False"/>
+
+                            <!-- 必须将 TextBox 命名为 PART_EditableTextBox，否则 ComboBox 将无法识别它 -->
+                            <TextBox  Visibility="Hidden" Template="{DynamicResource ComboBoxTextBox}" HorizontalAlignment="Left" Margin="3,3,23,3" x:Name="PART_EditableTextBox" Style="{x:Null}" VerticalAlignment="Center" Focusable="True" Background="Transparent" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+
+                            <!-- Popup 可显示 ComboBox 中的项列表。IsOpen 已数据绑定到通过 ComboBoxToggleButton 来切换的 IsDropDownOpen -->
+                            <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" x:Name="Popup" Focusable="False" AllowsTransparency="True" PopupAnimation="Slide">
+                                <Grid MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{TemplateBinding ActualWidth}" x:Name="DropDown" SnapsToDevicePixels="True">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="31*"/>
+                                        <ColumnDefinition Width="72*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border x:Name="DropDownBorder" Background="#ACCECECE" BorderBrush="{DynamicResource SolidBorderBrush}" BorderThickness="1" Grid.ColumnSpan="2" CornerRadius="2"/>
+                                    <ScrollViewer Margin="4,6,4,6" Style="{DynamicResource SimpleScrollViewer}" SnapsToDevicePixels="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True" Foreground="White" Grid.ColumnSpan="2">
+                                        <!-- StackPanel 用于显示子级，方法是将 IsItemsHost 设置为 True -->
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" Background="{x:Null}"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -50,13 +105,13 @@
                     HorizontalAlignment="Left">
             <TextBox Style="{StaticResource MTextBoxStyle}"
                  Grid.Row="0" Grid.Column="1"
-                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                  VerticalAlignment="Center" MaxWidth="150" MinWidth="120"
                  Margin="5"
                  Text="{Binding DownTerminalIP}"
                  />
             <TextBox Style="{StaticResource MTextBoxStyle}"
                  Grid.Row="0" Grid.Column="1"
-                 VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 VerticalAlignment="Center" MaxWidth="150" MinWidth="120"
                  Margin="5"
                  Text="{Binding DownTerminalPort}"
                  />
@@ -66,13 +121,14 @@
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"
                      VerticalAlignment="Center"
                     HorizontalAlignment="Left">
-            <TextBox Style="{StaticResource MTextBoxStyle}"
-                  VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+            <ComboBox
+                  VerticalAlignment="Center" MaxWidth="150" MinWidth="120"
                  Margin="5"
-                 Text="{Binding TerminalIP}"
+                 ItemsSource="{Binding HostIPs}"
+                 SelectedItem="{Binding TerminalIP}"
                  />
             <TextBox Style="{StaticResource MTextBoxStyle}"
-                 VerticalAlignment="Center" MaxWidth="150" MinWidth="100"
+                 VerticalAlignment="Center" MaxWidth="150" MinWidth="120"
                  Margin="5"
                  Text="{Binding TerminalPort}"
                  />

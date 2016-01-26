@@ -280,6 +280,7 @@ namespace Services.ProtocolService
         //    }
         //}
         private bool isClear = true;
+        private bool isReadPara = false;
         /// <summary>
         /// 通过UdpClient向下位机发送数据
         /// </summary>
@@ -291,7 +292,10 @@ namespace Services.ProtocolService
             {
                 AddSendData(QueryRouteInfo());
                 AddSendData(QueryTopInfo());
-
+                if (!isReadPara)
+                { 
+                    ReadParaCtrl(); 
+                }
                 if (MacAddr.SelfMacAddr == null)
                 {
                     AddSendData(SendIpInfo());
@@ -377,14 +381,7 @@ namespace Services.ProtocolService
             }
         }
         
-        //private void OnQueryTimmer(object sender, EventArgs e)
-        //{
-        //    //_queryTimmer.Stop();
-        //    //send some package for querying
-        //    QueryRouteInfo();
-        //    QueryRouteInfo();
-        //    //_queryTimmer.Start();
-        //}
+       
         
         /// <summary>
         /// 初始化基础数据收发服务
@@ -436,12 +433,7 @@ namespace Services.ProtocolService
                 
                 _udpClientService.StartService();
                 CanStartTimer = true;
-                //if (_configService.ConfigInfos.CommType == ConfigItems.CLIENT)
-                //{
-                //}
-                //if (_configService.ConfigInfos.CommType == ConfigItems.SERVER)
-                //{
-                //}
+              
             }
         }
         
@@ -517,13 +509,7 @@ namespace Services.ProtocolService
                     DataLink.AddLast(tmpNode);
                 }
             }
-            //byte[] srcBuffer = e.datagram;
-            //string str = System.Text.Encoding.Default.GetString(content);
-            //ParserDatas(srcBuffer);
-            //Encoding encoding = Encoding.UTF8;
-            //string contentstring = encoding.GetString(content, 0, content.Length);
-            //this.receivetext = str;
-            //byte[] sendbackdata = new byte[] { 0xeb, 0x90 };
+      
         }
         
         /// <summary>
@@ -535,16 +521,10 @@ namespace Services.ProtocolService
         {
             if (e.Content.Length >= 20)
             {
-                //LinkedListNode<byte[]> tempNode = new LinkedListNode<byte[]>(e.Content);
-                //DataLink.AddLast(tempNode);
+
                 _eventAggregator.GetEvent<RecievedEvent>().Publish(e.Content);
             }
-            //string str = System.Text.Encoding.Default.GetString(content);
-            //ParserDatas(srcBuffer);
-            //Encoding encoding = Encoding.UTF8;
-            //string contentstring = encoding.GetString(content, 0, content.Length);
-            //this.receivetext = str;
-            //byte[] sendbackdata = new byte[] { 0xeb, 0x90 };
+        
         }
     }
 }

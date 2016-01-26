@@ -15,6 +15,8 @@ using Hazelor.Infrastructure.Tools;
 using System.Collections.ObjectModel;
 using Commons.Infrastructure;
 using System.IO;
+using Microsoft.Practices.Prism.PubSubEvents;
+using Commons.Infrastructure.Events;
 
 namespace Modules.ConfigDisplay
 {
@@ -24,9 +26,11 @@ namespace Modules.ConfigDisplay
     {
         private IProtocolService _protocolService;
         private IConfigService _configService;
+        private IEventAggregator _eventAggregator;
         [ImportingConstructor]
-        public ConfigurationSettingViewModel( IProtocolService protocolService, IConfigService configService)
+        public ConfigurationSettingViewModel(IEventAggregator eventAggregator, IProtocolService protocolService, IConfigService configService)
         {
+            _eventAggregator = eventAggregator;
             _protocolService = protocolService;
             _configService = configService;
             ApplyCommand = new DelegateCommand(ApplyExecuted);
@@ -43,6 +47,10 @@ namespace Modules.ConfigDisplay
             ConfSettingCommand = new DelegateCommand(ConfSettingExecuted);
             FreQueryCommand = new DelegateCommand(FreQueryExecuted);
             SaveConfCommand = new DelegateCommand(SaveConfExecuted);
+            ConfReadingCommand = new DelegateCommand(ConfReadingExecuted);
+
+            _eventAggregator.GetEvent<ParamUpdatedEvent>().Subscribe(OnParamUpdatedEvent, ThreadOption.UIThread);
+            
         }
 
 
@@ -91,12 +99,12 @@ namespace Modules.ConfigDisplay
             //如果没有配置文件存在，填写默认值
             if (!System.IO.File.Exists(Properties.Resources.OLSRParamSettingFilePath))
             {            
-                InitDefault();
+                //InitDefault();
             }
             //如果有配置文件存在，反序列化文件
             else
             {
-                DeSerializeStruct();
+                //DeSerializeStruct();
             }
 
             //初始化shell
@@ -112,6 +120,25 @@ namespace Modules.ConfigDisplay
             }
 
             SaveConfExecuted();
+        }
+        private void OnParamUpdatedEvent(STRU_TDMOM_PARA_CFG par)
+        {
+            _settingInfoConf.olsrParams = par.struOlsrParame;
+            for (int i = 0; i < WIFISettingSize; i++)
+			{
+                _settingInfoConf.wifiParams[i] = par.astruWiFiParame[i];
+                WIFISettingInfos[i].Instance = _settingInfoConf.wifiParams[i];
+			}
+            OLSESettingInfo.Instance = _settingInfoConf.olsrParams;
+
+            this.OLSESettingInfo.NotifySubFieldChanged();
+            foreach (var info in WIFISettingInfos)
+            {
+                info.NotifySubFieldChanged();
+            }
+            //this.OnPropertyChanged("OLSESettingInfo");
+            //this.OnPropertyChanged("WIFISettingInfos");
+            
         }
 
         private void InitDefault()
@@ -170,10 +197,28 @@ namespace Modules.ConfigDisplay
         public DelegateCommand ConfSettingCommand { get; set; }
         public DelegateCommand FreQueryCommand { get; set; }
         public DelegateCommand SaveConfCommand { get; set; }
+        public DelegateCommand ConfReadingCommand { get; set; }
         #endregion
 
 
         #region Commands
+        public void ConfReadingExecuted()
+        {
+            //--------for test--------
+            //
+            //STRU_TDMOM_PARA_CFG par = new STRU_TDMOM_PARA_CFG();
+            //par.struOlsrParame.nodeName = new byte[4];
+            //par.astruWiFiParame = new STRU_WIFI_PARAME[4];
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    par.astruWiFiParame[i].au8SSID = new byte[32];
+            //    par.astruWiFiParame[i].au8Key = new byte[32];
+            //    par.astruWiFiParame[i].au8Rsv = new byte[3];
+
+            //}
+            //OnParamUpdatedEvent(par);
+            this._protocolService.ReadParaCtrl();
+        }
         public void ConfSettingExecuted()
         {
             OLSESettingInfo.Instance= CheckEndianolsr(OLSESettingInfo.Instance);

@@ -1,4 +1,5 @@
-﻿using Microsoft.Practices.Prism.PubSubEvents;
+﻿using Commons.Infrastructure.Models;
+using Microsoft.Practices.Prism.PubSubEvents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,11 @@ namespace Commons.Infrastructure.Events
     }
 
     public class ClearAllEvent : PubSubEvent<bool>
+    {
+
+    }
+
+    public class ParamUpdatedEvent:PubSubEvent<STRU_TDMOM_PARA_CFG>
     {
 
     }

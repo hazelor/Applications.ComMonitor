@@ -80,57 +80,57 @@ namespace Modules.InfosDisplay.Nodes
         private bool _mouseCaptured = false;
         private Point _previousMouse;
 
-        protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnMouseRightButtonDown(e);
-            this.Focus(); // Make sure we get the keyboard
-            if (this.CaptureMouse())
-            {
-                this.Cursor = Cursors.ScrollAll;
-                _mouseCaptured = true;
-                _previousMouse = e.GetPosition(null);
-                var element = (FrameworkElement)this;
-                if (e.ClickCount == 1)
-                {
-                    var timer = new System.Timers.Timer(500);
-                    timer.AutoReset = false;
-                    timer.Elapsed += new ElapsedEventHandler((o, ex) => element.Dispatcher.Invoke(new Action(() =>
-                    {
-                        var timer2 = (System.Timers.Timer)element.Tag;
-                        timer2.Stop();
-                        timer2.Dispose();
-                        //单击
-                    })));
-                    timer.Start();
-                    element.Tag = timer;
-                }
-                if (e.ClickCount > 1)
-                {
-                    var timer = element.Tag as System.Timers.Timer;
-                    if (timer != null)
-                    {
-                        timer.Stop();
-                        timer.Dispose();
-                        //UIElement_DoubleClick(e);
-                    }
-                }
-            }
+        //protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
+        //{
+        //    base.OnMouseRightButtonDown(e);
+        //    this.Focus(); // Make sure we get the keyboard
+        //    if (this.CaptureMouse())
+        //    {
+        //        this.Cursor = Cursors.ScrollAll;
+        //        _mouseCaptured = true;
+        //        _previousMouse = e.GetPosition(null);
+        //        var element = (FrameworkElement)this;
+        //        if (e.ClickCount == 1)
+        //        {
+        //            var timer = new System.Timers.Timer(500);
+        //            timer.AutoReset = false;
+        //            timer.Elapsed += new ElapsedEventHandler((o, ex) => element.Dispatcher.Invoke(new Action(() =>
+        //            {
+        //                var timer2 = (System.Timers.Timer)element.Tag;
+        //                timer2.Stop();
+        //                timer2.Dispose();
+        //                //单击
+        //            })));
+        //            timer.Start();
+        //            element.Tag = timer;
+        //        }
+        //        if (e.ClickCount > 1)
+        //        {
+        //            var timer = element.Tag as System.Timers.Timer;
+        //            if (timer != null)
+        //            {
+        //                timer.Stop();
+        //                timer.Dispose();
+        //                //UIElement_DoubleClick(e);
+        //            }
+        //        }
+        //    }
 
-            //base.OnMouseRightButtonDown(e);
-            //this.Focus(); // Make sure we get the keyboard
-            //if (this.CaptureMouse())
-            //{
-            //    _mouseCaptured = true;
-            //    _previousMouse = e.GetPosition(this.Parent as FrameworkElement);
-            //}
-        }
+        //    //base.OnMouseRightButtonDown(e);
+        //    //this.Focus(); // Make sure we get the keyboard
+        //    //if (this.CaptureMouse())
+        //    //{
+        //    //    _mouseCaptured = true;
+        //    //    _previousMouse = e.GetPosition(this.Parent as FrameworkElement);
+        //    //}
+        //}
 
-        protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
-        {
-            base.OnMouseRightButtonUp(e);
-            this.ReleaseMouseCapture();
-            _mouseCaptured = false;
-        }
+        //protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
+        //{
+        //    base.OnMouseRightButtonUp(e);
+        //    this.ReleaseMouseCapture();
+        //    _mouseCaptured = false;
+        //}
 
         /// <summary>Drags the map, if the mouse was succesfully captured.</summary>
         /// <param name="e">The MouseEventArgs that contains the event data.</param>

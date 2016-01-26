@@ -86,6 +86,7 @@ namespace Applications.ComMonitor
         private IEventAggregator _eventAggregator;
         private IConfigService _configService;
         private IProtocolService _protocolService;
+        private System.Timers.Timer _mainProgressTimer;
         //private IDataTransPanel _DataTransPanel;
         private AdminInfo _adminInfo;
         [ImportingConstructor]
@@ -107,9 +108,23 @@ namespace Applications.ComMonitor
             _eventAggregator.GetEvent<SystemInfoEvent>().Subscribe(OnSystemInfoUpdate);
             StartCommand = new DelegateCommand(StartExecuted);
 
+            
             //init Filter ViewModel
             ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MsgFilterSetting);
 
+            _mainProgressTimer = new System.Timers.Timer(1000);
+            _mainProgressTimer.Elapsed += OnMainProgressTimer;
+            _mainProgressTimer.Start();
+
+
+        }
+
+        private void OnMainProgressTimer(object sender, EventArgs e)
+        {
+            if (StartName == "开始")
+            {
+                StartExecuted();
+            }
 
         }
         private bool _IsEnableConf= true;

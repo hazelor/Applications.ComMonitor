@@ -70,7 +70,7 @@ namespace Applications.ComMonitor
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            this.NodeDisplayButton.IsChecked = true;
+            //this.NodeDisplayButton.IsChecked = true;
             this.regionManager.RequestNavigate(RegionNames.MainRegion, InfoDisplayUri);
         }
 

@@ -64,9 +64,9 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="6">
-                        <RadioButton Grid.Column="0" x:Name="NodeDisplayButton" Style="{StaticResource MRadioButtonStyle}" Click="OnNodesDisplayClick" Height="50">
+                        <!--<RadioButton Grid.Column="0" x:Name="NodeDisplayButton" Style="{StaticResource MRadioButtonStyle}" Click="OnNodesDisplayClick" Height="50">
                             节点显示
-                        </RadioButton>
+                        </RadioButton>-->
                         <!--<RadioButton x:Name="TopoloyDisplayButton" Style="{StaticResource MRadioButtonStyle}" Click="OnTopoloyDisplayClick">
                     拓扑显示 IsEnabled="{Binding IsEnableConf}"
                 </RadioButton>-->
@@ -84,9 +84,9 @@
                         Command="{Binding DataTransCommand}">
                             数据传输
                         </Button>
-                        <Button x:Name="StartButton" Grid.Column="3" Height="50" Style="{StaticResource MRButtonStyle}" Command="{Binding StartCommand}" Content="{Binding StartName}">
+                        <!--<Button x:Name="StartButton" Grid.Column="3" Height="50" Style="{StaticResource MRButtonStyle}" Command="{Binding StartCommand}" Content="{Binding StartName}">
 
-                        </Button>
+                        </Button>-->
                         <Label Style="{StaticResource MLabelStyle}" Margin="10,10,5,10" Grid.Column="4" Height="50">系统信息:</Label>
                         <TextBlock x:Name="SystemInfo" Grid.Column="5" MinWidth="200" Foreground="White" VerticalAlignment="Center" Text="{Binding SystemInfo}" />
                     </StackPanel>

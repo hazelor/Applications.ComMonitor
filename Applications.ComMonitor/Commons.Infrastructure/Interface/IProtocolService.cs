@@ -52,5 +52,7 @@ namespace Commons.Infrastructure.Interface
         /// </summary>
         /// <param name="datas"></param>
         void WIFICtrl(byte[] datas);
+
+        void ReadParaCtrl();
     }
 }

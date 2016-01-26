@@ -40,8 +40,36 @@ namespace Modules.InfosDisplay.converters
 
             if (result == null)
                 return "无信号";
-
+            if (result == 0)
+            {
+                return "-";
+            }
             return System.String.Format(CultureInfo.CurrentUICulture, "{0}db", result.Value);
+        }
+
+        public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+    }
+
+    class InfoDisConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
+        {
+            var result = value as int?;
+
+            if (result == null)
+                return "无信号";
+            if (result == 0)
+            {
+                return "-";
+            }
+            return System.String.Format(CultureInfo.CurrentUICulture, "{0}", result.Value);
         }
 
         public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)

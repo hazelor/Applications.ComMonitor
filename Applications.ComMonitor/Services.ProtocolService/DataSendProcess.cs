@@ -235,6 +235,22 @@ namespace Services.ProtocolService
             AddSendData(sendBuffer);
         }
 
+        public void ReadParaCtrl()
+        {
+            MsgHeader mh = new MsgHeader();
+            //参数赋值
+            mh.MsgID = ConstIDs.STRU_TDMOM_READPARA_REQ;
+            mh.SrcID = ConstIDs.SRC_ID;
+            mh.DstID = ConstIDs.DST_ID;
+            mh.puData = 0;
+            mh.DataLen = 0;
+            mh.MsgLen = (uint)Marshal.SizeOf(mh);
+            byte[] sendBuffer = new byte[mh.DataLen + mh.MsgLen];
+            int index = 0;
+            Buffer.BlockCopy(StructConverter.StructToBytes(mh), 0, sendBuffer, index, Marshal.SizeOf(typeof(MsgHeader)));
+            AddSendData(sendBuffer);
+        }
+
         private void CheckCPUTypeMsgHeader(ref MsgHeader mh)
         {
             if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
