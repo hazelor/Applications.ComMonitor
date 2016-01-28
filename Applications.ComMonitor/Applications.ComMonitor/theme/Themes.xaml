@@ -2,7 +2,29 @@
                     xmlns:converter="clr-namespace:Applications.ComMonitor"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <converter:HeightConverter x:Key="HeightConverter"/>
-
+    <Style TargetType="RadioButton" x:Key="StatusBtnStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Grid>
+                        <Image Name="errorStatus"  Source="./images/redlight.png"/>
+                        <Image Name="goodStatus" Source="./images/greenlight.png" Visibility="Hidden"/>
+                        
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Visibility" Value="Visible" TargetName="goodStatus"/>
+                            <Setter Property="Visibility" Value="Hidden" TargetName="errorStatus"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter Property="Visibility" Value="Hidden" TargetName="goodStatus"/>
+                            <Setter Property="Visibility" Value="Visible" TargetName="errorStatus"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <!--RadioButton-->
     <Style TargetType="RadioButton" x:Key="MRadioButtonStyle">
         <Setter Property="Template">

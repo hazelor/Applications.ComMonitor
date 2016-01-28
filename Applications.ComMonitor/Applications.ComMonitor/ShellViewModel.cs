@@ -111,10 +111,10 @@ namespace Applications.ComMonitor
             
             //init Filter ViewModel
             ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MsgFilterSetting);
-
-            _mainProgressTimer = new System.Timers.Timer(1000);
-            _mainProgressTimer.Elapsed += OnMainProgressTimer;
-            _mainProgressTimer.Start();
+            ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.ConfigurationSetting);
+            //_mainProgressTimer = new System.Timers.Timer(1000);
+            //_mainProgressTimer.Elapsed += OnMainProgressTimer;
+            //_mainProgressTimer.Start();
 
 
         }
@@ -126,6 +126,20 @@ namespace Applications.ComMonitor
                 StartExecuted();
             }
 
+        }
+
+
+        private bool _IsStarted = false;
+        public bool IsStarted
+        {
+            get
+            {
+                return this._IsStarted;
+            }
+            set
+            {
+                SetProperty(ref this._IsStarted, value);
+            }
         }
         private bool _IsEnableConf= true;
         public bool IsEnableConf
@@ -155,6 +169,7 @@ namespace Applications.ComMonitor
         }
         private void OnIsStartChannelUpdate(object sender, bool IsStartChannel)
         {
+            this.IsStarted = IsStartChannel;
             if (IsStartChannel)
             {
                 StartName = "结束";

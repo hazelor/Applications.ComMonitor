@@ -99,11 +99,12 @@ namespace Modules.ConfigDisplay
             //如果没有配置文件存在，填写默认值
             if (!System.IO.File.Exists(Properties.Resources.OLSRParamSettingFilePath))
             {            
-                //InitDefault();
+                InitDefault();
             }
             //如果有配置文件存在，反序列化文件
             else
             {
+                InitDefault();
                 //DeSerializeStruct();
             }
 
@@ -145,19 +146,19 @@ namespace Modules.ConfigDisplay
         {
             _settingInfoConf.olsrParams = new STRU_OLSR_PARAME();
             //init default value for olsr
-            _settingInfoConf.olsrParams.u16HelloInterval = 3;
-            _settingInfoConf.olsrParams.u8NeighbroHoldMultiple = 3;
-            _settingInfoConf.olsrParams.U16TCInterval = 3;
-            _settingInfoConf.olsrParams.U8TOPHoldMultiple = 3;
-            _settingInfoConf.olsrParams.u16MIDInterval = 3;
-            _settingInfoConf.olsrParams.u8MIDHoldMultiple = 3;
-            _settingInfoConf.olsrParams.u8TCwholeinterval = 3;
-            _settingInfoConf.olsrParams.u8TcwholeHoldMultiple = 3;
-            _settingInfoConf.olsrParams.u8NodeWillingness = 7;
-            _settingInfoConf.olsrParams.ratio_IfSNR = 0;
-            _settingInfoConf.olsrParams.ratio_IfUseNum = 0;
-            _settingInfoConf.olsrParams.ratio_HopNum = 1;
-            _settingInfoConf.olsrParams.ratio_HopSNR = 0;
+            //_settingInfoConf.olsrParams.u16HelloInterval = 3;
+            //_settingInfoConf.olsrParams.u8NeighbroHoldMultiple = 3;
+            //_settingInfoConf.olsrParams.U16TCInterval = 3;
+            //_settingInfoConf.olsrParams.U8TOPHoldMultiple = 3;
+            //_settingInfoConf.olsrParams.u16MIDInterval = 3;
+            //_settingInfoConf.olsrParams.u8MIDHoldMultiple = 3;
+            //_settingInfoConf.olsrParams.u8TCwholeinterval = 3;
+            //_settingInfoConf.olsrParams.u8TcwholeHoldMultiple = 3;
+            //_settingInfoConf.olsrParams.u8NodeWillingness = 7;
+            //_settingInfoConf.olsrParams.ratio_IfSNR = 0;
+            //_settingInfoConf.olsrParams.ratio_IfUseNum = 0;
+            //_settingInfoConf.olsrParams.ratio_HopNum = 1;
+            //_settingInfoConf.olsrParams.ratio_HopSNR = 0;
 
             _settingInfoConf.wifiParams = new STRU_WIFI_PARAME[WIFISettingSize];
             for (int i = 0; i < WIFISettingSize; i++)
@@ -171,13 +172,13 @@ namespace Modules.ConfigDisplay
                 Buffer.BlockCopy(SSIDStr, 0, tmpstr, 0, tmpstr.Length > SSIDStr.Length ? SSIDStr.Length : tmpstr.Length);
                 _settingInfoConf.wifiParams[i].au8SSID = new byte[32];
                 Buffer.BlockCopy(tmpstr, 0, _settingInfoConf.wifiParams[i].au8SSID, 0, 32);
-                _settingInfoConf.wifiParams[i].u8Channel = 1;//"Channel 01: 2.412GHz"
-                _settingInfoConf.wifiParams[i].u8ChanWid = 3;//"40MHz"
-                _settingInfoConf.wifiParams[i].u8TxPower = 10;
-                _settingInfoConf.wifiParams[i].u8EncryptMode = 0;
-                _settingInfoConf.wifiParams[i].u8Network = 0;
-                _settingInfoConf.wifiParams[i].s32RtsThr = -1;
-                _settingInfoConf.wifiParams[i].s32FragThr = -1;
+                //_settingInfoConf.wifiParams[i].u8Channel = 1;//"Channel 01: 2.412GHz"
+                //_settingInfoConf.wifiParams[i].u8ChanWid = 3;//"40MHz"
+                //_settingInfoConf.wifiParams[i].u8TxPower = 10;
+                //_settingInfoConf.wifiParams[i].u8EncryptMode = 0;
+                //_settingInfoConf.wifiParams[i].u8Network = 0;
+                //_settingInfoConf.wifiParams[i].s32RtsThr = -1;
+                //_settingInfoConf.wifiParams[i].s32FragThr = -1;
 
             }
 

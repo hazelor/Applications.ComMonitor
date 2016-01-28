@@ -117,6 +117,7 @@ namespace Services.ProtocolService
         private ITcpListenerService _tcpListenerService;
         private ITcpClientService _tcpClientService;
         private IEventAggregator _eventAggregator;
+        private System.Timers.Timer _mainProgressTimer;
         //private DataProcessService _dataProcessService;
 
         #endregion
@@ -182,8 +183,19 @@ namespace Services.ProtocolService
             //register event
             _eventAggregator.GetEvent<ConfigUpdateEvent>().Subscribe(OnConfigUpdated);
             _eventAggregator.GetEvent<RecievedEvent>().Subscribe(ParserDatas, ThreadOption.UIThread);
-        }
 
+            _mainProgressTimer = new System.Timers.Timer(1000);
+            _mainProgressTimer.Elapsed += OnMainProgressTimer;
+            _mainProgressTimer.Start();
+        }
+        private void OnMainProgressTimer(object sender, EventArgs e)
+        {
+            if (!_udpClientService.isStarted)
+            {
+                StartChannel();
+            }
+
+        }
         Dictionary<int, string> _NodeImageDict = new Dictionary<int, string>();
         
         private void LoadNodeImagesConf()
@@ -219,7 +231,7 @@ namespace Services.ProtocolService
         public void StartChannel()
         {
             //设置定时器的时间间隔
-            _recordNodeGPS.Clear();
+            //_recordNodeGPS.Clear();
             _queryTimer.Interval = _configService.ConfigInfos.UpdateRate;
             //_sendTimer.Interval = _configService.ConfigInfos.UpdateRate;
             InitializeChannel();
@@ -281,6 +293,7 @@ namespace Services.ProtocolService
         //}
         private bool isClear = true;
         private bool isReadPara = false;
+        private bool isQueryFreq = false;
         /// <summary>
         /// 通过UdpClient向下位机发送数据
         /// </summary>
@@ -294,7 +307,12 @@ namespace Services.ProtocolService
                 AddSendData(QueryTopInfo());
                 if (!isReadPara)
                 { 
-                    ReadParaCtrl(); 
+                    ReadParaCtrl();
+                    
+                }
+                if (!isQueryFreq)
+                {
+                    FreQuery();
                 }
                 if (MacAddr.SelfMacAddr == null)
                 {
@@ -449,7 +467,7 @@ namespace Services.ProtocolService
                 _tcpClientService.Unregister(OnTcpDiagramReceived);
                 _tcpClientService.ErrorHappenedEvent -= OnChannelErrorHappened;
                 IsStopReceive = true;
-                
+                IsStartChannel = false;
                 _tcpClientService.Disconnect();
                 if (ReceivedDataProcessThread != null && ReceivedDataProcessThread.IsAlive)
                 {
@@ -472,6 +490,7 @@ namespace Services.ProtocolService
                 _udpClientService.Unregister(OnUdpDiagramReceived);
                 _udpClientService.ErrorHappenedEvent -= OnChannelErrorHappened;
                 _udpClientService.StopService();
+                IsStartChannel = false;
                 return;
             }
             if (ChannelServiceType == "TcpListener")
@@ -481,10 +500,12 @@ namespace Services.ProtocolService
                 _tcpListenerService.Unregister(OnTcpDiagramReceived);
                 _tcpListenerService.ErrorHappenedEvent -= OnChannelErrorHappened;
                 _tcpListenerService.StopService();
+                IsStartChannel = false;
                 return;
             }
             if (ChannelServiceType == "UdpListener")
             {
+
                 return;
             }
         }

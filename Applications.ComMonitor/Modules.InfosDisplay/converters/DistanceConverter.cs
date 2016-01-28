@@ -44,7 +44,7 @@ namespace Modules.InfosDisplay.converters
             {
                 return "-";
             }
-            return System.String.Format(CultureInfo.CurrentUICulture, "{0}db", result.Value);
+            return System.String.Format(CultureInfo.CurrentUICulture, "{0}dB", result.Value);
         }
 
         public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
@@ -69,7 +69,7 @@ namespace Modules.InfosDisplay.converters
             {
                 return "-";
             }
-            return System.String.Format(CultureInfo.CurrentUICulture, "{0}", result.Value);
+            return System.String.Format(CultureInfo.CurrentUICulture, "{0}dBm", result.Value);
         }
 
         public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)

@@ -97,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="converters\DistanceConverter.cs" />
+    <Compile Include="converters\LineNameConverter.cs" />
     <Compile Include="converters\LineValueConverter.cs" />
     <Compile Include="converters\QuaulityConverter.cs" />
     <Compile Include="Lines\LineInfo.xaml.cs">

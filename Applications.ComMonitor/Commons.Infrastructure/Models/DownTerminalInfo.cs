@@ -46,7 +46,8 @@ namespace Commons.Infrastructure.Models
         public int numRouteInfo;
         public void OnUpdate()
         {
-            this.OnRoutInfoChanged(this, null);
+            if (OnRoutInfoChanged!=null)
+                this.OnRoutInfoChanged(this, null);
         }
 
         public event EventHandler OnRoutInfoChanged;

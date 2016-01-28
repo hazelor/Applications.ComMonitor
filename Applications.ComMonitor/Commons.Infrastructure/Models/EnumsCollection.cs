@@ -78,7 +78,7 @@ namespace Commons.Infrastructure.Models
         信道12 = 12,
         [Description("Channel 13: 2.472GHz")]
         信道13 = 13,
-        [Description("Channel 14: 2.477GHz")]
+        [Description("Channel 14: 2.484GHz")]
         信道14 = 14,
 
         [Description("Channel 36: 5.18GHz")]

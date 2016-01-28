@@ -70,10 +70,11 @@ namespace Modules.ConfigDisplay
 
             vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MapSetting);
             _confController.AddSubConfPanel(vm);
-
-            vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MsgFilterSetting);
-            _confController.AddSubConfPanel(vm);
-
+            if (_configService.IsAdminLogin)
+            {
+                vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MsgFilterSetting);
+                _confController.AddSubConfPanel(vm);
+            }
             //vm = ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.WIFICtrlSetting);
             //_confController.AddSubConfPanel(vm);
 

@@ -178,7 +178,15 @@ namespace Modules.InfosDisplay
 
         private void CenterClick(object sender, RoutedEventArgs e)
         {
-            this.tileCanvas.Center(_configService.ConfigInfos.CenteredLatitude, _configService.ConfigInfos.CenteredLongitude, 13);
+            InfosPanelViewModel ipVM = (InfosPanelViewModel)this.DataContext;
+            if (ipVM.CommNodes == null || ipVM.CommNodes.Count == 0)
+            {
+                this.tileCanvas.Center(_configService.ConfigInfos.CenteredLatitude, _configService.ConfigInfos.CenteredLongitude, 13);
+            }
+            else
+            {
+                this.tileCanvas.Center(ipVM.CommNodes[0].Latitude, ipVM.CommNodes[0].Longitude, 13);
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

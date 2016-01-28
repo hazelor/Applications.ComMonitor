@@ -12,6 +12,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Modules.InfosDisplay
 {
@@ -20,9 +21,11 @@ namespace Modules.InfosDisplay
     {
         IProtocolService _protocolService;
         IEventAggregator _eventAggregator;
+        IConfigService _configService;
         [ImportingConstructor]
-        public  InfosPanelViewModel(IProtocolService protocolService, IEventAggregator eventAggregator)
+        public  InfosPanelViewModel(IProtocolService protocolService, IEventAggregator eventAggregator,IConfigService configService)
         {
+            _configService = configService;
             _protocolService = protocolService;
             _eventAggregator = eventAggregator;
             _protocolService.LineChangeEvent += OnLineChanged;
@@ -101,6 +104,20 @@ namespace Modules.InfosDisplay
             }
             
         }
+        public Visibility InfoVisible
+        {
+            get
+            {
+                if (_configService.IsAdminLogin)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+        }
 
         private RoutInfoDecorator _SelRoutInfo;
         public RoutInfoDecorator SelRoutInfo
@@ -121,6 +138,14 @@ namespace Modules.InfosDisplay
             get
             {
                 return this.SelectedNode.LineInfoOfNode;
+            }
+        }
+
+        public ObservableCollection<CommNode> CommNodes
+        {
+            get
+            {
+                return this._protocolService.CommunicationNet.CommNodes;
             }
         }
         private void NodeSelectChanged(CommNode cn)
@@ -221,7 +246,12 @@ namespace Modules.InfosDisplay
 
         public void ShowRouteLines()
         {
-            
+            foreach (var line in _protocolService.CommunicationNet.CommLines)
+            {
+                line.IsPreShow = true;
+                line.IsBacShow = true;
+            }
+
             if (!_IsAllShow && _SelRoutInfo != null)
             {
                 List<MacAddr> tmpMacList = new List<MacAddr>();

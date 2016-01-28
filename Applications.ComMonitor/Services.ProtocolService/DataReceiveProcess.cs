@@ -27,7 +27,16 @@ namespace Services.ProtocolService
             Params[0] = srcBuffer;
             if (ParserDict.ContainsKey(ID))
             {
-                ParserDict[ID].Invoke(this, Params);
+                try
+                {
+                    ParserDict[ID].Invoke(this, Params);
+                }
+                catch (Exception)
+                {
+
+                    //do nothing;
+                }
+                
             }
             else
             {
@@ -373,6 +382,7 @@ namespace Services.ProtocolService
                 Buffer.BlockCopy(srcBuffer,index,tmpBuffer,0,4);
                 //处理四个频点值
                 RecieveMsgEvent(this, new EventMsgArgs { MsgID = ConstIDs.STRU_OMTDM_FREQ_RSP, Content = tmpBuffer });
+                isQueryFreq = true;
             }
         }
 
@@ -389,6 +399,18 @@ namespace Services.ProtocolService
         {
 
             STRU_TDMOM_PARA_CFG par = (STRU_TDMOM_PARA_CFG)StructConverter.BytesToStruct(srcBuffer, typeof(STRU_TDMOM_PARA_CFG));
+            if (BitConverter.IsLittleEndian != (_configService.ConfigInfos.CPUType == ConfigItems.LITTLE))
+            {
+                par.struOlsrParame.u16HelloInterval = Endian.SwapUInt16(par.struOlsrParame.u16HelloInterval);
+                par.struOlsrParame.u16MIDInterval = Endian.SwapUInt16(par.struOlsrParame.u16MIDInterval);
+                par.struOlsrParame.U16TCInterval = Endian.SwapUInt16(par.struOlsrParame.U16TCInterval);
+                for (int i = 0; i < 4; i++)
+			    {
+                    par.astruWiFiParame[i].s32FragThr = Endian.SwapInt32(par.astruWiFiParame[0].s32FragThr);
+                    par.astruWiFiParame[i].s32RtsThr = Endian.SwapInt32(par.astruWiFiParame[0].s32RtsThr);
+			    }
+                
+            }
             this._eventAggregator.GetEvent<ParamUpdatedEvent>().Publish(par);
             isReadPara = true;
 
@@ -438,16 +460,18 @@ namespace Services.ProtocolService
             {
                 if (!CommunicationNet.CommNodes[i].IsUpdate)
                 {
-                    if (!_configService.ConfigInfos.IsGPSShow)
-                    {
-                        RecordNodeGPS(CommunicationNet.CommNodes[i]);
-                    }
+                    
                     
                     NodeChangeEvent(this, new NodeChangeEventArg { Node = CommunicationNet.CommNodes[i], oper = Operations.DEL });
                     CommunicationNet.CommNodes[i].LineInfoOfNode.Clear();
                     CommunicationNet.CommNodes[i] = null;
                     CommunicationNet.CommNodes.RemoveAt(i);
                     i--;
+                }
+
+                if (!_configService.ConfigInfos.IsGPSShow)
+                {
+                    RecordNodeGPS(CommunicationNet.CommNodes[i]);
                 }
             }
         }

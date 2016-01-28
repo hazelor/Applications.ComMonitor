@@ -254,6 +254,10 @@
   <ItemGroup>
     <Resource Include="theme\images\normalize.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="theme\images\greenlight.png" />
+    <Resource Include="theme\images\redlight.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>IF NOT EXIST "$(TargetDir)\Modules" mkdir "$(TargetDir)\Modules";
