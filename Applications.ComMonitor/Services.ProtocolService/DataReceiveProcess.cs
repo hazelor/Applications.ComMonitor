@@ -104,6 +104,7 @@ namespace Services.ProtocolService
         [Parser(ParseID = ConstIDs.O_TDMOM_ROUTE_INFO_RSP, Description = "接收路由信息")]
         private void ParseROUTEINFORSP(byte[] srcBuffer)
         {
+            sendedCommandCount = 0;
             //DTerminalInfo.RouteInfo.Clear();
             int index = ParseMsgHeader(srcBuffer);
             //num of node

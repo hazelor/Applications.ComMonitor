@@ -1,5 +1,6 @@
 ﻿using Commons.Infrastructure;
 using Commons.Infrastructure.Behaviros;
+using Commons.Infrastructure.Interface;
 using Hazelor.Infrastructure.Tools;
 using Microsoft.Practices.Prism.Regions;
 using System;
@@ -32,7 +33,7 @@ namespace Modules.ConfigDisplay
             InitializeComponent();
             
         }
-        [Import]
+        [Import(typeof(IConfigPanelViewModel))]
         private ConfigPanelViewModel ViewModel
         {
             set

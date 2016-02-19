@@ -17,8 +17,9 @@ using System.Threading.Tasks;
 
 namespace Modules.ConfigDisplay
 {
-    [Export]
-    class ConfigPanelViewModel : BindableBase
+    [Export(typeof(IConfigPanelViewModel))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
+    class ConfigPanelViewModel : BindableBase,IConfigPanelViewModel
     {
 
         #region Command
@@ -45,18 +46,27 @@ namespace Modules.ConfigDisplay
         }
         #endregion
         private IEventAggregator _eventAggregator;
+        private LoginedCommandProxy _loginedCommandProxy;
         [ImportingConstructor]
-        public ConfigPanelViewModel(IEventAggregator eventAggregator, IConfigService configService, IConfController confController)
+        public ConfigPanelViewModel(IEventAggregator eventAggregator, IConfigService configService, IConfController confController, LoginedCommandProxy loginedCommandProxy)
         {
             _configService = configService;
             _confController = confController;
             _eventAggregator = eventAggregator;
-
+            _loginedCommandProxy = loginedCommandProxy;
+            LoginedCommand = new DelegateCommand(loginedExecuted);
+            _loginedCommandProxy.LoginedCommand.RegisterCommand(LoginedCommand);
             _eventAggregator.GetEvent<ConfirmEvent>().Subscribe(ClearViewModel);
             _confController.IsAvailableApplyHandler += OnIsAvailableApplyChanged;
            
         }
+        public DelegateCommand LoginedCommand { get; set; }
+        private void loginedExecuted()
+        {
+            ClearViewModel(true);
+            Init();
 
+        }
         private void ClearViewModel(bool sign)
         {
             _confController.RemoveAllViewModel();

@@ -83,7 +83,10 @@ namespace Applications.ComMonitor
             base.Cancel();
         }
 
-        
+        public override void adminLogin()
+        {
+            AdminLoginCommands.LoginCommand.Execute();
+        }
         private void OnConfirmedUpdate(bool isConfirmed)
         {
             if (isConfirmed)

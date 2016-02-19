@@ -82,6 +82,8 @@ namespace Modules.InfosDisplay
             OnConfigUpdated(true);
             _eventAggregator.GetEvent<ConfigUpdateEvent>().Subscribe(OnConfigUpdated);
             _eventAggregator.GetEvent<ClearAllEvent>().Subscribe(OnClearAll, ThreadOption.UIThread);
+
+            
         }
 
         private void OnSelectedNodeEvent(object sender, EventArgs e)
@@ -189,30 +191,9 @@ namespace Modules.InfosDisplay
             }
         }
 
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-            //Point pos = e.GetPosition(this);
-            //pos = this.tileCanvas.GetLocation(pos);
-            //BorderNode node = new BorderNode();
-            //node.Latitude = pos.Y;
-            //node.Longitude = pos.X;
-            //CursorDisplay.DataContext = node;
+        
 
-        }
-
-        protected override void OnMouseEnter(MouseEventArgs e)
-        {
-            base.OnMouseEnter(e);
-            //this.CursorDisplay.Visibility = Visibility.Visible;
-        }
-
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            base.OnMouseLeave(e);
-            //this.CursorDisplay.Visibility = Visibility.Collapsed;
-        }
-
+        
         protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
         {
             base.OnMouseDoubleClick(e);
@@ -324,18 +305,18 @@ namespace Modules.InfosDisplay
 
         private void OnClearAll(bool sign)
         {
-            foreach (var item in _protocolService.CommunicationNet.CommNodes)
-            {
-                this.tileCanvas.DelSubObject(item.ToString());
-            }
+            //foreach (var item in _protocolService.CommunicationNet.CommNodes)
+            //{
+            //    this.tileCanvas.DelSubObject(item.ToString());
+            //}
 
-            foreach (var item in _protocolService.CommunicationNet.CommLines)
-            {
-                this.tileCanvas.DelSubObject(item.ToString());
-            }
+            //foreach (var item in _protocolService.CommunicationNet.CommLines)
+            //{
+            //    this.tileCanvas.DelSubObject(item.ToString());
+            //}
 
-            _protocolService.CommunicationNet.CommNodes.Clear();
-            _protocolService.CommunicationNet.CommLines.Clear();
+            //_protocolService.CommunicationNet.CommNodes.Clear();
+            //_protocolService.CommunicationNet.CommLines.Clear();
         }
     }
 }

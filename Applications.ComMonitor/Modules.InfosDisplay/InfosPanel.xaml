@@ -328,7 +328,7 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                                <Setter Property="Opacity" Value="0.2" TargetName="signback"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="False">
                                 <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
@@ -354,7 +354,7 @@
                                 <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                                <Setter Property="Opacity" Value="0.2" TargetName="signback"/>
                             </Trigger>
 
                         </ControlTemplate.Triggers>
@@ -374,7 +374,7 @@
                                 <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                                <Setter Property="Opacity" Value="0.2" TargetName="signback"/>
                             </Trigger>
 
                         </ControlTemplate.Triggers>
@@ -394,7 +394,7 @@
                                 <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                                <Setter Property="Opacity" Value="0.2" TargetName="signback"/>
                             </Trigger>
 
                         </ControlTemplate.Triggers>
@@ -416,7 +416,7 @@
                                 <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                                <Setter Property="Opacity" Value="0.2" TargetName="signback"/>
                             </Trigger>
                             
                         </ControlTemplate.Triggers>
@@ -441,7 +441,7 @@
                                 <Setter Property="Opacity" Value="0.9" TargetName="signback"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Opacity" Value="0.6" TargetName="signback"/>
+                                <Setter Property="Opacity" Value="0.2" TargetName="signback"/>
                             </Trigger>
                             
                         </ControlTemplate.Triggers>
@@ -456,28 +456,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Map:MapCanvas x:Name="tileCanvas" Grid.Column="0">
-            <!--<Border x:Name="CursorDisplay" 
-                    Background="#33575B57"
-                    Visibility="Visible"
-                    CornerRadius="4"
-                    BorderBrush="#FF464646"
-                    BorderThickness="1"
-                     Map:MapCanvas.Latitude="{Binding Latitude}" Map:MapCanvas.Longitude="{Binding Longitude}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" >
-                        <Label Foreground="White">纬度:</Label>
-                        <TextBlock Foreground="Lime" Text="{Binding Latitude}" VerticalAlignment="Center"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" >
-                        <Label Foreground="White">经度:</Label>
-                        <TextBlock Foreground="Lime" Text="{Binding Longitude}" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Grid>
-            </Border>-->
+         
 
         </Map:MapCanvas>
         <Map:NavigationControls  Map="{Binding ElementName=tileCanvas}" Grid.Column="0"/>

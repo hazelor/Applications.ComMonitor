@@ -33,21 +33,31 @@ namespace Modules.InfosDisplay.Nodes
             base.OnMouseDoubleClick(e);
 
         }
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        public static void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CommNode cn = this.DataContext as CommNode;
-            _eventAggregator.GetEvent<SelNodeEvent>().Publish(cn);
-            _mouseCaptured = true;
-            this.CaptureMouse();
-            base.OnMouseDown(e);
+            NodeBase nb = sender as NodeBase;
+            if (nb!=null)
+            {
+                CommNode cn = nb.DataContext as CommNode;
+                nb._eventAggregator.GetEvent<SelNodeEvent>().Publish(cn);
+                nb._mouseCaptured = true;
+                nb.CaptureMouse();
+ 
+            }
+            
         }
 
-        
-        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+
+        public static void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            base.OnMouseLeftButtonUp(e);
-            this.ReleaseMouseCapture();
-            _mouseCaptured = false;
+            NodeBase nb = sender as NodeBase;
+            if (nb != null)
+            {
+                
+                nb.ReleaseMouseCapture();
+                nb._mouseCaptured = false;
+            }
+            
         }
         
         //protected override void OnMouseUp(MouseButtonEventArgs e)
@@ -62,6 +72,36 @@ namespace Modules.InfosDisplay.Nodes
             
         //    base.OnMouseLeftButtonUp(e);
         //}
+        Delegate MouseLeftDownHandler = new MouseButtonEventHandler(NodeBase.OnMouseLeftButtonDown);
+        Delegate MouseLeftUpHandler = new MouseButtonEventHandler(NodeBase.OnMouseLeftButtonUp);
+        Delegate MouseMoveHandler = new MouseEventHandler(NodeBase.OnMouseMove);
+
+        private bool _IsAddedHandler = false;
+        public override bool IsCanDrag
+        {
+            get
+            {
+                return this._IsCanDrag;
+            }
+            set
+            {
+                this._IsCanDrag = value;
+                if (this._IsCanDrag && !_IsAddedHandler)
+                {
+                    this.AddHandler(UIElement.MouseLeftButtonDownEvent, MouseLeftDownHandler);
+                    this.AddHandler(UIElement.MouseLeftButtonUpEvent, MouseLeftUpHandler);
+                    this.AddHandler(UIElement.MouseMoveEvent, MouseMoveHandler);
+                    _IsAddedHandler = true;
+                }
+                else
+                {
+                    this.RemoveHandler(UIElement.MouseLeftButtonDownEvent, MouseLeftDownHandler);
+                    this.RemoveHandler(UIElement.MouseLeftButtonUpEvent, MouseLeftUpHandler);
+                    this.RemoveHandler(UIElement.MouseMoveEvent, MouseMoveHandler);
+                    _IsAddedHandler = false;
+                }
+            }
+        }
         public NodeBase()
         {
             this.IsCanDrag = false;
@@ -80,78 +120,28 @@ namespace Modules.InfosDisplay.Nodes
         private bool _mouseCaptured = false;
         private Point _previousMouse;
 
-        //protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
-        //{
-        //    base.OnMouseRightButtonDown(e);
-        //    this.Focus(); // Make sure we get the keyboard
-        //    if (this.CaptureMouse())
-        //    {
-        //        this.Cursor = Cursors.ScrollAll;
-        //        _mouseCaptured = true;
-        //        _previousMouse = e.GetPosition(null);
-        //        var element = (FrameworkElement)this;
-        //        if (e.ClickCount == 1)
-        //        {
-        //            var timer = new System.Timers.Timer(500);
-        //            timer.AutoReset = false;
-        //            timer.Elapsed += new ElapsedEventHandler((o, ex) => element.Dispatcher.Invoke(new Action(() =>
-        //            {
-        //                var timer2 = (System.Timers.Timer)element.Tag;
-        //                timer2.Stop();
-        //                timer2.Dispose();
-        //                //单击
-        //            })));
-        //            timer.Start();
-        //            element.Tag = timer;
-        //        }
-        //        if (e.ClickCount > 1)
-        //        {
-        //            var timer = element.Tag as System.Timers.Timer;
-        //            if (timer != null)
-        //            {
-        //                timer.Stop();
-        //                timer.Dispose();
-        //                //UIElement_DoubleClick(e);
-        //            }
-        //        }
-        //    }
-
-        //    //base.OnMouseRightButtonDown(e);
-        //    //this.Focus(); // Make sure we get the keyboard
-        //    //if (this.CaptureMouse())
-        //    //{
-        //    //    _mouseCaptured = true;
-        //    //    _previousMouse = e.GetPosition(this.Parent as FrameworkElement);
-        //    //}
-        //}
-
-        //protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)
-        //{
-        //    base.OnMouseRightButtonUp(e);
-        //    this.ReleaseMouseCapture();
-        //    _mouseCaptured = false;
-        //}
 
         /// <summary>Drags the map, if the mouse was succesfully captured.</summary>
         /// <param name="e">The MouseEventArgs that contains the event data.</param>
-        protected override void OnMouseMove(MouseEventArgs e)
+        public static void OnMouseMove(object sender, MouseEventArgs e)
         {
-            base.OnMouseMove(e);
-            if (_mouseCaptured)
+            NodeBase nb = sender as NodeBase;
+
+            if (nb!=null && nb._mouseCaptured)
             {
                 try
                 {
-                    FrameworkElement f = this.Parent as FrameworkElement;
+                    FrameworkElement f = nb.Parent as FrameworkElement;
                     if (f!= null)
                     {
                         Point position = e.GetPosition(f);
-                        _previousMouse = position;
-                        MapCanvas mc = this.Parent as MapCanvas;
+                        nb._previousMouse = position;
+                        MapCanvas mc = nb.Parent as MapCanvas;
                         if (mc != null && mc.IsCanDrag == false)
                         {
                             position = mc.GetLocation(position);
-                            MapCanvas.SetLatitude(this, position.Y);
-                            MapCanvas.SetLongitude(this, position.X);
+                            MapCanvas.SetLatitude(nb, position.Y);
+                            MapCanvas.SetLongitude(nb, position.X);
                         }
                         
                     }
@@ -161,9 +151,7 @@ namespace Modules.InfosDisplay.Nodes
                 {
 
                 }
-                //this.SetValue(MapCanvas.LongitudeProperty, (object)position.X);
-                //this.Longitude = position.X;
-                //this.Latitude = position.Y;
+               
             }
         }
     }

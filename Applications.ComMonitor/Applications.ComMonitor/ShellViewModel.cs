@@ -1,5 +1,6 @@
 ﻿using Applications.ComMonitor.Notification;
 using Commons.Infrastructure;
+using Commons.Infrastructure.Command;
 using Commons.Infrastructure.Events;
 using Commons.Infrastructure.Interface;
 using Commons.Infrastructure.Models;
@@ -26,6 +27,24 @@ namespace Applications.ComMonitor
     class ShellViewModel :BindableBase
     {
         #region Commands
+        public DelegateCommand AdminLoginCommand { get; set; }
+        private void adminLoginExecuted()
+        {
+            AdminLoginNotification notification = new AdminLoginNotification();
+            
+            notification.AdminName = this._adminInfo.Name;
+            notification.AdminNameInput = this._adminInfo.Name;
+            notification.AdminPassword = this._adminInfo.Password;
+            notification.Title = "管理员登录";
+
+            this.AdminLoginRequest.Raise(notification, GetAdminLoginCallBack, CancelAdminLoginCallBack);
+        }
+
+        public DelegateCommand AdminLoginedCommand { get; set; }
+        private void AdminLoginedExecuted()
+        {
+            this.OnPropertyChanged("InfoVisible");
+        }
         public DelegateCommand ConfigDisplayCommand { get; set; }
 
         private void ConfigDisplayExecuted()
@@ -61,8 +80,10 @@ namespace Applications.ComMonitor
         
         private void GetAdminLoginCallBack(AdminLoginNotification a)
         {
-            
-            
+            _configService.IsAdminLogin = true;
+            //update the shell view and config view
+            AdminLoginedCommands.LoginedCommand.Execute(null);
+
         }
         private void CancelAdminLoginCallBack()
         {
@@ -87,14 +108,17 @@ namespace Applications.ComMonitor
         private IConfigService _configService;
         private IProtocolService _protocolService;
         private System.Timers.Timer _mainProgressTimer;
+        
+        private LoginedCommandProxy _loginedCommandProxy;
         //private IDataTransPanel _DataTransPanel;
         private AdminInfo _adminInfo;
         [ImportingConstructor]
-        public ShellViewModel(IEventAggregator eventAggregator, IConfigService configService, IProtocolService protocolService)
+        public ShellViewModel(IEventAggregator eventAggregator, IConfigService configService, IProtocolService protocolService, LoginedCommandProxy loginedCommandProxy)
         {
             _eventAggregator = eventAggregator;
             _configService = configService;
             _protocolService = protocolService;
+            _loginedCommandProxy = loginedCommandProxy;
            // _DataTransPanel = dataTransPanel;
             _protocolService.IsStartChannelChangeEvent += OnIsStartChannelUpdate;
             //_protocolService.StartChannel();
@@ -108,8 +132,14 @@ namespace Applications.ComMonitor
             _eventAggregator.GetEvent<SystemInfoEvent>().Subscribe(OnSystemInfoUpdate);
             StartCommand = new DelegateCommand(StartExecuted);
 
-            
+            AdminLoginCommands.LoginCommand = new DelegateCommand(adminLoginExecuted);
+           
+
+            AdminLoginedCommand = new DelegateCommand(AdminLoginedExecuted);
+            _loginedCommandProxy.LoginedCommand.RegisterCommand(AdminLoginedCommand);
+
             //init Filter ViewModel
+            ServiceLocator.Current.GetInstance<IConfigPanelViewModel>();
             ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.MsgFilterSetting);
             ServiceLocator.Current.GetInstance<IConfViewModel>(PanelNames.ConfigurationSetting);
             //_mainProgressTimer = new System.Timers.Timer(1000);

@@ -28,6 +28,18 @@
                         Margin="20,40,20,10"
                     />
             <StackPanel Grid.Row="1" Orientation="Horizontal"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Left"
+                        Margin="50,0,0,30">
+                <Button Style="{StaticResource MButtonStyle}"  Height="30" Content="管理员登陆" >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <ei:CallMethodAction TargetObject="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=interactions:ConfigInterationDialog, AncestorLevel=1}}" MethodName="adminLogin"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Orientation="Horizontal"
                             VerticalAlignment="Bottom" 
                             HorizontalAlignment="Right"
                             Margin="0,0,50,30">

@@ -32,4 +32,41 @@ namespace Commons.Infrastructure.Command
             }
         }
     }
+
+    public static class AdminLoginCommands
+    {
+        private static DelegateCommand _LoginCommand;
+
+        public static DelegateCommand LoginCommand
+        {
+            get { return _LoginCommand; }
+            set { _LoginCommand = value; }
+        }
+    }
+
+    
+
+    public static class AdminLoginedCommands
+    {
+        private static CompositeCommand _LoginedCommand = new CompositeCommand();
+
+        public static CompositeCommand LoginedCommand
+        {
+            get { return _LoginedCommand; }
+            set { _LoginedCommand = value; }
+        }
+    }
+
+    [Export]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public class LoginedCommandProxy
+    {
+        virtual public CompositeCommand LoginedCommand
+        {
+            get
+            {
+                return AdminLoginedCommands.LoginedCommand;
+            }
+        }
+    }
 }

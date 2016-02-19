@@ -78,9 +78,18 @@ namespace Modules.ConfigDisplay.Controller
             IRegion naviRegion = _regionManager.Regions[RegionNames.ConfNavigatorRegion];
             for (int i = 0; i < naviViewModelList.Count; i++)
 			{
+                
                 naviRegion.Remove(naviViewModelList[i]);
 			}
             naviViewModelList.Clear();
+
+            for (int i = 0; i < subConfViewModelList.Count; i++)
+            {
+                _commandProxy.ApplyConfCommand.UnregisterCommand(subConfViewModelList[i].ApplyCommand);
+            }
+            subConfViewModelList.Clear();
+
+            _commandProxy.ApplyConfCommand.UnregisterCommand(this.UpdateConfigCommand);
             
         }
         private void OnIsAviableApplyChanged(object sender, bool e)

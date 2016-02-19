@@ -10,6 +10,9 @@ namespace Applications.ComMonitor.Interactions
 {
     public class ConfigInterationDialog : GenericInteractionDialogBase<ConfigNotification>
     {
+        public virtual void adminLogin()
+        {
 
+        }
     }
 }

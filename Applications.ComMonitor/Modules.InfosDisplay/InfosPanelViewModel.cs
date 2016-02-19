@@ -74,7 +74,9 @@ namespace Modules.InfosDisplay
             }
             for (; i< RoutInfoDecs.Count; i++)
 			{
-                RoutInfoDecs.RemoveAt(i);
+                //RoutInfoDecs.RemoveAt(i);
+                RoutInfoDecs[i].info = new RouteInfo();
+                RoutInfoDecs[i].RoutName = "";
                 i--;
 			}
             for(;i<TerminalInfo.numRouteInfo;i++)

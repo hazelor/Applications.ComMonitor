@@ -32,11 +32,11 @@ namespace Applications.ComMonitor
         protected override void InitializeShell()
         {
             base.InitializeShell();
-            ServiceLocator.Current.GetInstance<LoginPanel>().Show();
+            //ServiceLocator.Current.GetInstance<LoginPanel>().Show();
 
             Application.Current.MainWindow = (Shell)this.Shell;
             //
-            //Application.Current.MainWindow.Show(); 
+            Application.Current.MainWindow.Show(); 
 
 
         }

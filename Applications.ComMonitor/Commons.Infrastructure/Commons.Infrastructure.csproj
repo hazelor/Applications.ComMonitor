@@ -98,6 +98,7 @@
     <Compile Include="Interactions\IGenericAdapter.cs" />
     <Compile Include="Interactions\IGenericInteractionView.cs" />
     <Compile Include="Interactions\IGenericViewModel.cs" />
+    <Compile Include="Interface\IConfigPanelViewModel.cs" />
     <Compile Include="Interface\IConfigService.cs" />
     <Compile Include="Interface\IConfViewModel.cs" />
     <Compile Include="Interface\IDataTransPanel.cs" />

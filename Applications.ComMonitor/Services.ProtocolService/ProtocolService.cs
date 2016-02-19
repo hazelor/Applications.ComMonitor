@@ -96,7 +96,7 @@ namespace Services.ProtocolService
             set
             {
                 this._IsStartChannel = value;
-                IsStartChannelChangeEvent(this, _IsStartChannel);
+                //IsStartChannelChangeEvent(this, _IsStartChannel);
             }
         }
 
@@ -294,6 +294,7 @@ namespace Services.ProtocolService
         private bool isClear = true;
         private bool isReadPara = false;
         private bool isQueryFreq = false;
+        private int sendedCommandCount = 0;
         /// <summary>
         /// 通过UdpClient向下位机发送数据
         /// </summary>
@@ -303,6 +304,16 @@ namespace Services.ProtocolService
         {
             if (CanQueryRouteAndTopInfo)
             {
+                sendedCommandCount++;
+
+                if (sendedCommandCount > 5)
+                {
+                    IsStartChannelChangeEvent(this, false);
+                }
+                else
+                {
+                    IsStartChannelChangeEvent(this, true);
+                }
                 AddSendData(QueryRouteInfo());
                 AddSendData(QueryTopInfo());
                 if (!isReadPara)
